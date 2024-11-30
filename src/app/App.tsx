@@ -1,7 +1,9 @@
+import { appName } from "@shared/lib/constants"
+
 function App() {
   return (
     <div>
-      <h1>The Tab Progress v0.0.0</h1>
+      <h1>{appName} v0.0.0</h1>
     </div>
   )
 }
