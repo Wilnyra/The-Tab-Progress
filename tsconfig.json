@@ -1,17 +1,13 @@
 {
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@app/*": ["app/*"],
-      "@shared/*": ["shared/*"],
-      "@entities/*": ["entities/*"],
-      "@features/*": ["features/*"],
-      "@widgets/*": ["widgets/*"],
-      "@pages/*": ["pages/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "src",
-  ]
+  "include": ["src"]
 }
