@@ -1,13 +1,36 @@
-import { appName } from "@/shared/lib/constants"
-import { Button } from "@/shared/ui/Button"
+import { LoginPage } from "@/pages/login"
 import "./index.css"
+import { getLoginPath, getRootPath } from "@/shared/lib/routePaths"
+import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom"
+import { DashboardPage } from "@/pages/dashboard"
+import { getIsAuthed } from "@/entities/session"
+
+function RequireAuth() {
+  const isAuthenticated = getIsAuthed()
+  const location = useLocation()
+
+  if (isAuthenticated) return <Outlet />
+  else {
+    return <Navigate to={getLoginPath()} state={{ from: location }} replace />
+  }
+}
 
 function App() {
   return (
-    <div className="dark bg-background">
-      <h1 className="text-foreground">{appName} v0.0.0</h1>
-      <Button variant="secondary">Click me</Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path={getLoginPath()} element={<LoginPage />} />
+
+        <Route element={<RequireAuth />}>
+          <Route
+            path={getRootPath()}
+            element={<DashboardPage />}
+          />
+        </Route>
+
+        <Route element={<Navigate to={getRootPath()} />} path="*" />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
