@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { supabase } from '@/entities/session'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
+import { supabase } from '@/shared/lib/supabase'
 
 export const OtpAuthForm = () => {
   const [loading, setLoading] = useState(false)

@@ -6,8 +6,9 @@ import { DashboardPage } from "@/pages/dashboard"
 import { getIsAuthed } from "@/entities/session"
 
 function RequireAuth() {
-  const isAuthenticated = getIsAuthed()
   const location = useLocation()
+  const isAuthenticated = getIsAuthed()
+  console.log('::isAuthenticated', isAuthenticated)
 
   if (isAuthenticated) return <Outlet />
   else {
@@ -22,13 +23,10 @@ function App() {
         <Route path={getLoginPath()} element={<LoginPage />} />
 
         <Route element={<RequireAuth />}>
-          <Route
-            path={getRootPath()}
-            element={<DashboardPage />}
-          />
+          <Route index element={<DashboardPage />} />
         </Route>
 
-        <Route element={<Navigate to={getRootPath()} />} path="*" />
+        <Route path="*" element={<Navigate to={getRootPath()} />} />
       </Routes>
     </BrowserRouter>
   )
