@@ -1,1 +1,1 @@
-export { getIsAuthed } from "./lib/getIsAuthed"
+export { useAuth } from "./lib/useAuth"

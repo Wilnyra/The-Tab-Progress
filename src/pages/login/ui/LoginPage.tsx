@@ -1,10 +1,9 @@
-import { OtpAuthForm } from "@/features/auth/login"
+import { LoginForm } from "@/features/auth"
 
 export const LoginPage = () => {
   return (
-    <div>
-      <h1>Login Page</h1>
-      <OtpAuthForm />
+    <div className="flex justify-center items-center h-screen">
+      <LoginForm />
     </div>
   )
 }

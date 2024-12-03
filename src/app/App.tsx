@@ -3,17 +3,16 @@ import "./index.css"
 import { getLoginPath, getRootPath } from "@/shared/lib/routePaths"
 import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom"
 import { DashboardPage } from "@/pages/dashboard"
-import { getIsAuthed } from "@/entities/session"
+import { useAuth } from "@/entities/session"
 
 function RequireAuth() {
   const location = useLocation()
-  const isAuthenticated = getIsAuthed()
-  console.log('::isAuthenticated', isAuthenticated)
+  const { session } = useAuth()
 
-  if (isAuthenticated) return <Outlet />
-  else {
-    return <Navigate to={getLoginPath()} state={{ from: location }} replace />
-  }
+  if (session === undefined) return <div>Loading...</div>
+  if (session) return <Outlet />
+
+  return <Navigate to={getLoginPath()} state={{ from: location }} replace />
 }
 
 function App() {
