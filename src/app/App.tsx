@@ -1,7 +1,3 @@
-import { useAuth } from '@/entities/session'
-import { DashboardPage } from '@/pages/dashboard'
-import { LoginPage } from '@/pages/login'
-import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
 import {
   BrowserRouter,
   Route,
@@ -10,6 +6,10 @@ import {
   useLocation,
   Outlet,
 } from 'react-router-dom'
+import { useAuth } from '@/entities/session'
+import { DashboardPage } from '@/pages/dashboard'
+import { LoginPage } from '@/pages/login'
+import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
 import './index.css'
 
 function RequireAuth() {

@@ -1,7 +1,7 @@
+import { useState } from 'react'
 import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
-import { useState } from 'react'
 
 export const OtpAuthForm = () => {
   const [loading, setLoading] = useState(false)
@@ -35,7 +35,7 @@ export const OtpAuthForm = () => {
               placeholder="Your email"
               value={email}
               required={true}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>

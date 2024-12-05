@@ -1,3 +1,7 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
 import { getRootPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
@@ -9,10 +13,6 @@ import {
   CardTitle,
 } from '@/shared/ui/Card'
 import { Form, FormInput, FormMessage } from '@/shared/ui/Form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
 
 type LoginFormData = {
   email: string
@@ -43,7 +43,7 @@ export function LoginForm() {
           navigate(from, { replace: true })
         }
       })
-      .catch(error => {
+      .catch((error) => {
         formContext.setError('root.serverError', { message: error.message })
       })
   }

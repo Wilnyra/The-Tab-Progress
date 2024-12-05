@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { ControllerProps, useFormContext } from 'react-hook-form'
+import { Input } from '../../Input'
 import {
   FormControl,
   FormField,
@@ -7,7 +8,6 @@ import {
   FormMessage,
   FormItem,
 } from './Form'
-import { Input } from '../../Input'
 
 type FormInputProps = Omit<ControllerProps, 'render'> &
   ComponentProps<typeof Input> & {

@@ -1,1 +1,1 @@
-export const appName = "The Tab Progress"
+export const appName = 'The Tab Progress'
