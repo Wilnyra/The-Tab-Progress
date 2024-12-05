@@ -1,6 +1,6 @@
+import { Session } from "@supabase/supabase-js"
 import { useEffect, useState, useCallback } from "react"
 import { supabase } from "@/shared/lib/supabase"
-import { Session } from "@supabase/supabase-js"
 
 export const useAuth = () => {
   const [session, setSession] = useState<Session | null | undefined>(undefined)

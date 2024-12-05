@@ -1,14 +1,26 @@
-import { ControllerProps, useFormContext } from "react-hook-form";
-import { FormControl, FormField, FormLabel, FormMessage } from "./Form";
-import { FormItem } from "./Form";
-import { Input } from "../../Input";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ReactNode } from 'react'
+import { ControllerProps, useFormContext } from 'react-hook-form'
+import {
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+  FormItem,
+} from './Form'
+import { Input } from '../../Input'
 
-type FormInputProps = Omit<ControllerProps, "render"> & ComponentProps<typeof Input> & {
-  label?: ReactNode
-}
+type FormInputProps = Omit<ControllerProps, 'render'> &
+  ComponentProps<typeof Input> & {
+    label?: ReactNode
+  }
 
-export const FormInput = ({ name, disabled, defaultValue, label, ...props }: FormInputProps) => {
+export const FormInput = ({
+  name,
+  disabled,
+  defaultValue,
+  label,
+  ...props
+}: FormInputProps) => {
   const context = useFormContext()
   if (!context) return null
 
@@ -24,7 +36,9 @@ export const FormInput = ({ name, disabled, defaultValue, label, ...props }: For
           <FormControl>
             <Input {...field} {...props} />
           </FormControl>
-          <FormMessage>{context.formState.errors?.[name]?.message?.toString()}</FormMessage>
+          <FormMessage>
+            {context.formState.errors?.[name]?.message?.toString()}
+          </FormMessage>
         </FormItem>
       )}
     />

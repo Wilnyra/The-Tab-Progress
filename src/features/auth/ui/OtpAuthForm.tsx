@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
-import { supabase } from '@/shared/lib/supabase'
+import { useState } from 'react'
 
 export const OtpAuthForm = () => {
   const [loading, setLoading] = useState(false)
@@ -24,7 +24,9 @@ export const OtpAuthForm = () => {
     <div className="row flex flex-center">
       <div className="col-6 form-widget">
         <h1 className="header">Supabase + React</h1>
-        <p className="description">Sign in via magic link with your email below</p>
+        <p className="description">
+          Sign in via magic link with your email below
+        </p>
         <form className="form-widget" onSubmit={handleLogin}>
           <div>
             <Input
@@ -33,7 +35,7 @@ export const OtpAuthForm = () => {
               placeholder="Your email"
               value={email}
               required={true}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
           <div>

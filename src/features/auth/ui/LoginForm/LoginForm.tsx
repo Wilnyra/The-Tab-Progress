@@ -1,18 +1,18 @@
+import { getRootPath } from '@/shared/lib/routePaths'
+import { supabase } from '@/shared/lib/supabase'
+import { Button } from '@/shared/ui/Button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/shared/ui/Card"
-import { Button } from "@/shared/ui/Button"
-import { Link, useNavigate, useLocation } from "react-router-dom"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormInput, FormMessage } from "@/shared/ui/Form"
-import { supabase } from "@/shared/lib/supabase"
-import { LoginFormSchema, loginFormSchema } from "../../model/loginFormSchema"
-import { getRootPath } from "@/shared/lib/routePaths"
+} from '@/shared/ui/Card'
+import { Form, FormInput, FormMessage } from '@/shared/ui/Form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
 
 type LoginFormData = {
   email: string
@@ -26,24 +26,25 @@ export function LoginForm() {
   const formContext = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   })
 
   const onSubmit = async ({ email, password }: LoginFormData) => {
     const from = location.state?.from?.pathname || getRootPath()
 
-    await supabase.auth.signInWithPassword({ email, password })
+    await supabase.auth
+      .signInWithPassword({ email, password })
       .then(({ error }) => {
         if (error) {
-          formContext.setError("root.serverError", { message: error.message })
+          formContext.setError('root.serverError', { message: error.message })
         } else {
           navigate(from, { replace: true })
         }
       })
-      .catch((error) => {
-        formContext.setError("root.serverError", { message: error.message })
+      .catch(error => {
+        formContext.setError('root.serverError', { message: error.message })
       })
   }
 
@@ -60,10 +61,15 @@ export function LoginForm() {
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
               <FormInput name="email" label="Email" />
-              <FormInput name="password" label={
+              <FormInput
+                name="password"
+                label={
                   <div className="flex">
                     Password
-                    <Link to="#" className="ml-auto inline-block text-sm underline">
+                    <Link
+                      to="#"
+                      className="ml-auto inline-block text-sm underline"
+                    >
                       Forgot your password?
                     </Link>
                   </div>
@@ -75,12 +81,18 @@ export function LoginForm() {
                 {formContext.formState.errors.root?.serverError?.message}
               </FormMessage>
 
-              <Button type="submit" className="w-full">Login</Button>
-              <Button variant="outline" className="w-full">Login with Google</Button>
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+              <Button variant="outline" className="w-full">
+                Login with Google
+              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link to="#" className="underline">Sign up</Link>
+              Don&apos;t have an account?{' '}
+              <Link to="#" className="underline">
+                Sign up
+              </Link>
             </div>
           </form>
         </Form>

@@ -1,9 +1,16 @@
-import { LoginPage } from "@/pages/login"
-import "./index.css"
-import { getLoginPath, getRootPath } from "@/shared/lib/routePaths"
-import { BrowserRouter, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom"
-import { DashboardPage } from "@/pages/dashboard"
-import { useAuth } from "@/entities/session"
+import { useAuth } from '@/entities/session'
+import { DashboardPage } from '@/pages/dashboard'
+import { LoginPage } from '@/pages/login'
+import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+  Outlet,
+} from 'react-router-dom'
+import './index.css'
 
 function RequireAuth() {
   const location = useLocation()
