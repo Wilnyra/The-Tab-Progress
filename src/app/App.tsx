@@ -11,6 +11,7 @@ import { DashboardPage } from '@/pages/dashboard'
 import { LoginPage } from '@/pages/login'
 import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
 import './index.css'
+import { Layout } from '@/widgets/Layout'
 
 function RequireAuth() {
   const location = useLocation()
@@ -29,7 +30,9 @@ function App() {
         <Route path={getLoginPath()} element={<LoginPage />} />
 
         <Route element={<RequireAuth />}>
-          <Route index element={<DashboardPage />} />
+          <Route element={<Layout />}>
+            <Route index element={<DashboardPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to={getRootPath()} />} />
