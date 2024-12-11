@@ -1,8 +1,43 @@
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+  Outlet,
+} from 'react-router-dom'
+import { useAuth } from '@/entities/session'
+import { DashboardPage } from '@/pages/dashboard'
+import { LoginPage } from '@/pages/login'
+import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
+import './index.css'
+import { Layout } from '@/widgets/Layout'
+
+function RequireAuth() {
+  const location = useLocation()
+  const { session } = useAuth()
+
+  if (session === undefined) return <div>Loading...</div>
+  if (session) return <Outlet />
+
+  return <Navigate to={getLoginPath()} state={{ from: location }} replace />
+}
+
 function App() {
   return (
-    <div>
-      <h1>The Tab Progress v0.0.0</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path={getLoginPath()} element={<LoginPage />} />
+
+        <Route element={<RequireAuth />}>
+          <Route element={<Layout />}>
+            <Route index element={<DashboardPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to={getRootPath()} />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
