@@ -40,6 +40,7 @@ export default tseslint.config(
           }
         }
       ],
+      "semi": 0,
       'max-len': ['error', {
         'code': 80,
         'tabWidth': 2,

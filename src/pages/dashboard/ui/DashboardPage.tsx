@@ -1,3 +1,9 @@
+import { ProgressCard } from "@/widgets/ProgressCard"
+
 export const DashboardPage = () => {
-  return <div>DashboardPage</div>
+  return (
+    <div className="mt-4">
+      <ProgressCard />
+    </div>
+  )
 }
