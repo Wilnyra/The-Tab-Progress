@@ -3,10 +3,10 @@ import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
-  type AddProgressFormSchema,
-  addProgressFormSchema,
-} from '../model/addProgressFormSchema'
-import { insertProgress } from '@/entities/progress'
+  addPhotoFormSchema,
+  AddPhotoFormSchema,
+} from '../model/addPhotoFormSchema'
+import { insertPhoto } from '@/entities/photos'
 import { useAuth } from '@/entities/session/lib/useAuth'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
@@ -21,23 +21,23 @@ import {
 import { FormInput, FormMessage } from '@/shared/ui/Form'
 import { Form } from '@/shared/ui/Form'
 
-type AddProgressDialogProps = {
+type AddPhotoDialogProps = {
   onComplete?: () => void
 }
 
-export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
+export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
   const { session } = useAuth()
   const [open, setOpen] = useState(false)
 
-  const formContext = useForm<AddProgressFormSchema>({
-    resolver: zodResolver(addProgressFormSchema),
+  const formContext = useForm<AddPhotoFormSchema>({
+    resolver: zodResolver(addPhotoFormSchema),
     defaultValues: {
-      value: '',
+      url: '',
     },
   })
 
-  const onSubmit = (data: AddProgressFormSchema) => {
-    insertProgress(parseInt(data.value), session?.user.id || '').then(() => {
+  const onSubmit = ({ url }: AddPhotoFormSchema) => {
+    insertPhoto(url, session?.user.id || '').then(() => {
       setOpen(false)
       onComplete?.()
       formContext.reset()
@@ -54,14 +54,14 @@ export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Progress</DialogTitle>
-          <DialogDescription>Track your progress</DialogDescription>
+          <DialogTitle>Add new Photo</DialogTitle>
+          <DialogDescription>Inspire to achieve your goals</DialogDescription>
         </DialogHeader>
 
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="value" type="number" />
+              <FormInput name="url" />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}

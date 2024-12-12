@@ -1,5 +1,5 @@
 import { type ReactNode, type ComponentProps } from 'react'
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ProgressData } from '../model/types'
 import {
   Card,
@@ -29,6 +29,7 @@ const chartConfig = {
 type ProgressChartProps = {
   data: ProgressData[]
   rightSlot?: ReactNode
+  description?: ReactNode
   chartContainerClassName?: ComponentProps<typeof ChartContainer>['className']
 }
 
@@ -36,6 +37,7 @@ export const ProgressChart = ({
   data,
   rightSlot,
   chartContainerClassName,
+  description,
 }: ProgressChartProps) => {
   if (data.length === 0) return null
 
@@ -44,7 +46,9 @@ export const ProgressChart = ({
       <CardHeader className="flex justify-between flex-row items-start">
         <div className="space-y-1.5">
           <CardTitle>Progress</CardTitle>
-          <CardDescription>Showing total progress</CardDescription>
+          {description ? (
+            <CardDescription>{description}</CardDescription>
+          ) : null}
         </div>
 
         {rightSlot}
@@ -58,11 +62,18 @@ export const ProgressChart = ({
             accessibilityLayer
             data={data}
             margin={{
-              left: 12,
+              top: 4,
+              left: -24,
               right: 12,
             }}
           >
             <CartesianGrid vertical={false} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => `${value}`}
+            />
             <XAxis
               dataKey="created_at"
               tickLine={false}
@@ -98,11 +109,12 @@ export const ProgressChart = ({
             </defs>
             <Area
               dataKey="value"
-              type="linear"
+              type="natural"
               fill="url(#fillMobile)"
               fillOpacity={0.4}
               stroke="var(--color-mobile)"
               stackId="a"
+              animationDuration={600}
             />
           </AreaChart>
         </ChartContainer>

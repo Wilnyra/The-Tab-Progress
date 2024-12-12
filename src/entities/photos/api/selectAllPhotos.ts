@@ -1,21 +1,21 @@
-import { ProgressData } from '../model/types'
+import { PhotoData } from '../model/types'
 import { supabase } from '@/shared/lib/supabase'
 
-type selectAllProgressArgs = {
+type selectAllPhotosArgs = {
   limit?: number
 }
 
-export const selectAllProgress = async ({
+export const selectAllPhotos = async ({
   limit = 9999,
-}: selectAllProgressArgs) => {
+}: selectAllPhotosArgs) => {
   const { data, error } = await supabase
-    .from('progress')
+    .from('photos')
     .select('*')
     .order('id', { ascending: false })
     .limit(limit)
 
   return {
-    data: data?.reverse() as ProgressData[],
+    data: data as PhotoData[],
     error,
   }
 }
