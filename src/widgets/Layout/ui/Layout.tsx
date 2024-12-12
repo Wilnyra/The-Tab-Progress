@@ -3,7 +3,7 @@ import { LayoutHeader } from "./layoutHeader"
 
 export const Layout = () => {
   return (
-    <main className="max-w-[1080px] mx-auto">
+    <main className="max-w-[1080px] mx-auto px-2">
       <LayoutHeader />
       <Outlet />
     </main>
