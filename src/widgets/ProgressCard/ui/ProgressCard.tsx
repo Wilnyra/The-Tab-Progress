@@ -12,13 +12,14 @@ export const ProgressCard = () => {
   const [reload, setReload] = useState(false)
 
   useEffect(() => {
-    selectAllProgress().then(({ data }) => {
+    selectAllProgress({ limit: 30 }).then(({ data }) => {
       setData(data)
     })
   }, [reload])
 
   return (
     <ProgressChart
+      description="Showing 30 days progress"
       rightSlot={
         <AddProgressDialog onComplete={() => setReload((prev) => !prev)} />
       }
