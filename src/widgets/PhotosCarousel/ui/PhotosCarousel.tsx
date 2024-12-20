@@ -19,8 +19,6 @@ export const PhotosCarousel = () => {
     })
   }, [reload])
 
-  if (data.length === 0) return null
-
   return (
     <Carousel>
       <div className="flex justify-between items-center px-2">
