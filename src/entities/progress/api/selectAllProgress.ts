@@ -2,17 +2,18 @@ import { ProgressData } from '../model/types'
 import { supabase } from '@/shared/lib/supabase'
 
 type selectAllProgressArgs = {
-  limit?: number
+  limit?: number | null
 }
 
-export const selectAllProgress = async ({
-  limit = 9999,
-}: selectAllProgressArgs) => {
-  const { data, error } = await supabase
+export const selectAllProgress = async ({ limit }: selectAllProgressArgs) => {
+  const selectPromise = supabase
     .from('progress')
     .select('*')
     .order('id', { ascending: false })
-    .limit(limit)
+
+  if (limit) selectPromise.limit(limit)
+
+  const { data, error } = await selectPromise
 
   return {
     data: data?.reverse() as ProgressData[],

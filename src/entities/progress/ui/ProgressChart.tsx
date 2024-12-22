@@ -14,6 +14,8 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/shared/ui/Chart'
+import { useNavigate } from 'react-router-dom'
+import { getProgressPath } from '@/shared/lib/routePaths'
 
 const chartConfig = {
   desktop: {
@@ -39,11 +41,18 @@ export const ProgressChart = ({
   chartContainerClassName,
   description,
 }: ProgressChartProps) => {
+  const navigate = useNavigate()
+
   if (data.length === 0) return null
 
   return (
     <Card>
-      <CardHeader className="flex justify-between flex-row items-start">
+      <CardHeader
+        className="flex justify-between flex-row items-start cursor-pointer"
+        onClick={() => {
+          navigate(getProgressPath())
+        }}
+      >
         <div className="space-y-1.5">
           <CardTitle>Progress</CardTitle>
           {description ? (

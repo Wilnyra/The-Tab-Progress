@@ -9,9 +9,14 @@ import {
 import { useAuth } from '@/entities/session'
 import { DashboardPage } from '@/pages/dashboard'
 import { LoginPage } from '@/pages/login'
-import { getLoginPath, getRootPath } from '@/shared/lib/routePaths'
+import {
+  getLoginPath,
+  getProgressPath,
+  getRootPath,
+} from '@/shared/lib/routePaths'
 import './index.css'
 import { Layout } from '@/widgets/Layout'
+import { ProgressPage } from '@/pages/progress'
 
 function RequireAuth() {
   const location = useLocation()
@@ -32,6 +37,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route index element={<DashboardPage />} />
+            <Route path={getProgressPath()} element={<ProgressPage />} />
           </Route>
         </Route>
 
