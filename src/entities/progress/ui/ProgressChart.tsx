@@ -14,8 +14,9 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/shared/ui/Chart'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getProgressPath } from '@/shared/lib/routePaths'
+import { cn } from '@/shared/lib/cn'
 
 const chartConfig = {
   desktop: {
@@ -41,16 +42,20 @@ export const ProgressChart = ({
   chartContainerClassName,
   description,
 }: ProgressChartProps) => {
+  const { pathname } = useLocation()
   const navigate = useNavigate()
+  const isLocationProgress = pathname === getProgressPath()
 
   if (data.length === 0) return null
 
   return (
     <Card>
       <CardHeader
-        className="flex justify-between flex-row items-start cursor-pointer"
+        className={cn('flex justify-between flex-row items-start', {
+          'cursor-pointer': !isLocationProgress,
+        })}
         onClick={() => {
-          navigate(getProgressPath())
+          if (!isLocationProgress) navigate(getProgressPath())
         }}
       >
         <div className="space-y-1.5">
@@ -91,18 +96,6 @@ export const ProgressChart = ({
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
               <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
