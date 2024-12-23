@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import {
   ProgressChart,
+  progressContext,
   type ProgressData,
   selectAllProgress,
 } from '@/entities/progress'
@@ -12,6 +13,7 @@ type ProgressCardProps = {
 }
 
 export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
+  const { setLastProgress, progressReload } = useContext(progressContext)
   const [limit, setLimit] = useState<number | null>(30)
   const [data, setData] = useState<ProgressData[]>([])
   const [reload, setReload] = useState(false)
@@ -19,8 +21,9 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
   useEffect(() => {
     selectAllProgress({ limit }).then(({ data }) => {
       setData(data)
+      setLastProgress(data.at(-1) || null)
     })
-  }, [reload, limit])
+  }, [reload, limit, progressReload])
 
   return (
     <ProgressChart

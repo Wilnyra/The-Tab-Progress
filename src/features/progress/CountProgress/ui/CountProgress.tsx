@@ -7,32 +7,16 @@ import {
   CardTitle,
 } from '@/shared/ui/Card'
 import { CirclePlay, CircleStop } from 'lucide-react'
-import { useState, type ComponentProps } from 'react'
-import { useCountTimeProgress } from '../lib/useCountTimeProgress'
+import { type ComponentProps } from 'react'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
+import { useCountProgress } from '../lib/useCountProgress'
 
 type CountProgressProps = {
   cardProps?: ComponentProps<typeof Card>
 }
 
 export const CountProgress = ({ cardProps }: CountProgressProps) => {
-  const {
-    count,
-    startCountTime,
-    stopCountTime,
-    isCounting: isCountingInitial,
-  } = useCountTimeProgress()
-  const [isCounting, setIsCounting] = useState(isCountingInitial)
-
-  const onClickCount = () => {
-    if (isCounting) {
-      stopCountTime()
-    } else {
-      startCountTime()
-    }
-
-    setIsCounting((prev) => !prev)
-  }
+  const { count, isCounting, toggleCount } = useCountProgress()
 
   return (
     <Card {...cardProps}>
@@ -45,7 +29,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
       <CardContent>
         <div className="flex gap-4 items-center">
           <Button
-            onClick={onClickCount}
+            onClick={toggleCount}
             className="w-32 h-32 rounded-full [&_svg]:size-full bg-chart-2 hover:bg-chart-2/95"
           >
             {isCounting ? <CircleStop /> : <CirclePlay />}
