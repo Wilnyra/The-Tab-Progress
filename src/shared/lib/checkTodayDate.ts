@@ -1,4 +1,4 @@
-export const checkTodayData = (date?: string): boolean => {
+export const checkTodayDate = (date?: string): boolean => {
   if (!date) return false
 
   const today = new Date()

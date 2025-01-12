@@ -1,12 +1,12 @@
 import { useState, useContext, useCallback } from 'react'
 import { useCountTimeProgress } from '../lib/useCountTimeProgress'
-import { checkTodayData } from '../lib/checkTodayData'
 import {
   progressContext,
   updateProgress,
   insertProgress,
 } from '@/entities/progress'
 import { useAuth } from '@/entities/session'
+import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 
 export const useCountProgress = () => {
   const { session } = useAuth()
@@ -15,7 +15,7 @@ export const useCountProgress = () => {
   const [isCounting, setIsCounting] = useState(false)
 
   const handleProgressUpdate = async (currentMinutes: number) => {
-    if (checkTodayData(lastProgress?.created_at)) {
+    if (checkTodayDate(lastProgress?.created_at)) {
       await updateProgress(lastProgress?.id || '', {
         value: currentMinutes + (lastProgress?.value || 0),
       })
