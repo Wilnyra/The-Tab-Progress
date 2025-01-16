@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from '@/shared/ui/Card'
 import { type CheckedState } from '@radix-ui/react-checkbox'
-import { ComponentProps, useEffect, useState } from 'react'
+import { type ComponentProps, useEffect, useState } from 'react'
 
 type TodoListProps = {
   cardProps?: ComponentProps<typeof Card>
@@ -51,6 +51,7 @@ export const TodoList = ({ cardProps }: TodoListProps) => {
           {data.map(({ id, task }) => (
             <TodoItem
               id={id}
+              key={id}
               task={task}
               onCheckedChange={(checked) => onUpdateTodo(id, checked)}
             />
