@@ -13,7 +13,7 @@ type ProgressCardProps = {
 }
 
 export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
-  const { setLastProgress, progressReload } = useContext(progressContext)
+  const { setProgress, progressReload } = useContext(progressContext)
   const [limit, setLimit] = useState<number | null>(30)
   const [data, setData] = useState<ProgressData[]>([])
   const [reload, setReload] = useState(false)
@@ -21,7 +21,7 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
   useEffect(() => {
     selectAllProgress({ limit }).then(({ data }) => {
       setData(data)
-      setLastProgress(data.at(-1) || null)
+      setProgress(data || [])
     })
   }, [reload, limit, progressReload])
 
