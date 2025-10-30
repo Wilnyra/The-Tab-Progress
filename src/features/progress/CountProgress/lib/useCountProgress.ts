@@ -11,10 +11,11 @@ import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 export const useCountProgress = () => {
   const { session } = useAuth()
   const { count, startCountTime, stopCountTime } = useCountTimeProgress()
-  const { lastProgress, setProgressReload } = useContext(progressContext)
+  const { progress, setProgressReload } = useContext(progressContext)
   const [isCounting, setIsCounting] = useState(false)
 
   const handleProgressUpdate = async (currentMinutes: number) => {
+    const lastProgress = progress.at(-1);
     if (checkTodayDate(lastProgress?.created_at)) {
       await updateProgress(lastProgress?.id || '', {
         value: currentMinutes + (lastProgress?.value || 0),
