@@ -32,7 +32,7 @@ type AddProgressDialogProps = {
 
 export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
   const { session } = useAuth()
-  const { lastProgress } = useContext(progressContext)
+  const { progress } = useContext(progressContext)
   const [open, setOpen] = useState(false)
 
   const formContext = useForm<AddProgressFormSchema>({
@@ -44,6 +44,7 @@ export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
 
   const onSubmit = async (data: AddProgressFormSchema) => {
     const currentMinutes = parseInt(data.value)
+    const lastProgress = progress.at(-1);
     if (checkTodayDate(lastProgress?.created_at)) {
       await updateProgress(lastProgress?.id || '', {
         value: currentMinutes + (lastProgress?.value || 0),

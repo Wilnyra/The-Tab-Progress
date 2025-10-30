@@ -1,40 +1,34 @@
-import {
-  createContext,
-  useState,
-  type Dispatch,
-  type FC,
-  type PropsWithChildren,
-  type SetStateAction,
-} from 'react'
+import { createContext, useState } from 'react'
+import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
 import type { ProgressData } from './types'
 
 type ContextValue = {
-  lastProgress: ProgressData | null
-  setLastProgress: Dispatch<SetStateAction<ContextValue['lastProgress']>>
+  progress: ProgressData[]
+  setProgress: Dispatch<SetStateAction<ContextValue['progress']>>
   progressReload: boolean
   setProgressReload: Dispatch<SetStateAction<ContextValue['progressReload']>>
 }
 
 export type ProgressContextProviderProps = Partial<
-  Omit<ContextValue, 'setLastProgress' | 'setProgressReload'>
+  Omit<ContextValue, 'setProgress' | 'setProgressReload'>
 >
 
 export const progressContext = createContext<ContextValue>({
-  lastProgress: null,
-  setLastProgress: () => null,
+  progress: [],
+  setProgress: () => [],
   progressReload: false,
   setProgressReload: () => null,
 })
 
 export const ProgressContextProvider: FC<
   PropsWithChildren<ProgressContextProviderProps>
-> = ({ children, lastProgress: initial = null }) => {
-  const [lastProgress, setLastProgress] = useState<ProgressData | null>(initial)
+> = ({ children, progress: initial = [] }) => {
+  const [progress, setProgress] = useState<ProgressData[]>(initial)
   const [progressReload, setProgressReload] = useState(false)
 
   const value = {
-    lastProgress,
-    setLastProgress,
+    progress,
+    setProgress,
     progressReload,
     setProgressReload,
   }
