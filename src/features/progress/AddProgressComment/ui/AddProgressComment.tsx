@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { progressContext, updateProgress } from '@/entities/progress'
-import { Button, buttonVariants } from '@/shared/ui/Button'
+import { Button } from '@/shared/ui/Button'
 import {
   Dialog,
   DialogContent,
