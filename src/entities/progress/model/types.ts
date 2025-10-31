@@ -3,4 +3,5 @@ export type ProgressData = {
   value: number
   created_at: string
   user_id: string
+  comment?: string
 }

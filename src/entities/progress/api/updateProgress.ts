@@ -3,7 +3,7 @@ import { ProgressData } from '../model/types'
 
 export const updateProgress = async (
   id: string,
-  updates: Partial<Pick<ProgressData, 'value'>>,
+  updates: Partial<ProgressData>,
 ) => {
   const { data, error } = await supabase
     .from('progress')

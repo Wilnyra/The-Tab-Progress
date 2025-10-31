@@ -1,5 +1,5 @@
 import { PhotosCarousel } from '@/widgets/PhotosCarousel'
-import { ProgressCard } from '@/widgets/ProgressCard'
+import { ProgressCard } from '@/widgets/progress/ProgressCard'
 import { TodoList } from '@/widgets/TodoList'
 
 export const DashboardPage = () => {
