@@ -1,17 +1,21 @@
 import { ProgressContextProvider } from '@/entities/progress'
 import { CountProgress } from '@/features/progress/CountProgress'
-import { ProgressCard } from '@/widgets/ProgressCard'
-import { ProgressInRow } from '@/widgets/ProgressInRow'
+import { ProgressCard } from '@/widgets/progress/ProgressCard'
+import { ProgressComment } from '@/widgets/progress/ProgressComment'
+import { ProgressInRow } from '@/widgets/progress/ProgressInRow'
 
 export const ProgressPage = () => {
   return (
     <ProgressContextProvider>
-      <div className="flex gap-4">
-        <CountProgress cardProps={{ className: 'lg:w-1/3 md:w-1/2 w-full' }} />
-        <ProgressInRow cardProps={{ className: 'lg:w-1/3 md:w-1/2 w-full' }} />
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <CountProgress cardProps={{ className: 'w-full' }} />
+        <ProgressInRow cardProps={{ className: 'w-full' }} />
+        <ProgressComment cardProps={{ className: 'w-full' }} />
       </div>
 
-      <ProgressCard selectLimit />
+      <div className="mt-6">
+        <ProgressCard selectLimit />
+      </div>
     </ProgressContextProvider>
   )
 }
