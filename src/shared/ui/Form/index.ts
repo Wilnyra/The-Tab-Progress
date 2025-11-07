@@ -1,3 +1,4 @@
+export { FormTextarea } from './ui/FormTextarea'
 export {
   useFormField,
   Form,

@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/Dialog'
-import { FormInput, FormMessage } from '@/shared/ui/Form'
+import { FormMessage, FormTextarea } from '@/shared/ui/Form'
 import { Form } from '@/shared/ui/Form'
 import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 import {
@@ -35,7 +35,7 @@ export const AddProgressCommentDialog = ({
   const formContext = useForm<AddProgressCommentFormSchema>({
     resolver: zodResolver(addProgressCommentFormSchema),
     defaultValues: {
-      value: '',
+      value: "Today's win:\n\nWhat could be better:\n\nBetter than yesterday:",
     },
   })
 
@@ -70,8 +70,14 @@ export const AddProgressCommentDialog = ({
         <DialogHeader>
           <DialogTitle>Add Today’s Progress Note</DialogTitle>
           <DialogDescription>
-            Reflect on what you achieved or learned today. Writing down even
-            small wins helps you stay consistent and motivated.
+            Take a moment to reflect on your day. Writing down even small wins
+            helps you stay consistent and motivated. You can use these prompts
+            as a guide:
+            <br />
+            <br />
+            1. What went well in today’s progress? <br />
+            2. What didn’t go as planned or could be improved? <br />
+            3. What did I do better than yesterday?
           </DialogDescription>
         </DialogHeader>
 
@@ -80,7 +86,11 @@ export const AddProgressCommentDialog = ({
             onSubmit={formContext.handleSubmit(onSubmit)}
             className="space-y-4"
           >
-            <FormInput name="value" label="Comment" type="text" />
+            <FormTextarea
+              name="value"
+              label="Comment"
+              className="min-h-[160px]"
+            />
             <FormMessage>
               {formContext.formState.errors.root?.serverError?.message}
             </FormMessage>
