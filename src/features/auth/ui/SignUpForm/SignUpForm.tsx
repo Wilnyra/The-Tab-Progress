@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
 import { getRootPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
@@ -19,11 +19,7 @@ type LoginFormData = {
   password: string
 }
 
-type LoginFormProps = {
-  onCLickSignUp: () => void;
-}
-
-export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
+export const SignUpForm = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -39,7 +35,13 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
     const from = location.state?.from?.pathname || getRootPath()
 
     await supabase.auth
-      .signInWithPassword({ email, password })
+      .signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: 'https://the-tab-progress.vercel.app',
+        },
+      })
       .then(({ error }) => {
         if (error) {
           formContext.setError('root.serverError', { message: error.message })
@@ -55,9 +57,9 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to sign up for a new account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -67,33 +69,15 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
               <FormInput name="email" label="Email" />
               <FormInput
                 name="password"
-                label={
-                  <div className="flex">
-                    Password
-                    {/* <Link
-                      to="#"
-                      className="ml-auto inline-block text-sm underline"
-                    >
-                      Forgot your password?
-                    </Link> */}
-                  </div>
-                }
+                label={<div className="flex">Password</div>}
                 type="password"
               />
-
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
               </FormMessage>
-
               <Button type="submit" className="w-full">
-                Login
+                Sign Up
               </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{' '}
-              <Link to="#" className="underline" onClick={onCLickSignUp}>
-                Sign up
-              </Link>
             </div>
           </form>
         </Form>
