@@ -1,4 +1,5 @@
 import { AddProgressCommentDialog } from '@/features/progress/AddProgressComment'
+import { GetProgressAnalytics } from '@/features/progress/GetProgressAnalytics'
 import {
   Card,
   CardContent,
@@ -22,6 +23,7 @@ export const ProgressComment = ({ cardProps }: ProgressCommentProps) => {
       <CardContent>
         <div className="flex gap-4 items-center">
           <AddProgressCommentDialog />
+          <GetProgressAnalytics />
         </div>
       </CardContent>
     </Card>

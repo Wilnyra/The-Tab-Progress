@@ -1,3 +1,5 @@
+export { analyzeProgressPrompt } from './lib/prompts'
+export { getLastQueueArray } from './lib/getLastQueueArray'
 export { selectAllProgress } from './api/selectAllProgress'
 export { ProgressChart } from './ui/ProgressChart'
 export type { ProgressData } from './model/types'
