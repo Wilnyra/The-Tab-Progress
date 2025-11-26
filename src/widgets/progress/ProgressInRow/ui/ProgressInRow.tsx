@@ -1,4 +1,4 @@
-import { progressContext } from '@/entities/progress'
+import { getLastQueueArray, progressContext } from '@/entities/progress'
 import {
   Card,
   CardContent,
@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from '@/shared/ui/Card'
 import { useContext, type ComponentProps } from 'react'
-import { getLastQueueInRow } from '../lib/getLastQueueInRow'
 import { getProgressEmoji } from '../lib/getProgressEmoji'
 
 type ProgressInRowProps = {
@@ -16,7 +15,7 @@ type ProgressInRowProps = {
 
 export const ProgressInRow = ({ cardProps }: ProgressInRowProps) => {
   const { progress } = useContext(progressContext)
-  const datesInRow = getLastQueueInRow(progress)
+  const datesInRowLength = getLastQueueArray(progress).length
 
   return (
     <Card {...cardProps}>
@@ -26,7 +25,7 @@ export const ProgressInRow = ({ cardProps }: ProgressInRowProps) => {
       </CardHeader>
       <CardContent className="pt-8">
         <h2 className="text-center scroll-m-20 text-3xl font-semibold transition-colors">
-          {getProgressEmoji(datesInRow.streak)} {datesInRow.streak} days
+          {getProgressEmoji(datesInRowLength)} {datesInRowLength} days
         </h2>
       </CardContent>
     </Card>
