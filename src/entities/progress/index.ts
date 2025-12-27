@@ -1,4 +1,6 @@
 export { analyzeProgressPrompt } from './lib/prompts'
+export { calculateTrend, calculateTrendLine } from './lib/calculateTrend'
+export type { TrendData, TrendLinePoint } from './lib/calculateTrend'
 export { getLastQueueArray } from './lib/getLastQueueArray'
 export { selectAllProgress } from './api/selectAllProgress'
 export { ProgressChart } from './ui/ProgressChart'
