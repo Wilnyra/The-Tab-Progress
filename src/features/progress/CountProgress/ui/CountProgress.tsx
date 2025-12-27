@@ -1,3 +1,7 @@
+import { CirclePlay, CircleStop } from 'lucide-react'
+import { type ComponentProps } from 'react'
+import { useCountProgress } from '../lib/useCountProgress'
+import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { Button } from '@/shared/ui/Button'
 import {
   Card,
@@ -6,10 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { CirclePlay, CircleStop } from 'lucide-react'
-import { type ComponentProps } from 'react'
-import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
-import { useCountProgress } from '../lib/useCountProgress'
 
 type CountProgressProps = {
   cardProps?: ComponentProps<typeof Card>

@@ -7,6 +7,7 @@ import {
   type AddTodoFormSchema,
 } from '../model/addTodoFormSchema'
 import { useAuth } from '@/entities/session/lib/useAuth'
+import { insertTodo } from '@/entities/todo'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,
@@ -19,7 +20,6 @@ import {
 } from '@/shared/ui/Dialog'
 import { FormInput, FormMessage } from '@/shared/ui/Form'
 import { Form } from '@/shared/ui/Form'
-import { insertTodo } from '@/entities/todo'
 
 type AddTodoDialog = {
   onComplete?: () => void

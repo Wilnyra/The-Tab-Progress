@@ -3,9 +3,11 @@ import { ProgressData } from ".."
 export const getLastQueueArray = (data: ProgressData[]): ProgressData[] => {
   if (!data.length) return []
 
-  const sorted = [...data].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-  )
+  const sorted = [...data].sort((a, b) => {
+    const aTime = new Date(a.created_at).getTime()
+    const bTime = new Date(b.created_at).getTime()
+    return aTime - bTime
+  })
 
   const uniqueDates = Array.from(
     new Set(sorted.map((d) => d.created_at.split("T")[0]))

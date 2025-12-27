@@ -1,3 +1,5 @@
+import { type CheckedState } from '@radix-ui/react-checkbox'
+import { type ComponentProps, useEffect, useState } from 'react'
 import {
   selectAllTodo,
   type TodoData,
@@ -12,8 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { type CheckedState } from '@radix-ui/react-checkbox'
-import { type ComponentProps, useEffect, useState } from 'react'
 
 type TodoListProps = {
   cardProps?: ComponentProps<typeof Card>

@@ -1,5 +1,5 @@
-import { Checkbox } from '@/shared/ui/Checkbox'
 import type { CheckedState } from '@radix-ui/react-checkbox'
+import { Checkbox } from '@/shared/ui/Checkbox'
 
 type TodoItemProps = {
   id: string

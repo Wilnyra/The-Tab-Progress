@@ -1,5 +1,5 @@
-import { supabase } from '@/shared/lib/supabase'
 import { ProgressData } from '../model/types'
+import { supabase } from '@/shared/lib/supabase'
 
 export const updateProgress = async (
   id: string,

@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
-import { PhotoData, selectAllPhotos } from '@/entities/photos'
+import { useEffect, useState } from 'react'
+import { PhotoData, PhotosEmptyState, selectAllPhotos } from '@/entities/photos'
 import { AddPhotoDialog } from '@/features/photos/AddPhoto'
 import {
   ScrollCarouselNext,
   ScrollCarouselPrev,
 } from '@/features/ScrollCarousel'
 import { Card, CardContent } from '@/shared/ui/Card'
-import { CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
-import { Carousel } from '@/shared/ui/Carousel'
+import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
 
 export const PhotosCarousel = () => {
   const [data, setData] = useState<PhotoData[]>([])
@@ -18,6 +17,16 @@ export const PhotosCarousel = () => {
       setData(data)
     })
   }, [reload])
+
+  if (data.length === 0) {
+    return (
+      <PhotosEmptyState
+        rightSlot={
+          <AddPhotoDialog onComplete={() => setReload((prev) => !prev)} />
+        }
+      />
+    )
+  }
 
   return (
     <Carousel>

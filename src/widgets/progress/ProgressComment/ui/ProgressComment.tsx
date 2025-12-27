@@ -1,3 +1,4 @@
+import { ComponentProps } from 'react'
 import { AddProgressCommentDialog } from '@/features/progress/AddProgressComment'
 import { GetProgressAnalytics } from '@/features/progress/GetProgressAnalytics'
 import {
@@ -7,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { ComponentProps } from 'react'
 
 type ProgressCommentProps = {
   cardProps?: ComponentProps<typeof Card>

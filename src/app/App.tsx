@@ -9,6 +9,7 @@ import {
 import { useAuth } from '@/entities/session'
 import { DashboardPage } from '@/pages/dashboard'
 import { LoginPage } from '@/pages/login'
+import { ProgressPage } from '@/pages/progress'
 import {
   getLoginPath,
   getProgressPath,
@@ -16,7 +17,6 @@ import {
 } from '@/shared/lib/routePaths'
 import './index.css'
 import { Layout } from '@/widgets/Layout'
-import { ProgressPage } from '@/pages/progress'
 
 function RequireAuth() {
   const location = useLocation()

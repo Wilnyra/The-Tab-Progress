@@ -6,4 +6,6 @@ export const addProgressCommentFormSchema = z.object({
   }),
 })
 
-export type AddProgressCommentFormSchema = z.infer<typeof addProgressCommentFormSchema>
+export type AddProgressCommentFormSchema = z.infer<
+  typeof addProgressCommentFormSchema
+>

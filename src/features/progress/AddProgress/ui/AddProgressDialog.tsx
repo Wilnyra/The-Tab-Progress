@@ -12,6 +12,7 @@ import {
   updateProgress,
 } from '@/entities/progress'
 import { useAuth } from '@/entities/session/lib/useAuth'
+import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,
@@ -24,7 +25,6 @@ import {
 } from '@/shared/ui/Dialog'
 import { FormInput, FormMessage } from '@/shared/ui/Form'
 import { Form } from '@/shared/ui/Form'
-import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 
 type AddProgressDialogProps = {
   onComplete?: () => void
