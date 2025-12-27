@@ -1,7 +1,8 @@
-import { type ReactNode, type ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ProgressData } from '../model/types'
+import { ProgressEmptyState } from './ProgressEmptyState'
 import { cn } from '@/shared/lib/cn'
 import { getProgressPath } from '@/shared/lib/routePaths'
 import {
@@ -46,7 +47,11 @@ export const ProgressChart = ({
   const navigate = useNavigate()
   const isLocationProgress = pathname === getProgressPath()
 
-  if (data.length === 0) return null
+  if (data.length === 0) {
+    return (
+      <ProgressEmptyState rightSlot={rightSlot} description={description} />
+    )
+  }
 
   return (
     <Card>
