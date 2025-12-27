@@ -1,5 +1,5 @@
-import { supabase } from '@/shared/lib/supabase'
 import type { TodoData } from '../model/types'
+import { supabase } from '@/shared/lib/supabase'
 
 type selectAllTodoArgs = {
   limit?: number

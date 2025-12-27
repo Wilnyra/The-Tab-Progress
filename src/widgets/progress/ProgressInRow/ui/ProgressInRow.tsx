@@ -1,3 +1,5 @@
+import { useContext, type ComponentProps } from 'react'
+import { getProgressEmoji } from '../lib/getProgressEmoji'
 import { getLastQueueArray, progressContext } from '@/entities/progress'
 import {
   Card,
@@ -6,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { useContext, type ComponentProps } from 'react'
-import { getProgressEmoji } from '../lib/getProgressEmoji'
 
 type ProgressInRowProps = {
   cardProps?: ComponentProps<typeof Card>

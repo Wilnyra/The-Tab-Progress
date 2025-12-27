@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react'
 import {
   Select,
   SelectTrigger,
@@ -5,7 +6,6 @@ import {
   SelectContent,
   SelectItem,
 } from '@/shared/ui/Select'
-import type { Dispatch, SetStateAction } from 'react'
 
 type SelectLimitProps = {
   setLimit: Dispatch<SetStateAction<number | null>>

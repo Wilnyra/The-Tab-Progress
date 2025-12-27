@@ -1,7 +1,7 @@
-import { THEME_KEY } from '@/shared/lib/constants'
-import { Toggle } from '@/shared/ui/Toggle'
 import { Sun, Moon } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { THEME_KEY } from '@/shared/lib/constants'
+import { Toggle } from '@/shared/ui/Toggle'
 
 export const ToogleTheme = () => {
   const [isDark, setIsDark] = useState(false)

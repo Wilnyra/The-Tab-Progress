@@ -1,6 +1,9 @@
 import { type ReactNode, type ComponentProps } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ProgressData } from '../model/types'
+import { cn } from '@/shared/lib/cn'
+import { getProgressPath } from '@/shared/lib/routePaths'
 import {
   Card,
   CardContent,
@@ -14,9 +17,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/shared/ui/Chart'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { getProgressPath } from '@/shared/lib/routePaths'
-import { cn } from '@/shared/lib/cn'
 
 const chartConfig = {
   desktop: {

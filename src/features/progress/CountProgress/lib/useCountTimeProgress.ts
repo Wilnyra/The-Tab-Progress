@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { getSecondsFrom } from '@/shared/lib/getSecondsFrom'
 import { PROGRESS_START_TIMESTAMP } from '@/entities/progress'
-import { useDocumentTitle } from '@/shared/lib/useDocumentTitle'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
+import { getSecondsFrom } from '@/shared/lib/getSecondsFrom'
+import { useDocumentTitle } from '@/shared/lib/useDocumentTitle'
 
 export const useCountTimeProgress = () => {
   const updateTitle = useDocumentTitle()

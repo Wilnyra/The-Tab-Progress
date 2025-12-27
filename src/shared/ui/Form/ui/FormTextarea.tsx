@@ -6,7 +6,7 @@ import type {
 } from 'react'
 import type { ControllerProps, FieldValues } from 'react-hook-form'
 import { useFormContext } from 'react-hook-form'
-import { cn } from '@/shared/lib/cn'
+import { Textarea } from '../../Textarea'
 import {
   FormControl,
   FormDescription,
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from './Form'
-import { Textarea } from '../../Textarea'
+import { cn } from '@/shared/lib/cn'
 
 export type FormTextareaProps<Value extends FieldValues = FieldValues> = Omit<
   ControllerProps<Value>,
@@ -34,19 +34,22 @@ export type FormTextareaProps<Value extends FieldValues = FieldValues> = Omit<
     ) => void
   }
 
-export const FormTextarea = <Value extends FieldValues = FieldValues>({
-  rules,
-  className,
-  shouldUnregister,
-  disabled,
-  defaultValue,
-  name,
-  label,
-  description,
-  onBlur,
-  onChange,
-  ...props
-}: FormTextareaProps<Value>) => {
+export const FormTextarea = <Value extends FieldValues = FieldValues>(
+  props: FormTextareaProps<Value>,
+) => {
+  const {
+    rules,
+    className,
+    shouldUnregister,
+    disabled,
+    defaultValue,
+    name,
+    label,
+    description,
+    onChange: _onChange,
+    onBlur: _onBlur,
+    ...restProps
+  } = props
   const context = useFormContext<Value>()
 
   if (!context) return null
@@ -71,7 +74,7 @@ export const FormTextarea = <Value extends FieldValues = FieldValues>({
                 className,
               )}
               {...field}
-              {...props}
+              {...restProps}
             />
           </FormControl>
 

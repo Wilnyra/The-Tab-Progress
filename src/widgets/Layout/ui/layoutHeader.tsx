@@ -1,7 +1,7 @@
+import { Link } from 'react-router-dom'
 import { ToogleTheme } from '@/features/settings/ToogleTheme'
 import { appName } from '@/shared/lib/constants'
 import { getRootPath } from '@/shared/lib/routePaths'
-import { Link } from 'react-router-dom'
 
 export const LayoutHeader = () => {
   return (

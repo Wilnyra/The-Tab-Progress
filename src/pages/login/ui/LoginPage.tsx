@@ -1,5 +1,5 @@
-import { LoginForm, SignUpForm } from '@/features/auth'
 import { useState } from 'react';
+import { LoginForm, SignUpForm } from '@/features/auth'
 
 export const LoginPage = () => {
   const [page, setPage] = useState<'login' | 'signUp'>("login");
