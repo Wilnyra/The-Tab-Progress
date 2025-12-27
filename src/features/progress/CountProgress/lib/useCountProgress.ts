@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback } from 'react'
+import { useContext, useCallback } from 'react'
 import { useCountTimeProgress } from '../lib/useCountTimeProgress'
 import {
   progressContext,
@@ -10,21 +10,28 @@ import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 
 export const useCountProgress = () => {
   const { session } = useAuth()
-  const { count, startCountTime, stopCountTime } = useCountTimeProgress()
+  const {
+    count,
+    startCountTime,
+    stopCountTime,
+    isCounting,
+  } = useCountTimeProgress()
   const { progress, setProgressReload } = useContext(progressContext)
-  const [isCounting, setIsCounting] = useState(false)
 
-  const handleProgressUpdate = async (currentMinutes: number) => {
-    const lastProgress = progress.at(-1);
-    if (checkTodayDate(lastProgress?.created_at)) {
-      await updateProgress(lastProgress?.id || '', {
-        value: currentMinutes + (lastProgress?.value || 0),
-      })
-    } else {
-      await insertProgress(currentMinutes, session?.user.id || '')
-    }
-    setProgressReload((prev) => !prev)
-  }
+  const handleProgressUpdate = useCallback(
+    async (currentMinutes: number) => {
+      const lastProgress = progress.at(-1)
+      if (checkTodayDate(lastProgress?.created_at)) {
+        await updateProgress(lastProgress?.id || '', {
+          value: currentMinutes + (lastProgress?.value || 0),
+        })
+      } else {
+        await insertProgress(currentMinutes, session?.user.id || '')
+      }
+      setProgressReload((prev) => !prev)
+    },
+    [progress, session?.user.id, setProgressReload],
+  )
 
   const toggleCount = useCallback(async () => {
     if (isCounting) {
@@ -34,7 +41,6 @@ export const useCountProgress = () => {
     } else {
       startCountTime()
     }
-    setIsCounting((prev) => !prev)
   }, [isCounting, count, startCountTime, stopCountTime, handleProgressUpdate])
 
   return { count, isCounting, toggleCount }
