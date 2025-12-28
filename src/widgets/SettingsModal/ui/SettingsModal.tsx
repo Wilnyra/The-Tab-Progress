@@ -1,7 +1,6 @@
 import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { AppearanceTab } from './AppearanceTab'
-import { GeneralTab } from './GeneralTab'
 import { AccountTab } from './AccountTab'
 import { buttonVariants } from '@/shared/ui/Button'
 import {
@@ -33,18 +32,13 @@ export const SettingsModal = (): JSX.Element => {
         </DialogHeader>
 
         <Tabs defaultValue="appearance" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
-            <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>
           </TabsList>
 
           <TabsContent value="appearance" className="space-y-4">
             <AppearanceTab />
-          </TabsContent>
-
-          <TabsContent value="general" className="space-y-4">
-            <GeneralTab />
           </TabsContent>
 
           <TabsContent value="account" className="space-y-4">
