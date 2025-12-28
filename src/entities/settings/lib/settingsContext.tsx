@@ -30,10 +30,30 @@ export const SettingsProvider = ({
   }
 
   useEffect(() => {
-    if (settings.theme === 'dark') {
-      document.body.classList.add('dark')
-    } else {
-      document.body.classList.remove('dark')
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const applyTheme = (): void => {
+      let isDark: boolean
+
+      if (settings.theme === 'system') {
+        isDark = mediaQuery.matches
+      } else {
+        isDark = settings.theme === 'dark'
+      }
+
+      if (isDark) {
+        document.body.classList.add('dark')
+      } else {
+        document.body.classList.remove('dark')
+      }
+    }
+
+    applyTheme()
+
+    if (settings.theme === 'system') {
+      const handler = (): void => applyTheme()
+      mediaQuery.addEventListener('change', handler)
+      return () => mediaQuery.removeEventListener('change', handler)
     }
   }, [settings.theme])
 
