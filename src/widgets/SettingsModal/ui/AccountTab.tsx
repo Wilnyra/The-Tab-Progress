@@ -1,4 +1,8 @@
-import { AccountInfo, LogoutButton } from '@/features/settings/Account'
+import {
+  AccountInfo,
+  LogoutButton,
+  ExportDataButton,
+} from '@/features/settings/Account'
 
 export const AccountTab = (): JSX.Element => {
   return (
@@ -6,6 +10,14 @@ export const AccountTab = (): JSX.Element => {
       <div>
         <h3 className="text-sm font-medium mb-2">Account Information</h3>
         <AccountInfo />
+      </div>
+
+      <div className="pt-4 border-t">
+        <h3 className="text-sm font-medium mb-3">Data Export</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          Download all your data (progress, photos, and todos) as a JSON file
+        </p>
+        <ExportDataButton />
       </div>
 
       <div className="pt-4 border-t">
