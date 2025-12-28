@@ -1,5 +1,5 @@
-import { ToogleTheme } from '@/features/settings/ToogleTheme'
 import { ColorSchemeSelector } from '@/features/settings/ColorScheme'
+import { ToogleTheme } from '@/features/settings/ToogleTheme'
 
 export const AppearanceTab = (): JSX.Element => {
   return (

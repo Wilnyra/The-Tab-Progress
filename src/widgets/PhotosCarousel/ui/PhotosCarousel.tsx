@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import { ImageOff } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { PhotoData, PhotosEmptyState, selectAllPhotos } from '@/entities/photos'
 import { AddPhotoDialog } from '@/features/photos/AddPhoto'
 import {
@@ -7,9 +7,9 @@ import {
   ScrollCarouselPrev,
 } from '@/features/ScrollCarousel'
 import { hostSupportsCORS } from '@/shared/lib/allowedImageHosts'
+import { formatDate } from '@/shared/lib/formatDate'
 import { Card, CardContent } from '@/shared/ui/Card'
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
-import { formatDate } from '@/shared/lib/formatDate'
 
 export const PhotosCarousel = () => {
   const [data, setData] = useState<PhotoData[]>([])

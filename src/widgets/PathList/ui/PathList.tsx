@@ -6,8 +6,8 @@ import {
   PathEmptyState,
 } from '@/entities/path'
 import { AddPathDialog } from '@/features/path/AddPath'
-import { EditPathDialog } from '@/features/path/EditPath'
 import { DeletePathDialog } from '@/features/path/DeletePath'
+import { EditPathDialog } from '@/features/path/EditPath'
 import {
   Card,
   CardContent,

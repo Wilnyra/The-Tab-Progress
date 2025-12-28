@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { SettingsModal } from '@/widgets/SettingsModal'
 import { appName } from '@/shared/lib/constants'
 import { getRootPath } from '@/shared/lib/routePaths'
+import { SettingsModal } from '@/widgets/SettingsModal'
 
 export const LayoutHeader = (): JSX.Element => {
   return (

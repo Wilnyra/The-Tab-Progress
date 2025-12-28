@@ -2,8 +2,8 @@ import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/entities/session'
-import { Button } from '@/shared/ui/Button'
 import { getLoginPath } from '@/shared/lib/routePaths'
+import { Button } from '@/shared/ui/Button'
 
 export const LogoutButton = (): JSX.Element => {
   const { signOut } = useAuth()

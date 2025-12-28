@@ -1,7 +1,7 @@
-import { supabase } from '@/shared/lib/supabase'
-import type { ProgressData } from '@/entities/progress'
 import type { PhotoData } from '@/entities/photos'
+import type { ProgressData } from '@/entities/progress'
 import type { TodoData } from '@/entities/todo'
+import { supabase } from '@/shared/lib/supabase'
 
 interface ExportData {
   exportedAt: string

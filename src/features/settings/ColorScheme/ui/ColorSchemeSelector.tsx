@@ -1,8 +1,8 @@
 import { Check } from 'lucide-react'
 import { useSettings, COLOR_SCHEMES } from '@/entities/settings'
 import type { ColorScheme } from '@/entities/settings'
-import { Label } from '@/shared/ui/Label'
 import { cn } from '@/shared/lib/cn'
+import { Label } from '@/shared/ui/Label'
 
 const SCHEMES: Array<{ value: ColorScheme; label: string }> = [
   { value: 'default', label: 'Default' },

@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react'
-import { loadSettings, saveSettings } from './settingsStorage'
 import { COLOR_SCHEMES } from '../model/constants'
 import type { Settings } from '../model/types'
+import { loadSettings, saveSettings } from './settingsStorage'
 
 export interface SettingsContextValue {
   settings: Settings

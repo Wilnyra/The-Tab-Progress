@@ -1,7 +1,7 @@
+import { PathList } from '@/widgets/PathList'
 import { PhotosCarousel } from '@/widgets/PhotosCarousel'
 import { ProgressCard } from '@/widgets/progress/ProgressCard'
 import { TodoList } from '@/widgets/TodoList'
-import { PathList } from '@/widgets/PathList'
 
 export const DashboardPage = () => {
   return (

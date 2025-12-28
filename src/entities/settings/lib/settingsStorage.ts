@@ -1,6 +1,6 @@
-import { SETTINGS_KEY } from '@/shared/lib/constants'
 import { DEFAULT_SETTINGS } from '../model/constants'
 import type { Settings } from '../model/types'
+import { SETTINGS_KEY } from '@/shared/lib/constants'
 
 export const loadSettings = (): Settings => {
   try {

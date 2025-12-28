@@ -1,7 +1,7 @@
 import { Settings } from 'lucide-react'
 import { useState } from 'react'
-import { AppearanceTab } from './AppearanceTab'
 import { AccountTab } from './AccountTab'
+import { AppearanceTab } from './AppearanceTab'
 import { buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,

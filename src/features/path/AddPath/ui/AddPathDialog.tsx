@@ -6,8 +6,8 @@ import {
   addPathFormSchema,
   type AddPathFormSchema,
 } from '../model/addPathFormSchema'
-import { useAuth } from '@/entities/session/lib/useAuth'
 import { insertPath } from '@/entities/path'
+import { useAuth } from '@/entities/session/lib/useAuth'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,
