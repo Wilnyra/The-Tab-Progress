@@ -34,12 +34,15 @@ export const SignUpForm = () => {
   const onSubmit = async ({ email, password }: LoginFormData) => {
     const from = location.state?.from?.pathname || getRootPath()
 
+    const redirectUrl =
+      import.meta.env.VITE_REDIRECT_URL || window.location.origin
+
     await supabase.auth
       .signUp({
         email,
         password,
         options: {
-          emailRedirectTo: 'https://the-tab-progress.vercel.app',
+          emailRedirectTo: redirectUrl,
         },
       })
       .then(({ error }) => {
