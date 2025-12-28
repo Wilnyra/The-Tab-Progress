@@ -20,6 +20,7 @@ export const SettingsModal = (): JSX.Element => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className={buttonVariants({ variant: 'outline', size: 'sm' })}
+        aria-label="Open settings"
       >
         <Settings />
       </DialogTrigger>

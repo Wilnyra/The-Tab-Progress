@@ -6,6 +6,7 @@ import { PathList } from '@/widgets/PathList'
 export const DashboardPage = () => {
   return (
     <>
+      <h2 className="sr-only">Dashboard</h2>
       <PhotosCarousel />
       <ProgressCard />
       <div className="md:flex justify-between space-y-4 md:space-y-0 md:space-x-4">

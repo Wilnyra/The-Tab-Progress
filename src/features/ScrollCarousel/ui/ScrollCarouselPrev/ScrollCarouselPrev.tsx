@@ -6,7 +6,12 @@ export const ScrollCarouselPrev = () => {
   const { scrollPrev, canScrollPrev } = useCarousel()
 
   return (
-    <Button variant="outline" onClick={scrollPrev} disabled={!canScrollPrev}>
+    <Button
+      variant="outline"
+      onClick={scrollPrev}
+      disabled={!canScrollPrev}
+      aria-label="Previous photo"
+    >
       <ArrowLeft />
     </Button>
   )

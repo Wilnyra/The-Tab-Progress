@@ -48,6 +48,7 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
+        aria-label="Add new achievement"
       >
         <Plus />
       </DialogTrigger>

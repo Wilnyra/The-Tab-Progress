@@ -23,7 +23,17 @@ function RequireAuth(): JSX.Element {
   const location = useLocation()
   const { session } = useAuth()
 
-  if (session === undefined) return <div>Loading...</div>
+  if (session === undefined) {
+    return (
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex items-center justify-center h-screen"
+      >
+        <span>Loading your session, please wait...</span>
+      </div>
+    )
+  }
   if (session) return <Outlet />
 
   return <Navigate to={getLoginPath()} state={{ from: location }} replace />

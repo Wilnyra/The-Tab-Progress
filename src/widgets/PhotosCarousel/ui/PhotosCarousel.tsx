@@ -7,6 +7,7 @@ import {
 } from '@/features/ScrollCarousel'
 import { Card, CardContent } from '@/shared/ui/Card'
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
+import { formatDate } from '@/shared/lib/formatDate'
 
 export const PhotosCarousel = () => {
   const [data, setData] = useState<PhotoData[]>([])
@@ -32,7 +33,7 @@ export const PhotosCarousel = () => {
     <Carousel>
       <div className="flex justify-between items-center px-2">
         <div className="space-y-1.5">
-          <h2 className="font-semibold leading-none tracking-tight">Photos</h2>
+          <h3 className="font-semibold leading-none tracking-tight">Photos</h3>
           <p className="text-sm text-muted-foreground">
             Visualize your progress
           </p>
@@ -55,7 +56,7 @@ export const PhotosCarousel = () => {
                 <CardContent className="flex aspect-square items-center justify-center p-0">
                   <img
                     src={photo.url}
-                    alt="Photo"
+                    alt={`Progress photo from ${formatDate(photo.created_at)}`}
                     className="w-full h-full object-cover"
                   />
                 </CardContent>

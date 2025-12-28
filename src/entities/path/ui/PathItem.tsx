@@ -64,16 +64,13 @@ export const PathItem = ({
             </div>
           </div>
 
-          <div
-            className="flex-shrink-0"
-            style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.2s' }}
-          >
+          <div className="flex-shrink-0">
             <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className={`transition-opacity ${isVisible ? 'opacity-100' : 'opacity-30 hover:opacity-100 focus:opacity-100'}`}
                   aria-label="Achievement options"
                 >
                   <MoreVertical className="h-4 w-4" />

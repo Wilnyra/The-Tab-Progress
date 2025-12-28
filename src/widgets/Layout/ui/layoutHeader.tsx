@@ -6,7 +6,9 @@ import { getRootPath } from '@/shared/lib/routePaths'
 export const LayoutHeader = (): JSX.Element => {
   return (
     <header className="bg-background h-12 rounded-b-xl px-3 flex items-center border border-t-0 shadow text-foreground justify-between">
-      <Link to={getRootPath()}>{appName}</Link>
+      <h1 className="text-base font-semibold">
+        <Link to={getRootPath()}>{appName}</Link>
+      </h1>
       <div className="flex items-center gap-2">
         <SettingsModal />
       </div>

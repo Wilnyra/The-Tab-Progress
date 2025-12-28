@@ -17,7 +17,7 @@ export const TodoItem = ({ id, task, onCheckedChange }: TodoItemProps) => {
 
       <label
         htmlFor={id}
-        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer py-2"
       >
         {task}
       </label>

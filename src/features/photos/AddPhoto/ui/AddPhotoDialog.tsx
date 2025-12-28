@@ -49,6 +49,7 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
+        aria-label="Add new photo"
       >
         <Plus />
       </DialogTrigger>
@@ -61,7 +62,7 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="url" />
+              <FormInput name="url" label="Photo URL" placeholder="https://example.com/photo.jpg" />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
