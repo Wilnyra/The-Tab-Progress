@@ -70,6 +70,21 @@
   }
 }
 
+@layer utilities {
+  .touch-visible {
+    opacity: 0.7;
+  }
+
+  @media (hover: hover) {
+    .touch-visible {
+      opacity: 0.3;
+    }
+    .touch-visible:hover {
+      opacity: 1;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

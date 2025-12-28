@@ -66,7 +66,7 @@ export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
       >
         <Plus />
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Add Progress</DialogTitle>
           <DialogDescription>Track your progress</DialogDescription>

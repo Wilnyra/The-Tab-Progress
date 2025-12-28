@@ -1,5 +1,6 @@
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { cn } from '@/shared/lib/cn'
 import { formatDate } from '@/shared/lib/formatDate'
 import { Button } from '@/shared/ui/Button'
 import {
@@ -70,7 +71,10 @@ export const PathItem = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={`transition-opacity ${isVisible ? 'opacity-100' : 'opacity-30 hover:opacity-100 focus:opacity-100'}`}
+                  className={cn(
+                    'transition-opacity touch-visible',
+                    isVisible && 'opacity-100',
+                  )}
                   aria-label="Achievement options"
                 >
                   <MoreVertical className="h-4 w-4" />

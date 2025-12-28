@@ -24,7 +24,7 @@ export const SettingsModal = (): JSX.Element => {
       >
         <Settings />
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-xl md:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>

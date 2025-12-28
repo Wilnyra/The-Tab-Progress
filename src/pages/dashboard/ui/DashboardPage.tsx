@@ -9,7 +9,7 @@ export const DashboardPage = () => {
       <h2 className="sr-only">Dashboard</h2>
       <PhotosCarousel />
       <ProgressCard />
-      <div className="md:flex justify-between space-y-4 md:space-y-0 md:space-x-4">
+      <div className="flex flex-col md:flex-row justify-between gap-4">
         <TodoList cardProps={{ className: 'md:w-[calc(50%-0.5rem)] w-full' }} />
         <PathList cardProps={{ className: 'md:w-[calc(50%-0.5rem)] w-full' }} />
       </div>
