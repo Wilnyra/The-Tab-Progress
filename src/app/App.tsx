@@ -18,23 +18,16 @@ import {
   getRootPath,
   getSettingsPath,
 } from '@/shared/lib/routePaths'
-import './index.css'
+import { Loader } from '@/shared/ui/Loader'
 import { Layout } from '@/widgets/Layout'
+import './index.css'
 
 function RequireAuth(): JSX.Element {
   const location = useLocation()
   const { session } = useAuth()
 
   if (session === undefined) {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="flex items-center justify-center h-screen"
-      >
-        <span>Loading your session, please wait...</span>
-      </div>
-    )
+    return <Loader fullScreen size="lg" text="Loading your session..." />
   }
   if (session) return <Outlet />
 
