@@ -47,16 +47,24 @@ export const TodoList = ({ cardProps }: TodoListProps) => {
       </CardHeader>
 
       <CardContent>
-        <div className="flex space-y-3 flex-col">
-          {data.map(({ id, task }) => (
-            <TodoItem
-              id={id}
-              key={id}
-              task={task}
-              onCheckedChange={(checked) => onUpdateTodo(id, checked)}
-            />
-          ))}
-        </div>
+        {data.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              No tasks yet. Add your first todo to get started!
+            </p>
+          </div>
+        ) : (
+          <div className="flex space-y-3 flex-col">
+            {data.map(({ id, task }) => (
+              <TodoItem
+                id={id}
+                key={id}
+                task={task}
+                onCheckedChange={(checked) => onUpdateTodo(id, checked)}
+              />
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   )

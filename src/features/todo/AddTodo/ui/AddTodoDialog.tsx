@@ -49,6 +49,7 @@ export const AddTodoDialog = ({ onComplete }: AddTodoDialog) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
+        aria-label="Add new todo"
       >
         <Plus />
       </DialogTrigger>
@@ -63,7 +64,7 @@ export const AddTodoDialog = ({ onComplete }: AddTodoDialog) => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="todo" />
+              <FormInput name="todo" label="Task description" />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}

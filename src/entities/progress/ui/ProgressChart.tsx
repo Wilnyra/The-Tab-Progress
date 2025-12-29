@@ -83,7 +83,7 @@ export const ProgressChart = ({
           ) : null}
         </div>
 
-        {rightSlot}
+        <div onClick={(e) => e.stopPropagation()}>{rightSlot}</div>
       </CardHeader>
       <CardContent>
         <ChartContainer

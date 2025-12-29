@@ -1,3 +1,4 @@
+import { ImageOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { PhotoData, PhotosEmptyState, selectAllPhotos } from '@/entities/photos'
 import { AddPhotoDialog } from '@/features/photos/AddPhoto'
@@ -5,12 +6,19 @@ import {
   ScrollCarouselNext,
   ScrollCarouselPrev,
 } from '@/features/ScrollCarousel'
+import { hostSupportsCORS } from '@/shared/lib/allowedImageHosts'
+import { formatDate } from '@/shared/lib/formatDate'
 import { Card, CardContent } from '@/shared/ui/Card'
 import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
 
 export const PhotosCarousel = () => {
   const [data, setData] = useState<PhotoData[]>([])
   const [reload, setReload] = useState(false)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
+
+  const handleImageError = (photoId: string) => {
+    setFailedImages((prev) => new Set(prev).add(photoId))
+  }
 
   useEffect(() => {
     selectAllPhotos({ limit: 30 }).then(({ data }) => {
@@ -32,7 +40,7 @@ export const PhotosCarousel = () => {
     <Carousel>
       <div className="flex justify-between items-center px-2">
         <div className="space-y-1.5">
-          <h2 className="font-semibold leading-none tracking-tight">Photos</h2>
+          <h3 className="font-semibold leading-none tracking-tight">Photos</h3>
           <p className="text-sm text-muted-foreground">
             Visualize your progress
           </p>
@@ -53,11 +61,29 @@ export const PhotosCarousel = () => {
             <div className="p-1">
               <Card className="overflow-hidden">
                 <CardContent className="flex aspect-square items-center justify-center p-0">
-                  <img
-                    src={photo.url}
-                    alt="Photo"
-                    className="w-full h-full object-cover"
-                  />
+                  {failedImages.has(photo.id) ? (
+                    <div className="flex flex-col items-center justify-center gap-2 p-4 text-muted-foreground">
+                      <ImageOff className="w-8 h-8" />
+                      <p className="text-xs text-center">
+                        Failed to load image
+                      </p>
+                      <p className="text-xs text-center text-muted-foreground/60">
+                        CORS or network error
+                      </p>
+                    </div>
+                  ) : (
+                    <img
+                      src={photo.url}
+                      alt={`Progress photo from ${formatDate(photo.created_at)}`}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      crossOrigin={
+                        hostSupportsCORS(photo.url) ? 'anonymous' : undefined
+                      }
+                      onError={() => handleImageError(photo.id)}
+                    />
+                  )}
                 </CardContent>
               </Card>
             </div>

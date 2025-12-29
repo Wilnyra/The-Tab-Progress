@@ -9,18 +9,17 @@ type TodoItemProps = {
 
 export const TodoItem = ({ id, task, onCheckedChange }: TodoItemProps) => {
   return (
-    <div className="flex items-center space-x-2">
+    <label
+      htmlFor={id}
+      className="flex items-center space-x-3 cursor-pointer py-3 -mx-2 px-2 rounded-md hover:bg-accent/50 active:bg-accent transition-colors"
+    >
       <Checkbox
         id={id}
         onCheckedChange={(checked) => onCheckedChange(checked)}
       />
-
-      <label
-        htmlFor={id}
-        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      >
+      <span className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex-1">
         {task}
-      </label>
-    </div>
+      </span>
+    </label>
   )
 }

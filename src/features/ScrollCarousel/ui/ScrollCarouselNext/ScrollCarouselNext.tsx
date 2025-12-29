@@ -6,7 +6,12 @@ export const ScrollCarouselNext = () => {
   const { scrollNext, canScrollNext } = useCarousel()
 
   return (
-    <Button variant="outline" onClick={scrollNext} disabled={!canScrollNext}>
+    <Button
+      variant="outline"
+      onClick={scrollNext}
+      disabled={!canScrollNext}
+      aria-label="Next photo"
+    >
       <ArrowRight />
     </Button>
   )

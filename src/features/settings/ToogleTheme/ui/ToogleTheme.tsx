@@ -1,45 +1,49 @@
-import { Sun, Moon } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { THEME_KEY } from '@/shared/lib/constants'
-import { Toggle } from '@/shared/ui/Toggle'
+import { Sun, Moon, Monitor, Check } from 'lucide-react'
+import { useSettings } from '@/entities/settings'
+import type { Theme } from '@/entities/settings'
+import { cn } from '@/shared/lib/cn'
 
-export const ToogleTheme = () => {
-  const [isDark, setIsDark] = useState(false)
+const THEMES: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'system', label: 'System', icon: Monitor },
+]
 
-  useEffect(() => {
-    const saved = localStorage.getItem(THEME_KEY)
-    const dark = saved === 'dark'
-    setIsDark(dark)
+export const ToogleTheme = (): JSX.Element => {
+  const { settings, updateSettings } = useSettings()
 
-    if (dark) {
-      document.body.classList.add('dark')
-    } else {
-      document.body.classList.remove('dark')
-    }
-  }, [])
-
-  const onChange = (pressed: boolean) => {
-    setIsDark(pressed)
-
-    if (pressed) {
-      document.body.classList.add('dark')
-      localStorage.setItem(THEME_KEY, 'dark')
-    } else {
-      document.body.classList.remove('dark')
-      localStorage.setItem(THEME_KEY, 'light')
-    }
+  const handleThemeChange = (theme: Theme): void => {
+    updateSettings({ theme })
   }
 
   return (
-    <Toggle
-      variant="outline"
-      size="sm"
-      aria-label="Toggle light theme"
-      pressed={isDark}
-      defaultPressed={isDark}
-      onPressedChange={onChange}
-    >
-      {isDark ? <Sun /> : <Moon />}
-    </Toggle>
+    <div className="flex gap-2">
+      {THEMES.map((theme) => {
+        const isActive = settings.theme === theme.value
+        const Icon = theme.icon
+
+        return (
+          <button
+            key={theme.value}
+            type="button"
+            onClick={() => handleThemeChange(theme.value)}
+            className={cn(
+              'flex flex-col items-center gap-1 p-2 rounded-md border-2 transition-colors relative',
+              isActive
+                ? 'border-primary bg-accent'
+                : 'border-transparent hover:border-muted-foreground/20'
+            )}
+            aria-label={`Select ${theme.label} theme`}
+            aria-current={isActive ? 'true' : undefined}
+          >
+            {isActive && (
+              <Check className="absolute top-1 right-1 w-3 h-3" aria-hidden="true" />
+            )}
+            <Icon className="w-4 h-4" />
+            <span className="text-xs">{theme.label}</span>
+          </button>
+        )
+      })}
+    </div>
   )
 }

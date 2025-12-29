@@ -8,6 +8,7 @@ import {
 } from '../model/addPhotoFormSchema'
 import { insertPhoto } from '@/entities/photos'
 import { useAuth } from '@/entities/session/lib/useAuth'
+import { ALLOWED_IMAGE_HOSTS } from '@/shared/lib/allowedImageHosts'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,
@@ -49,19 +50,43 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
+        aria-label="Add new photo"
       >
         <Plus />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add new Photo</DialogTitle>
-          <DialogDescription>Inspire to achieve your goals</DialogDescription>
+          <DialogDescription>
+            Inspire to achieve your goals. Only HTTPS images from trusted
+            sources are allowed.
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="url" />
+              <FormInput
+                name="url"
+                label="Photo URL"
+                placeholder="https://i.imgur.com/example.jpg"
+              />
+
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p className="font-medium">Allowed sources:</p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  {ALLOWED_IMAGE_HOSTS.filter(
+                    (host) => host.description !== undefined,
+                  ).map((host) => (
+                    <li key={host.domain}>
+                      <span className="font-mono text-xs">
+                        {host.displayName}
+                      </span>
+                      {host.description ? ` - ${host.description}` : ''}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
