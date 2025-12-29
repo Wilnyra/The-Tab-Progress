@@ -9,10 +9,12 @@ import {
 import { useAuth } from '@/entities/session'
 import { DashboardPage } from '@/pages/dashboard'
 import { LoginPage } from '@/pages/login'
+import { OnboardingPage } from '@/pages/onboarding'
 import { ProgressPage } from '@/pages/progress'
 import { SettingsPage } from '@/pages/settings'
 import {
   getLoginPath,
+  getOnboardingPath,
   getProgressPath,
   getRootPath,
   getSettingsPath,
@@ -40,6 +42,7 @@ function App(): JSX.Element {
     <BrowserRouter>
       <Routes>
         <Route path={getLoginPath()} element={<LoginPage />} />
+        <Route path={getOnboardingPath()} element={<OnboardingPage />} />
 
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
