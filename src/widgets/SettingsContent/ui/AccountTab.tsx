@@ -3,6 +3,7 @@ import {
   LogoutButton,
   ExportDataButton,
 } from '@/features/settings/Account'
+import { ChangePasswordModal } from '@/features/settings/ChangePassword'
 
 export const AccountTab = (): JSX.Element => {
   return (
@@ -10,6 +11,14 @@ export const AccountTab = (): JSX.Element => {
       <div>
         <h3 className="text-sm font-medium mb-2">Account Information</h3>
         <AccountInfo />
+      </div>
+
+      <div className="pt-4 border-t">
+        <h3 className="text-sm font-medium mb-3">Change Password</h3>
+        <p className="text-xs text-muted-foreground mb-3">
+          Update your password to keep your account secure
+        </p>
+        <ChangePasswordModal />
       </div>
 
       <div className="pt-4 border-t">

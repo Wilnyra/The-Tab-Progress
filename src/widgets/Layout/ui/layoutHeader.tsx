@@ -1,7 +1,8 @@
+import { Settings } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { appName } from '@/shared/lib/constants'
-import { getRootPath } from '@/shared/lib/routePaths'
-import { SettingsModal } from '@/widgets/SettingsModal'
+import { getRootPath, getSettingsPath } from '@/shared/lib/routePaths'
+import { buttonVariants } from '@/shared/ui/Button'
 
 export const LayoutHeader = (): JSX.Element => {
   return (
@@ -10,7 +11,13 @@ export const LayoutHeader = (): JSX.Element => {
         <Link to={getRootPath()}>{appName}</Link>
       </h1>
       <div className="flex items-center gap-2">
-        <SettingsModal />
+        <Link
+          to={getSettingsPath()}
+          className={buttonVariants({ variant: 'outline', size: 'sm' })}
+          aria-label="Open settings"
+        >
+          <Settings />
+        </Link>
       </div>
     </header>
   )

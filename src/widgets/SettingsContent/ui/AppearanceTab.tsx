@@ -1,4 +1,3 @@
-import { ColorSchemeSelector } from '@/features/settings/ColorScheme'
 import { ToogleTheme } from '@/features/settings/ToogleTheme'
 
 export const AppearanceTab = (): JSX.Element => {
@@ -8,8 +7,6 @@ export const AppearanceTab = (): JSX.Element => {
         <h3 className="text-sm font-medium">Theme</h3>
         <ToogleTheme />
       </div>
-
-      <ColorSchemeSelector />
     </div>
   )
 }

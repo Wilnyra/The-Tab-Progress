@@ -11,10 +11,12 @@ import { SettingsProvider } from '@/entities/settings'
 import { DashboardPage } from '@/pages/dashboard'
 import { LoginPage } from '@/pages/login'
 import { ProgressPage } from '@/pages/progress'
+import { SettingsPage } from '@/pages/settings'
 import {
   getLoginPath,
   getProgressPath,
   getRootPath,
+  getSettingsPath,
 } from '@/shared/lib/routePaths'
 import './index.css'
 import { Layout } from '@/widgets/Layout'
@@ -50,6 +52,7 @@ function App(): JSX.Element {
             <Route element={<Layout />}>
               <Route index element={<DashboardPage />} />
               <Route path={getProgressPath()} element={<ProgressPage />} />
+              <Route path={getSettingsPath()} element={<SettingsPage />} />
             </Route>
           </Route>
 
