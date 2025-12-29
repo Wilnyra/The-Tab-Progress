@@ -30,6 +30,29 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    --color-value: hsl(var(--chart-2));
+    --color-trendValue: hsl(var(--chart-1));
+  }
+
+  :root[data-color-scheme="blue"] {
+    --primary: 221 83% 53%;
+    --accent: 221 83% 93%;
+  }
+
+  :root[data-color-scheme="green"] {
+    --primary: 142 71% 45%;
+    --accent: 142 71% 93%;
+  }
+
+  :root[data-color-scheme="purple"] {
+    --primary: 262 83% 58%;
+    --accent: 262 83% 93%;
+  }
+
+  :root[data-color-scheme="orange"] {
+    --primary: 25 95% 53%;
+    --accent: 25 95% 93%;
   }
 
   .dark {
@@ -58,6 +81,9 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --color-value: hsl(var(--chart-2));
+    --color-trendValue: hsl(var(--chart-1));
   }
 }
 
@@ -82,6 +108,26 @@
     .touch-visible:hover {
       opacity: 1;
     }
+  }
+
+  .color-preview-default {
+    background-color: hsl(240 5.9% 10%);
+  }
+
+  .color-preview-blue {
+    background-color: hsl(221 83% 53%);
+  }
+
+  .color-preview-green {
+    background-color: hsl(142 71% 45%);
+  }
+
+  .color-preview-purple {
+    background-color: hsl(262 83% 58%);
+  }
+
+  .color-preview-orange {
+    background-color: hsl(25 95% 53%);
   }
 }
 

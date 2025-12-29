@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react'
-import { useSettings, COLOR_SCHEMES } from '@/entities/settings'
+import { useSettings } from '@/entities/settings'
 import type { ColorScheme } from '@/entities/settings'
 import { cn } from '@/shared/lib/cn'
 import { Label } from '@/shared/ui/Label'
@@ -25,7 +25,6 @@ export const ColorSchemeSelector = (): JSX.Element => {
       <div className="flex gap-2">
         {SCHEMES.map((scheme) => {
           const isActive = settings.colorScheme === scheme.value
-          const colors = COLOR_SCHEMES[scheme.value]
 
           return (
             <button
@@ -45,8 +44,10 @@ export const ColorSchemeSelector = (): JSX.Element => {
                 <Check className="absolute top-1 right-1 w-3 h-3" aria-hidden="true" />
               )}
               <div
-                className="w-8 h-8 rounded-full border-2 border-background"
-                style={{ backgroundColor: `hsl(${colors.primary})` }}
+                className={cn(
+                  'w-8 h-8 rounded-full border-2 border-background',
+                  `color-preview-${scheme.value}`
+                )}
               />
               <span className="text-xs">{scheme.label}</span>
             </button>

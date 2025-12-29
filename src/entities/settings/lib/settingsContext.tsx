@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react'
-import { COLOR_SCHEMES } from '../model/constants'
 import type { Settings } from '../model/types'
 import { loadSettings, saveSettings } from './settingsStorage'
 
@@ -59,10 +58,12 @@ export const SettingsProvider = ({
 
   useEffect(() => {
     const root = document.documentElement
-    const scheme = COLOR_SCHEMES[settings.colorScheme]
 
-    root.style.setProperty('--primary', scheme.primary)
-    root.style.setProperty('--accent', scheme.accent)
+    if (settings.colorScheme === 'default') {
+      root.removeAttribute('data-color-scheme')
+    } else {
+      root.setAttribute('data-color-scheme', settings.colorScheme)
+    }
   }, [settings.colorScheme])
 
   return (
