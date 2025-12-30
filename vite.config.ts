@@ -34,9 +34,9 @@ export default defineConfig({
               return 'vendor-icons'
             }
             if (
-              id.includes('react') ||
-              id.includes('react-dom') ||
-              id.includes('scheduler')
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/scheduler/')
             ) {
               return 'vendor-react'
             }
