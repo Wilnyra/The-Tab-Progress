@@ -1,4 +1,7 @@
+import { LayoutDashboard, TrendingUp, CheckSquare, Image } from 'lucide-react'
 import type { FC } from 'react'
+import type { StepProps } from '../../lib/types'
+import { NavigationButtons } from '../components/NavigationButtons'
 import {
   Card,
   CardHeader,
@@ -6,9 +9,6 @@ import {
   CardDescription,
   CardContent,
 } from '@/shared/ui/Card'
-import { NavigationButtons } from '../components/NavigationButtons'
-import type { StepProps } from '../../lib/types'
-import { LayoutDashboard, TrendingUp, CheckSquare, Image } from 'lucide-react'
 
 export const DashboardStep: FC<StepProps> = ({
   onNext,

@@ -8,6 +8,7 @@ import {
   Outlet,
 } from 'react-router-dom'
 import { useAuth } from '@/entities/session'
+import { useTheme } from '@/features/settings/ToogleTheme'
 import {
   getLoginPath,
   getOnboardingPath,
@@ -17,7 +18,6 @@ import {
 } from '@/shared/lib/routePaths'
 import { Loader } from '@/shared/ui/Loader'
 import { Layout } from '@/widgets/Layout'
-import { useTheme } from '@/features/settings/ToogleTheme'
 import './index.css'
 
 const DashboardPage = lazy(() =>

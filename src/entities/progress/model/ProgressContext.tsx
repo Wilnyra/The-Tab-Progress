@@ -7,10 +7,12 @@ type ContextValue = {
   setProgress: Dispatch<SetStateAction<ContextValue['progress']>>
   progressReload: number
   setProgressReload: Dispatch<SetStateAction<ContextValue['progressReload']>>
+  isLoading: boolean
+  setIsLoading: Dispatch<SetStateAction<boolean>>
 }
 
 export type ProgressContextProviderProps = Partial<
-  Omit<ContextValue, 'setProgress' | 'setProgressReload'>
+  Omit<ContextValue, 'setProgress' | 'setProgressReload' | 'setIsLoading'>
 >
 
 export const progressContext = createContext<ContextValue>({
@@ -18,6 +20,8 @@ export const progressContext = createContext<ContextValue>({
   setProgress: () => [],
   progressReload: 0,
   setProgressReload: () => null,
+  isLoading: true,
+  setIsLoading: () => null,
 })
 
 export const ProgressContextProvider: FC<
@@ -25,6 +29,7 @@ export const ProgressContextProvider: FC<
 > = ({ children, progress: initial = [] }) => {
   const [progress, setProgress] = useState<ProgressData[]>(initial)
   const [progressReload, setProgressReload] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   const value = useMemo(
     () => ({
@@ -32,8 +37,10 @@ export const ProgressContextProvider: FC<
       setProgress,
       progressReload,
       setProgressReload,
+      isLoading,
+      setIsLoading,
     }),
-    [progress, progressReload]
+    [progress, progressReload, isLoading]
   )
 
   return (

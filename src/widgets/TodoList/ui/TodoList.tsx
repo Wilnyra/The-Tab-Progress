@@ -1,5 +1,6 @@
 import { type CheckedState } from '@radix-ui/react-checkbox'
 import { type ComponentProps, useCallback, useEffect, useState } from 'react'
+import { TodoListSkeleton } from './TodoListSkeleton'
 import {
   selectAllTodo,
   type TodoData,
@@ -7,6 +8,7 @@ import {
   updateTodo,
 } from '@/entities/todo'
 import { AddTodoDialog } from '@/features/todo/AddTodo'
+import { cn } from '@/shared/lib/cn'
 import {
   Card,
   CardContent,
@@ -22,19 +24,33 @@ type TodoListProps = {
 export const TodoList = ({ cardProps }: TodoListProps) => {
   const [data, setData] = useState<TodoData[]>([])
   const [reload, setReload] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    selectAllTodo({ limit: 30 }).then(({ data }) => {
-      setData(data)
-    })
+    setIsLoading(true)
+    selectAllTodo({ limit: 30 })
+      .then(({ data }) => {
+        setData(data)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [reload])
 
-  const onUpdateTodo = useCallback(async (id: TodoData['id'], checked: CheckedState): Promise<void> => {
-    if (typeof checked === 'boolean') await updateTodo(id, { is_done: checked })
-  }, [])
+  const onUpdateTodo = useCallback(
+    async (id: TodoData['id'], checked: CheckedState): Promise<void> => {
+      if (typeof checked === 'boolean')
+        await updateTodo(id, { is_done: checked })
+    },
+    [],
+  )
+
+  if (isLoading) {
+    return <TodoListSkeleton cardProps={cardProps} />
+  }
 
   return (
-    <Card {...cardProps}>
+    <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
       <CardHeader className="flex justify-between flex-row items-start">
         <div className="space-y-1.5">
           <CardTitle>Todo</CardTitle>

@@ -1,8 +1,8 @@
-import type { FC } from 'react'
-import { Card, CardHeader, CardContent } from '@/shared/ui/Card'
-import { NavigationButtons } from '../components/NavigationButtons'
-import type { StepProps } from '../../lib/types'
 import { PartyPopper } from 'lucide-react'
+import type { FC } from 'react'
+import type { StepProps } from '../../lib/types'
+import { NavigationButtons } from '../components/NavigationButtons'
+import { Card, CardHeader, CardContent } from '@/shared/ui/Card'
 
 export const CompletionStep: FC<StepProps> = ({
   onNext,

@@ -1,7 +1,7 @@
 import type { FC } from 'react'
-import { Card, CardHeader, CardContent } from '@/shared/ui/Card'
-import { NavigationButtons } from '../components/NavigationButtons'
 import type { StepProps } from '../../lib/types'
+import { NavigationButtons } from '../components/NavigationButtons'
+import { Card, CardHeader, CardContent } from '@/shared/ui/Card'
 
 export const WelcomeStep: FC<StepProps> = ({
   onNext,

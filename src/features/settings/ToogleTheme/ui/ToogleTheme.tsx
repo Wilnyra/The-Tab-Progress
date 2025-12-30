@@ -1,7 +1,7 @@
 import { Sun, Moon, Monitor, Check } from 'lucide-react'
-import { cn } from '@/shared/lib/cn'
-import { useTheme } from '../lib/useTheme'
 import type { Theme } from '../lib/types'
+import { useTheme } from '../lib/useTheme'
+import { cn } from '@/shared/lib/cn'
 
 const THEMES: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
   { value: 'light', label: 'Light', icon: Sun },

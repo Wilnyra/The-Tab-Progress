@@ -1,8 +1,8 @@
 import type { FC } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/shared/ui/Card'
+import type { StepProps, FeatureHighlight } from '../../lib/types'
 import { FeatureCard } from '../components/FeatureCard'
 import { NavigationButtons } from '../components/NavigationButtons'
-import type { StepProps, FeatureHighlight } from '../../lib/types'
+import { Card, CardHeader, CardTitle, CardContent } from '@/shared/ui/Card'
 
 const features: FeatureHighlight[] = [
   {

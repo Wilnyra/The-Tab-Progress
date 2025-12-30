@@ -1,4 +1,5 @@
 import { type ComponentProps, useEffect, useState } from 'react'
+import { PathListSkeleton } from './PathListSkeleton'
 import {
   selectAllPath,
   type PathData,
@@ -8,6 +9,7 @@ import {
 import { AddPathDialog } from '@/features/path/AddPath'
 import { DeletePathDialog } from '@/features/path/DeletePath'
 import { EditPathDialog } from '@/features/path/EditPath'
+import { cn } from '@/shared/lib/cn'
 import {
   Card,
   CardContent,
@@ -23,6 +25,7 @@ type PathListProps = {
 export const PathList = ({ cardProps }: PathListProps) => {
   const [data, setData] = useState<PathData[]>([])
   const [reload, setReload] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [editingPath, setEditingPath] = useState<{
     id: string
     step: string
@@ -35,9 +38,14 @@ export const PathList = ({ cardProps }: PathListProps) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
-    selectAllPath({ limit: 5 }).then(({ data }) => {
-      setData(data || [])
-    })
+    setIsLoading(true)
+    selectAllPath({ limit: 5 })
+      .then(({ data }) => {
+        setData(data || [])
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [reload])
 
   const handleEdit = (id: string, step: string) => {
@@ -54,9 +62,13 @@ export const PathList = ({ cardProps }: PathListProps) => {
     setReload((prev) => !prev)
   }
 
+  if (isLoading) {
+    return <PathListSkeleton cardProps={cardProps} />
+  }
+
   if (data.length === 0) {
     return (
-      <Card {...cardProps}>
+      <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
         <CardHeader className="flex justify-between flex-row items-start">
           <div className="space-y-1.5">
             <CardTitle>Path</CardTitle>
@@ -73,7 +85,7 @@ export const PathList = ({ cardProps }: PathListProps) => {
 
   return (
     <>
-      <Card {...cardProps}>
+      <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
         <CardHeader className="flex justify-between flex-row items-start">
           <div className="space-y-1.5">
             <CardTitle>Path</CardTitle>

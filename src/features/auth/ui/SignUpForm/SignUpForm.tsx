@@ -2,9 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
+import { hasCompletedOnboarding } from '@/pages/onboarding/lib/onboardingStorage'
 import { getRootPath, getOnboardingPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
-import { hasCompletedOnboarding } from '@/pages/onboarding/lib/onboardingStorage'
 import { Button } from '@/shared/ui/Button'
 import {
   Card,

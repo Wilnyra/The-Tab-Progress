@@ -1,7 +1,7 @@
-import type { FC } from 'react'
 import * as LucideIcons from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/shared/ui/Card'
+import type { FC } from 'react'
 import type { FeatureHighlight } from '../../lib/types'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/shared/ui/Card'
 
 interface FeatureCardProps {
   readonly feature: FeatureHighlight

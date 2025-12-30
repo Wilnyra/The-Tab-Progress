@@ -1,5 +1,5 @@
-import type { Settings, UpdateSettings } from '../model/types'
 import { DEFAULT_SETTINGS } from '../model/constants'
+import type { Settings, UpdateSettings } from '../model/types'
 
 const SETTINGS_KEY = 'APP_SETTINGS'
 

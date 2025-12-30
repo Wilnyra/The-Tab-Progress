@@ -1,12 +1,12 @@
 import type { FC } from 'react'
+import type { StepProps } from '../lib/types'
 import { useOnboardingState } from '../lib/useOnboardingState'
 import { StepIndicator } from './components/StepIndicator'
-import { WelcomeStep } from './steps/WelcomeStep'
-import { FeaturesStep } from './steps/FeaturesStep'
-import { DashboardStep } from './steps/DashboardStep'
-import { QuickStartStep } from './steps/QuickStartStep'
 import { CompletionStep } from './steps/CompletionStep'
-import type { StepProps } from '../lib/types'
+import { DashboardStep } from './steps/DashboardStep'
+import { FeaturesStep } from './steps/FeaturesStep'
+import { QuickStartStep } from './steps/QuickStartStep'
+import { WelcomeStep } from './steps/WelcomeStep'
 
 export const OnboardingPage: FC = () => {
   const {

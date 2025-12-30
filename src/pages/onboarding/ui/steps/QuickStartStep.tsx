@@ -1,4 +1,6 @@
 import type { FC } from 'react'
+import type { StepProps } from '../../lib/types'
+import { NavigationButtons } from '../components/NavigationButtons'
 import {
   Card,
   CardHeader,
@@ -6,8 +8,6 @@ import {
   CardDescription,
   CardContent,
 } from '@/shared/ui/Card'
-import { NavigationButtons } from '../components/NavigationButtons'
-import type { StepProps } from '../../lib/types'
 
 export const QuickStartStep: FC<StepProps> = ({
   onNext,

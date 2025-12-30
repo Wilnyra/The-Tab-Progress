@@ -1,6 +1,6 @@
 import type { FC } from 'react'
-import { Button } from '@/shared/ui/Button'
 import type { StepProps } from '../../lib/types'
+import { Button } from '@/shared/ui/Button'
 
 type NavigationButtonsProps = Pick<
   StepProps,

@@ -1,6 +1,6 @@
 import { useSyncExternalStore, useCallback } from 'react'
-import type { Theme } from './types'
 import { themeStore } from './themeStore'
+import type { Theme } from './types'
 
 interface UseThemeReturn {
   theme: Theme

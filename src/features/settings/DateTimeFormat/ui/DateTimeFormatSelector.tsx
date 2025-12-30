@@ -28,7 +28,10 @@ export const DateTimeFormatSelector = (): JSX.Element => {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="date-format">Date Format</Label>
-        <Select value={settings.dateFormat} onValueChange={handleDateFormatChange}>
+        <Select
+          value={settings.dateFormat}
+          onValueChange={handleDateFormatChange}
+        >
           <SelectTrigger id="date-format">
             <SelectValue />
           </SelectTrigger>
@@ -46,7 +49,10 @@ export const DateTimeFormatSelector = (): JSX.Element => {
 
       <div className="space-y-2">
         <Label htmlFor="time-format">Time Format</Label>
-        <Select value={settings.timeFormat} onValueChange={handleTimeFormatChange}>
+        <Select
+          value={settings.timeFormat}
+          onValueChange={handleTimeFormatChange}
+        >
           <SelectTrigger id="time-format">
             <SelectValue />
           </SelectTrigger>

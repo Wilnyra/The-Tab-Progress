@@ -1,5 +1,5 @@
-import type { Theme } from './types'
 import { applyTheme, loadTheme, saveTheme, getResolvedTheme } from './applyTheme'
+import type { Theme } from './types'
 
 type ThemeState = {
   theme: Theme

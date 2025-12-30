@@ -8,7 +8,7 @@ type PhotosEmptyStateProps = {
 
 export const PhotosEmptyState = ({ rightSlot }: PhotosEmptyStateProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-h-[280px]">
       <div className="flex justify-between items-center px-2">
         <div className="space-y-1.5">
           <h2 className="font-semibold leading-none tracking-tight">Photos</h2>
