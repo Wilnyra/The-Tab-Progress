@@ -7,45 +7,21 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      react: path.resolve(__dirname, './node_modules/react'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
-    dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom', 'react-router-dom'],
   },
   appType: 'spa',
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id: string): string | undefined => {
-          if (id.includes('node_modules')) {
-            if (id.includes('recharts')) {
-              return 'vendor-recharts'
-            }
-            if (id.includes('@supabase')) {
-              return 'vendor-supabase'
-            }
-            if (id.includes('@radix-ui')) {
-              return 'vendor-radix'
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons'
-            }
-            if (
-              id.includes('react') ||
-              id.includes('scheduler') ||
-              id.includes('@hookform')
-            ) {
-              return 'vendor'
-            }
-            return 'vendor-misc'
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'react-hook-form'],
         },
       },
     },
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 1000,
     sourcemap: true,
   },
 })
