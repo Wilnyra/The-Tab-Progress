@@ -7,7 +7,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      react: path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
   },
   appType: 'spa',
   build: {
@@ -34,9 +40,9 @@ export default defineConfig({
               return 'vendor-icons'
             }
             if (
-              id.includes('/react/') ||
-              id.includes('/react-dom/') ||
-              id.includes('/scheduler/')
+              id.match(/\/node_modules\/react\//) ||
+              id.match(/\/node_modules\/react-dom\//) ||
+              id.match(/\/node_modules\/scheduler\//)
             ) {
               return 'vendor-react'
             }
