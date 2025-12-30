@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import {
   BrowserRouter,
   Route,
@@ -7,11 +8,6 @@ import {
   Outlet,
 } from 'react-router-dom'
 import { useAuth } from '@/entities/session'
-import { DashboardPage } from '@/pages/dashboard'
-import { LoginPage } from '@/pages/login'
-import { OnboardingPage } from '@/pages/onboarding'
-import { ProgressPage } from '@/pages/progress'
-import { SettingsPage } from '@/pages/settings'
 import {
   getLoginPath,
   getOnboardingPath,
@@ -23,6 +19,22 @@ import { Loader } from '@/shared/ui/Loader'
 import { Layout } from '@/widgets/Layout'
 import { useTheme } from '@/features/settings/ToogleTheme'
 import './index.css'
+
+const DashboardPage = lazy(() =>
+  import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })),
+)
+const LoginPage = lazy(() =>
+  import('@/pages/login').then((m) => ({ default: m.LoginPage })),
+)
+const OnboardingPage = lazy(() =>
+  import('@/pages/onboarding').then((m) => ({ default: m.OnboardingPage })),
+)
+const ProgressPage = lazy(() =>
+  import('@/pages/progress').then((m) => ({ default: m.ProgressPage })),
+)
+const SettingsPage = lazy(() =>
+  import('@/pages/settings').then((m) => ({ default: m.SettingsPage })),
+)
 
 function RequireAuth(): JSX.Element {
   const location = useLocation()
@@ -40,20 +52,22 @@ function App(): JSX.Element {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path={getLoginPath()} element={<LoginPage />} />
-        <Route path={getOnboardingPath()} element={<OnboardingPage />} />
+      <Suspense fallback={<Loader fullScreen size="lg" text="Loading..." />}>
+        <Routes>
+          <Route path={getLoginPath()} element={<LoginPage />} />
+          <Route path={getOnboardingPath()} element={<OnboardingPage />} />
 
-        <Route element={<RequireAuth />}>
-          <Route element={<Layout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path={getProgressPath()} element={<ProgressPage />} />
-            <Route path={getSettingsPath()} element={<SettingsPage />} />
+          <Route element={<RequireAuth />}>
+            <Route element={<Layout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path={getProgressPath()} element={<ProgressPage />} />
+              <Route path={getSettingsPath()} element={<SettingsPage />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path="*" element={<Navigate to={getRootPath()} />} />
-      </Routes>
+          <Route path="*" element={<Navigate to={getRootPath()} />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
