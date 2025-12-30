@@ -30,28 +30,22 @@ export default defineConfig({
             if (id.includes('@radix-ui')) {
               return 'vendor-radix'
             }
-            if (id.includes('react-router-dom')) {
-              return 'vendor-router'
-            }
-            if (id.includes('react-hook-form') || id.includes('@hookform')) {
-              return 'vendor-forms'
-            }
             if (id.includes('lucide-react')) {
               return 'vendor-icons'
             }
             if (
-              id.match(/\/node_modules\/react\//) ||
-              id.match(/\/node_modules\/react-dom\//) ||
-              id.match(/\/node_modules\/scheduler\//)
+              id.includes('react') ||
+              id.includes('scheduler') ||
+              id.includes('@hookform')
             ) {
-              return 'vendor-react'
+              return 'vendor'
             }
             return 'vendor-misc'
           }
         },
       },
     },
-    chunkSizeWarningLimit: 500,
+    chunkSizeWarningLimit: 600,
     sourcemap: true,
   },
 })
