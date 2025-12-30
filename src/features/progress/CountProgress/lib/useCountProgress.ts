@@ -28,7 +28,7 @@ export const useCountProgress = () => {
       } else {
         await insertProgress(currentMinutes, session?.user.id || '')
       }
-      setProgressReload((prev) => !prev)
+      setProgressReload((prev) => prev + 1)
     },
     [progress, session?.user.id, setProgressReload],
   )

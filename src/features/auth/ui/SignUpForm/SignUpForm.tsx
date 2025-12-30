@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
-import { getRootPath } from '@/shared/lib/routePaths'
+import { hasCompletedOnboarding } from '@/pages/onboarding/lib/onboardingStorage'
+import { getRootPath, getOnboardingPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
 import {
@@ -21,7 +22,6 @@ type LoginFormData = {
 
 export const SignUpForm = () => {
   const navigate = useNavigate()
-  const location = useLocation()
 
   const formContext = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
@@ -32,8 +32,6 @@ export const SignUpForm = () => {
   })
 
   const onSubmit = async ({ email, password }: LoginFormData) => {
-    const from = location.state?.from?.pathname || getRootPath()
-
     const redirectUrl =
       import.meta.env.VITE_REDIRECT_URL || window.location.origin
 
@@ -49,7 +47,10 @@ export const SignUpForm = () => {
         if (error) {
           formContext.setError('root.serverError', { message: error.message })
         } else {
-          navigate(from, { replace: true })
+          const destination = hasCompletedOnboarding()
+            ? getRootPath()
+            : getOnboardingPath()
+          navigate(destination, { replace: true })
         }
       })
       .catch((error) => {

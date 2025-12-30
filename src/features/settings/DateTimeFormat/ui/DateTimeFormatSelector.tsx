@@ -28,32 +28,42 @@ export const DateTimeFormatSelector = (): JSX.Element => {
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="date-format">Date Format</Label>
-        <Select value={settings.dateFormat} onValueChange={handleDateFormatChange}>
+        <Select
+          value={settings.dateFormat}
+          onValueChange={handleDateFormatChange}
+        >
           <SelectTrigger id="date-format">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {DATE_FORMAT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
+            {DATE_FORMAT_OPTIONS.map(
+              (option: { value: DateFormat; label: string }) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="time-format">Time Format</Label>
-        <Select value={settings.timeFormat} onValueChange={handleTimeFormatChange}>
+        <Select
+          value={settings.timeFormat}
+          onValueChange={handleTimeFormatChange}
+        >
           <SelectTrigger id="time-format">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {TIME_FORMAT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
+            {TIME_FORMAT_OPTIONS.map(
+              (option: { value: TimeFormat; label: string }) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>

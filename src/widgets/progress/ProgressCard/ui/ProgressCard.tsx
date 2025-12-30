@@ -13,17 +13,26 @@ type ProgressCardProps = {
 }
 
 export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
-  const { setProgress, progressReload } = useContext(progressContext)
+  const { setProgress, progressReload, setIsLoading } =
+    useContext(progressContext)
   const [limit, setLimit] = useState<number | null>(30)
   const [data, setData] = useState<ProgressData[]>([])
   const [reload, setReload] = useState(false)
+  const [isLocalLoading, setIsLocalLoading] = useState(true)
 
   useEffect(() => {
-    selectAllProgress({ limit }).then(({ data }) => {
-      setData(data)
-      setProgress(data || [])
-    })
-  }, [reload, limit, progressReload])
+    setIsLoading(true)
+    setIsLocalLoading(true)
+    selectAllProgress({ limit })
+      .then(({ data }) => {
+        setData(data)
+        setProgress(data || [])
+      })
+      .finally(() => {
+        setIsLoading(false)
+        setIsLocalLoading(false)
+      })
+  }, [reload, limit, progressReload, setProgress, setIsLoading])
 
   return (
     <ProgressChart
@@ -38,6 +47,7 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
       }
       data={data}
       chartContainerClassName="max-h-[200px] w-full"
+      isLoading={isLocalLoading}
     />
   )
 }

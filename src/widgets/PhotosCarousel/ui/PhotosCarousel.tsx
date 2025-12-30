@@ -1,5 +1,6 @@
 import { ImageOff } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { PhotosCarouselSkeleton } from './PhotosCarouselSkeleton'
 import { PhotoData, PhotosEmptyState, selectAllPhotos } from '@/entities/photos'
 import { AddPhotoDialog } from '@/features/photos/AddPhoto'
 import {
@@ -14,17 +15,27 @@ import { Carousel, CarouselContent, CarouselItem } from '@/shared/ui/Carousel'
 export const PhotosCarousel = () => {
   const [data, setData] = useState<PhotoData[]>([])
   const [reload, setReload] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
-  const handleImageError = (photoId: string) => {
+  const handleImageError = useCallback((photoId: string): void => {
     setFailedImages((prev) => new Set(prev).add(photoId))
-  }
+  }, [])
 
   useEffect(() => {
-    selectAllPhotos({ limit: 30 }).then(({ data }) => {
-      setData(data)
-    })
+    setIsLoading(true)
+    selectAllPhotos({ limit: 30 })
+      .then(({ data }) => {
+        setData(data)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [reload])
+
+  if (isLoading) {
+    return <PhotosCarouselSkeleton />
+  }
 
   if (data.length === 0) {
     return (

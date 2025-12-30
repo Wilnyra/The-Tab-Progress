@@ -1,10 +1,22 @@
-import { useContext } from 'react'
-import { SettingsContext, type SettingsContextValue } from './settingsContext'
+import { useCallback, useState } from 'react'
+import type { Settings, UpdateSettings } from '../model/types'
+import { loadSettings, updateStoredSettings } from './settingsStorage'
 
-export const useSettings = (): SettingsContextValue => {
-  const context = useContext(SettingsContext)
-  if (!context) {
-    throw new Error('useSettings must be used within SettingsProvider')
+type UseSettingsReturn = {
+  settings: Settings
+  updateSettings: (updates: UpdateSettings) => void
+}
+
+export const useSettings = (): UseSettingsReturn => {
+  const [settings, setSettings] = useState<Settings>(loadSettings)
+
+  const updateSettings = useCallback((updates: UpdateSettings): void => {
+    const updated = updateStoredSettings(updates)
+    setSettings(updated)
+  }, [])
+
+  return {
+    settings,
+    updateSettings,
   }
-  return context
 }

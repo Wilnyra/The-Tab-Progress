@@ -27,11 +27,13 @@ export const DefaultViewSelector = (): JSX.Element => {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {DEFAULT_VIEW_OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          {DEFAULT_VIEW_OPTIONS.map(
+            (option: { value: DefaultView; label: string }) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            )
+          )}
         </SelectContent>
       </Select>
     </div>

@@ -5,6 +5,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { calculateTrendLine } from '../lib/calculateTrend'
 import { getLastQueueArray } from '../lib/getLastQueueArray'
 import { ProgressData } from '../model/types'
+import { ProgressChartSkeleton } from './ProgressChartSkeleton'
 import { ProgressEmptyState } from './ProgressEmptyState'
 import { cn } from '@/shared/lib/cn'
 import { getProgressPath } from '@/shared/lib/routePaths'
@@ -33,11 +34,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const CHART_MARGIN = { top: 4, left: -24, right: 12 } as const
+
 type ProgressChartProps = {
   data: ProgressData[]
   rightSlot?: ReactNode
   description?: ReactNode
   chartContainerClassName?: ComponentProps<typeof ChartContainer>['className']
+  isLoading?: boolean
 }
 
 export const ProgressChart = ({
@@ -45,6 +49,7 @@ export const ProgressChart = ({
   rightSlot,
   chartContainerClassName,
   description,
+  isLoading = false,
 }: ProgressChartProps) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -60,6 +65,16 @@ export const ProgressChart = ({
     }))
   }, [data])
 
+  if (isLoading) {
+    return (
+      <ProgressChartSkeleton
+        rightSlot={rightSlot}
+        description={description}
+        chartContainerClassName={chartContainerClassName}
+      />
+    )
+  }
+
   if (data.length === 0) {
     return (
       <ProgressEmptyState rightSlot={rightSlot} description={description} />
@@ -67,7 +82,7 @@ export const ProgressChart = ({
   }
 
   return (
-    <Card>
+    <Card className="min-h-[320px]">
       <CardHeader
         className={cn('flex justify-between flex-row items-start', {
           'cursor-pointer': !isLocationProgress,
@@ -93,11 +108,7 @@ export const ProgressChart = ({
           <AreaChart
             accessibilityLayer
             data={chartData}
-            margin={{
-              top: 4,
-              left: -24,
-              right: 12,
-            }}
+            margin={CHART_MARGIN}
           >
             <CartesianGrid vertical={false} />
             <YAxis

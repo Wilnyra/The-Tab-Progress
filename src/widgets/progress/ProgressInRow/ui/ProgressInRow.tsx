@@ -1,5 +1,6 @@
 import { useContext, type ComponentProps } from 'react'
 import { getProgressEmoji } from '../lib/getProgressEmoji'
+import { ProgressInRowSkeleton } from './ProgressInRowSkeleton'
 import { getLastQueueArray, progressContext } from '@/entities/progress'
 import {
   Card,
@@ -14,11 +15,15 @@ type ProgressInRowProps = {
 }
 
 export const ProgressInRow = ({ cardProps }: ProgressInRowProps) => {
-  const { progress } = useContext(progressContext)
+  const { progress, isLoading } = useContext(progressContext)
   const datesInRowLength = getLastQueueArray(progress).length
 
+  if (isLoading) {
+    return <ProgressInRowSkeleton cardProps={cardProps} />
+  }
+
   return (
-    <Card {...cardProps}>
+    <Card {...cardProps} className="min-h-[200px]">
       <CardHeader>
         <CardTitle>Progress In Row</CardTitle>
         <CardDescription>Do not interrupt the duration</CardDescription>

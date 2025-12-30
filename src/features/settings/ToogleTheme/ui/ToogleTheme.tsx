@@ -1,6 +1,6 @@
 import { Sun, Moon, Monitor, Check } from 'lucide-react'
-import { useSettings } from '@/entities/settings'
-import type { Theme } from '@/entities/settings'
+import type { Theme } from '../lib/types'
+import { useTheme } from '../lib/useTheme'
 import { cn } from '@/shared/lib/cn'
 
 const THEMES: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
@@ -10,37 +10,40 @@ const THEMES: Array<{ value: Theme; label: string; icon: typeof Sun }> = [
 ]
 
 export const ToogleTheme = (): JSX.Element => {
-  const { settings, updateSettings } = useSettings()
+  const { theme, setTheme } = useTheme()
 
-  const handleThemeChange = (theme: Theme): void => {
-    updateSettings({ theme })
+  const handleThemeChange = (newTheme: Theme): void => {
+    setTheme(newTheme)
   }
 
   return (
     <div className="flex gap-2">
-      {THEMES.map((theme) => {
-        const isActive = settings.theme === theme.value
-        const Icon = theme.icon
+      {THEMES.map((themeOption) => {
+        const isActive = theme === themeOption.value
+        const Icon = themeOption.icon
 
         return (
           <button
-            key={theme.value}
+            key={themeOption.value}
             type="button"
-            onClick={() => handleThemeChange(theme.value)}
+            onClick={() => handleThemeChange(themeOption.value)}
             className={cn(
               'flex flex-col items-center gap-1 p-2 rounded-md border-2 transition-colors relative',
               isActive
                 ? 'border-primary bg-accent'
-                : 'border-transparent hover:border-muted-foreground/20'
+                : 'border-transparent hover:border-muted-foreground/20',
             )}
-            aria-label={`Select ${theme.label} theme`}
+            aria-label={`Select ${themeOption.label} theme`}
             aria-current={isActive ? 'true' : undefined}
           >
             {isActive && (
-              <Check className="absolute top-1 right-1 w-3 h-3" aria-hidden="true" />
+              <Check
+                className="absolute top-1 right-1 w-3 h-3"
+                aria-hidden="true"
+              />
             )}
             <Icon className="w-4 h-4" />
-            <span className="text-xs">{theme.label}</span>
+            <span className="text-xs">{themeOption.label}</span>
           </button>
         )
       })}

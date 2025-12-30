@@ -25,7 +25,7 @@ export const ProgressEmptyState = ({
   const isLocationProgress = pathname === getProgressPath()
 
   return (
-    <Card>
+    <Card className="min-h-[320px]">
       <CardHeader
         className={cn('flex justify-between flex-row items-start', {
           'cursor-pointer': !isLocationProgress,
