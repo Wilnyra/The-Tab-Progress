@@ -1,5 +1,5 @@
 import { ImageOff } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { PhotoData, PhotosEmptyState, selectAllPhotos } from '@/entities/photos'
 import { AddPhotoDialog } from '@/features/photos/AddPhoto'
 import {
@@ -16,9 +16,9 @@ export const PhotosCarousel = () => {
   const [reload, setReload] = useState(false)
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set())
 
-  const handleImageError = (photoId: string) => {
+  const handleImageError = useCallback((photoId: string): void => {
     setFailedImages((prev) => new Set(prev).add(photoId))
-  }
+  }, [])
 
   useEffect(() => {
     selectAllPhotos({ limit: 30 }).then(({ data }) => {

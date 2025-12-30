@@ -3,6 +3,8 @@ import { PhotosCarousel } from '@/widgets/PhotosCarousel'
 import { ProgressCard } from '@/widgets/progress/ProgressCard'
 import { TodoList } from '@/widgets/TodoList'
 
+const HALF_WIDTH_CARD_PROPS = { className: 'md:w-[calc(50%-0.5rem)] w-full' } as const
+
 export const DashboardPage = () => {
   return (
     <>
@@ -10,8 +12,8 @@ export const DashboardPage = () => {
       <PhotosCarousel />
       <ProgressCard />
       <div className="flex flex-col md:flex-row justify-between gap-4">
-        <TodoList cardProps={{ className: 'md:w-[calc(50%-0.5rem)] w-full' }} />
-        <PathList cardProps={{ className: 'md:w-[calc(50%-0.5rem)] w-full' }} />
+        <TodoList cardProps={HALF_WIDTH_CARD_PROPS} />
+        <PathList cardProps={HALF_WIDTH_CARD_PROPS} />
       </div>
     </>
   )

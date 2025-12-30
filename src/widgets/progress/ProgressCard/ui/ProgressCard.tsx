@@ -23,7 +23,7 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
       setData(data)
       setProgress(data || [])
     })
-  }, [reload, limit, progressReload])
+  }, [reload, limit, progressReload, setProgress])
 
   return (
     <ProgressChart

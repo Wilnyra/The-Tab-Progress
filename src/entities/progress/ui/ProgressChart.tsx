@@ -33,6 +33,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const CHART_MARGIN = { top: 4, left: -24, right: 12 } as const
+
 type ProgressChartProps = {
   data: ProgressData[]
   rightSlot?: ReactNode
@@ -93,11 +95,7 @@ export const ProgressChart = ({
           <AreaChart
             accessibilityLayer
             data={chartData}
-            margin={{
-              top: 4,
-              left: -24,
-              right: 12,
-            }}
+            margin={CHART_MARGIN}
           >
             <CartesianGrid vertical={false} />
             <YAxis

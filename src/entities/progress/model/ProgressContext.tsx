@@ -1,11 +1,11 @@
-import { createContext, useState } from 'react'
+import { createContext, useMemo, useState } from 'react'
 import type { Dispatch, FC, PropsWithChildren, SetStateAction } from 'react'
 import type { ProgressData } from './types'
 
 type ContextValue = {
   progress: ProgressData[]
   setProgress: Dispatch<SetStateAction<ContextValue['progress']>>
-  progressReload: boolean
+  progressReload: number
   setProgressReload: Dispatch<SetStateAction<ContextValue['progressReload']>>
 }
 
@@ -16,7 +16,7 @@ export type ProgressContextProviderProps = Partial<
 export const progressContext = createContext<ContextValue>({
   progress: [],
   setProgress: () => [],
-  progressReload: false,
+  progressReload: 0,
   setProgressReload: () => null,
 })
 
@@ -24,14 +24,17 @@ export const ProgressContextProvider: FC<
   PropsWithChildren<ProgressContextProviderProps>
 > = ({ children, progress: initial = [] }) => {
   const [progress, setProgress] = useState<ProgressData[]>(initial)
-  const [progressReload, setProgressReload] = useState(false)
+  const [progressReload, setProgressReload] = useState(0)
 
-  const value = {
-    progress,
-    setProgress,
-    progressReload,
-    setProgressReload,
-  }
+  const value = useMemo(
+    () => ({
+      progress,
+      setProgress,
+      progressReload,
+      setProgressReload,
+    }),
+    [progress, progressReload]
+  )
 
   return (
     <progressContext.Provider value={value}>

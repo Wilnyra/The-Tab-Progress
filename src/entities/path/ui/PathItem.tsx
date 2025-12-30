@@ -1,5 +1,5 @@
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { cn } from '@/shared/lib/cn'
 import { formatDate } from '@/shared/lib/formatDate'
 import { Button } from '@/shared/ui/Button'
@@ -20,7 +20,7 @@ type PathItemProps = {
   isLast: boolean
 }
 
-export const PathItem = ({
+const PathItemComponent = ({
   id,
   step,
   createdAt,
@@ -66,7 +66,10 @@ export const PathItem = ({
           </div>
 
           <div className="flex-shrink-0">
-            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenu
+              open={isDropdownOpen}
+              onOpenChange={setIsDropdownOpen}
+            >
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -104,3 +107,5 @@ export const PathItem = ({
     </div>
   )
 }
+
+export const PathItem = memo(PathItemComponent)

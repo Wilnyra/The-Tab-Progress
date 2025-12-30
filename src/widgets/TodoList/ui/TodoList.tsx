@@ -1,5 +1,5 @@
 import { type CheckedState } from '@radix-ui/react-checkbox'
-import { type ComponentProps, useEffect, useState } from 'react'
+import { type ComponentProps, useCallback, useEffect, useState } from 'react'
 import {
   selectAllTodo,
   type TodoData,
@@ -29,9 +29,9 @@ export const TodoList = ({ cardProps }: TodoListProps) => {
     })
   }, [reload])
 
-  const onUpdateTodo = async (id: TodoData['id'], checked: CheckedState) => {
+  const onUpdateTodo = useCallback(async (id: TodoData['id'], checked: CheckedState): Promise<void> => {
     if (typeof checked === 'boolean') await updateTodo(id, { is_done: checked })
-  }
+  }, [])
 
   return (
     <Card {...cardProps}>

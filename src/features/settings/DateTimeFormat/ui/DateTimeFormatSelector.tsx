@@ -33,11 +33,13 @@ export const DateTimeFormatSelector = (): JSX.Element => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {DATE_FORMAT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
+            {DATE_FORMAT_OPTIONS.map(
+              (option: { value: DateFormat; label: string }) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>
@@ -49,11 +51,13 @@ export const DateTimeFormatSelector = (): JSX.Element => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {TIME_FORMAT_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
+            {TIME_FORMAT_OPTIONS.map(
+              (option: { value: TimeFormat; label: string }) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>
