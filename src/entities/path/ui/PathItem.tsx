@@ -51,7 +51,7 @@ const PathItemComponent = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {isLast ? null : (
-        <div className="absolute left-[3.25rem] top-8 bottom-0 w-0.5 bg-border" />
+        <div className="absolute left-[0.35rem] top-7 bottom-0 w-0.5 bg-border" />
       )}
 
       <div className="flex-shrink-0 w-3 h-3 rounded-full bg-primary ring-4 ring-background z-10 mt-1.5" />
