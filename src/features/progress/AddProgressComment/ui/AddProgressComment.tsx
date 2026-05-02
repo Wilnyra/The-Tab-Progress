@@ -1,12 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   AddProgressCommentFormSchema,
   addProgressCommentFormSchema,
 } from '../model/addProgressCommentFormSchema'
-import { progressContext, updateProgress } from '@/entities/progress'
+import { updateProgress, useEventsLast30Days } from '@/entities/progress'
 import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 import { Button } from '@/shared/ui/Button'
 import {
@@ -28,7 +28,7 @@ type AddProgressCommentDialogProps = {
 export const AddProgressCommentDialog = ({
   onComplete,
 }: AddProgressCommentDialogProps) => {
-  const { progress } = useContext(progressContext)
+  const { events } = useEventsLast30Days()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -42,9 +42,9 @@ export const AddProgressCommentDialog = ({
   const onSubmit = async (data: AddProgressCommentFormSchema) => {
     setLoading(true)
     try {
-      const lastProgress = progress.at(-1)
-      if (checkTodayDate(lastProgress?.created_at)) {
-        await updateProgress(lastProgress?.id ?? '', { comment: data.value })
+      const lastEvent = events.at(-1)
+      if (checkTodayDate(lastEvent?.created_at)) {
+        await updateProgress(lastEvent?.id ?? '', { comment: data.value })
       }
       onComplete?.()
       setOpen(false)

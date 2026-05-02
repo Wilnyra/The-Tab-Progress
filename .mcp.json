@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "set -a && . ./.env.mcp && set +a && exec npx -y @supabase/mcp-server-supabase@latest --read-only --project-ref=\"$SUPABASE_PROJECT_REF\""
+      ]
+    }
+  }
+}

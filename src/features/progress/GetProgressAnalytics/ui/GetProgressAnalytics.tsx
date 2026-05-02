@@ -1,10 +1,11 @@
 import { Check, Copy, NotebookPen } from 'lucide-react'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { formatProgress } from '../lib/formatProgress'
 import {
+  aggregateEventsToDays,
   analyzeProgressPrompt,
   getLastQueueArray,
-  progressContext,
+  useEventsLast30Days,
 } from '@/entities/progress'
 import { Button } from '@/shared/ui/Button'
 import {
@@ -23,12 +24,14 @@ const DIALOG_DESCRIPTION =
   'Copy your progress below and use it with an AI assistant to get a personalized analysis or coaching advice.'
 
 export const GetProgressAnalytics = () => {
-  const { progress } = useContext(progressContext)
+  const { events } = useEventsLast30Days()
   const [open, setOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
+  const dailyData = aggregateEventsToDays(events)
+  const streakDailyData = getLastQueueArray(dailyData)
   const formattedProgress = formatProgress(
-    getLastQueueArray(progress),
+    streakDailyData,
     analyzeProgressPrompt,
   )
 

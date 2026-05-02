@@ -1,7 +1,9 @@
-export type ProgressData = {
+export type ProgressEvent = {
   id: string
-  value: number
+  duration_seconds: number
   created_at: string
   user_id: string
-  comment?: string
+  comment?: string | null
 }
+
+export type ProgressData = ProgressEvent & { value: number }

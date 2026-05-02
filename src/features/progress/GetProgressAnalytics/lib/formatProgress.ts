@@ -1,4 +1,5 @@
-import { ProgressData } from '@/entities/progress'
+import type { ProgressData } from '@/entities/progress'
+import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 
 export const formatProgress = (items: ProgressData[], prefix = '') => {
   return prefix + items
@@ -9,14 +10,15 @@ export const formatProgress = (items: ProgressData[], prefix = '') => {
         day: 'numeric',
       })
 
+      const duration = formatSecondsToTime(item.duration_seconds)
       const cleanedComment =
         item.comment?.replace(/\n/g, ' ').trim() || null
 
       return [
         `Day: ${date}`,
-        `Value: ${item.value}`,
+        `Duration: ${duration}`,
         cleanedComment ? `Comment: ${cleanedComment}` : null,
-        ''
+        '',
       ]
         .filter(Boolean)
         .join('\n')
