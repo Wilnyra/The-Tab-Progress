@@ -36,6 +36,19 @@ const chartConfig = {
 
 const CHART_MARGIN = { top: 4, left: -24, right: 12 } as const
 
+const formatAxisDate = (value: string): string =>
+  new Date(value).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  })
+
+const formatTooltipDate = (value: unknown): string =>
+  new Date(String(value)).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
 type ProgressChartProps = {
   data: ProgressData[]
   rightSlot?: ReactNode
@@ -122,8 +135,14 @@ export const ProgressChart = ({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tickFormatter={formatAxisDate}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent labelFormatter={formatTooltipDate} />
+              }
+            />
             <defs>
               <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
                 <stop

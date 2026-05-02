@@ -1,7 +1,11 @@
-import { useContext, type ComponentProps } from 'react'
+import { type ComponentProps } from 'react'
 import { getProgressEmoji } from '../lib/getProgressEmoji'
 import { ProgressInRowSkeleton } from './ProgressInRowSkeleton'
-import { getLastQueueArray, progressContext } from '@/entities/progress'
+import {
+  aggregateEventsToDays,
+  getLastQueueArray,
+  useEventsLast30Days,
+} from '@/entities/progress'
 import {
   Card,
   CardContent,
@@ -15,8 +19,9 @@ type ProgressInRowProps = {
 }
 
 export const ProgressInRow = ({ cardProps }: ProgressInRowProps) => {
-  const { progress, isLoading } = useContext(progressContext)
-  const datesInRowLength = getLastQueueArray(progress).length
+  const { events, isLoading } = useEventsLast30Days()
+  const dailyData = aggregateEventsToDays(events)
+  const datesInRowLength = getLastQueueArray(dailyData).length
 
   if (isLoading) {
     return <ProgressInRowSkeleton cardProps={cardProps} />

@@ -1,18 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   type AddProgressFormSchema,
   addProgressFormSchema,
 } from '../model/addProgressFormSchema'
-import {
-  insertProgress,
-  progressContext,
-  updateProgress,
-} from '@/entities/progress'
+import { insertProgress } from '@/entities/progress'
 import { useAuth } from '@/entities/session/lib/useAuth'
-import { checkTodayDate } from '@/shared/lib/checkTodayDate'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 import {
   Dialog,
@@ -32,7 +27,6 @@ type AddProgressDialogProps = {
 
 export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
   const { session } = useAuth()
-  const { progress } = useContext(progressContext)
   const [open, setOpen] = useState(false)
 
   const formContext = useForm<AddProgressFormSchema>({
@@ -43,15 +37,9 @@ export const AddProgressDialog = ({ onComplete }: AddProgressDialogProps) => {
   })
 
   const onSubmit = async (data: AddProgressFormSchema) => {
-    const currentMinutes = parseInt(data.value)
-    const lastProgress = progress.at(-1);
-    if (checkTodayDate(lastProgress?.created_at)) {
-      await updateProgress(lastProgress?.id || '', {
-        value: currentMinutes + (lastProgress?.value || 0),
-      })
-    } else {
-      await insertProgress(currentMinutes, session?.user.id || '')
-    }
+    const minutes = parseInt(data.value)
+    const durationSeconds = minutes * 60
+    await insertProgress(durationSeconds, session?.user.id || '')
 
     setOpen(false)
     onComplete?.()
