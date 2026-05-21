@@ -1,4 +1,4 @@
-import { CirclePlay, CircleStop } from 'lucide-react'
+import { CirclePlay, CircleStop, X } from 'lucide-react'
 import { type ComponentProps } from 'react'
 import { useCountProgress } from '../lib/useCountProgress'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
@@ -16,7 +16,7 @@ type CountProgressProps = {
 }
 
 export const CountProgress = ({ cardProps }: CountProgressProps) => {
-  const { count, isCounting, toggleCount } = useCountProgress()
+  const { count, isCounting, toggleCount, cancelCount } = useCountProgress()
 
   return (
     <Card {...cardProps}>
@@ -28,12 +28,25 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
       </CardHeader>
       <CardContent>
         <div className="flex gap-4 items-center">
-          <Button
-            onClick={toggleCount}
-            className="w-32 h-32 rounded-full [&_svg]:size-full bg-chart-2 hover:bg-chart-2/95"
-          >
-            {isCounting ? <CircleStop /> : <CirclePlay />}
-          </Button>
+          <div className="relative inline-flex">
+            <Button
+              onClick={toggleCount}
+              className="w-32 h-32 rounded-full [&_svg]:size-full bg-chart-2 hover:bg-chart-2/95"
+            >
+              {isCounting ? <CircleStop /> : <CirclePlay />}
+            </Button>
+            {isCounting ? (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={cancelCount}
+                aria-label="Cancel counting progress"
+                className="absolute -top-1 -right-1 w-10 h-10 p-0 rounded-full ring-4 ring-card [&_svg]:size-5 hover:bg-destructive hover:brightness-90"
+              >
+                <X />
+              </Button>
+            ) : null}
+          </div>
           <div className="ml-10">
             <p>Current:</p>
             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">

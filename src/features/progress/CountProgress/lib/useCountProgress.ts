@@ -9,6 +9,7 @@ export const useCountProgress = () => {
     count,
     startCountTime,
     stopCountTime,
+    cancelCountTime,
     isCounting,
   } = useCountTimeProgress()
   const { setProgressReload } = useContext(progressContext)
@@ -37,5 +38,9 @@ export const useCountProgress = () => {
     }
   }, [isCounting, count, startCountTime, stopCountTime, handleProgressUpdate])
 
-  return { count, isCounting, toggleCount }
+  const cancelCount = useCallback(() => {
+    cancelCountTime()
+  }, [cancelCountTime])
+
+  return { count, isCounting, toggleCount, cancelCount }
 }

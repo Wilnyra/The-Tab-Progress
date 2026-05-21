@@ -47,6 +47,11 @@ export const useCountTimeProgress = () => {
     clearIntervalRef()
   }
 
+  const cancelCountTime = () => {
+    stopCountTime()
+    setCount(0)
+  }
+
   useEffect(() => {
     if (isCounting) countFn()
 
@@ -59,6 +64,7 @@ export const useCountTimeProgress = () => {
     count,
     startCountTime,
     stopCountTime,
+    cancelCountTime,
     isCounting,
   }
 }
