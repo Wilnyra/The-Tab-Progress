@@ -34,3 +34,6 @@ tsconfig.tsbuildinfo
 
 .claude/
 supabase/
+
+# Playwright MCP scratch artifacts (screenshots, snapshots, console logs)
+.playwright-mcp/
