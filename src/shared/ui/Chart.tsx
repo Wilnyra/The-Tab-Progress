@@ -146,6 +146,7 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: 'line' | 'dot' | 'dashed'
       nameKey?: string
       labelKey?: string
+      valueFormatter?: (value: number) => string
     }
 >(
   (
@@ -163,6 +164,7 @@ const ChartTooltipContent = React.forwardRef<
       color: _color,
       nameKey,
       labelKey,
+      valueFormatter,
     },
     ref,
   ) => {
@@ -241,12 +243,19 @@ const ChartTooltipContent = React.forwardRef<
                     ) : (
                       !hideIndicator && (
                         <div
+                          style={{
+                            backgroundColor:
+                              indicator === 'dashed'
+                                ? 'transparent'
+                                : `var(--color-${key})`,
+                            borderColor: `var(--color-${key})`,
+                          }}
                           className={cn(
                             'shrink-0 rounded-[2px]',
                             {
-                              'h-2.5 w-2.5 bg-[var(--color-value)] border-[var(--color-value)]': indicator === 'dot',
-                              'w-1 bg-[var(--color-value)] border-[var(--color-value)]': indicator === 'line',
-                              'w-0 border-[1.5px] border-dashed border-[var(--color-value)] bg-transparent':
+                              'h-2.5 w-2.5': indicator === 'dot',
+                              'w-1': indicator === 'line',
+                              'w-0 border-[1.5px] border-dashed':
                                 indicator === 'dashed',
                               'my-0.5': nestLabel && indicator === 'dashed',
                             },
@@ -256,7 +265,7 @@ const ChartTooltipContent = React.forwardRef<
                     )}
                     <div
                       className={cn(
-                        'flex flex-1 justify-between leading-none',
+                        'flex flex-1 justify-between gap-3 leading-none',
                         nestLabel ? 'items-end' : 'items-center',
                       )}
                     >
@@ -266,9 +275,11 @@ const ChartTooltipContent = React.forwardRef<
                           {itemConfig?.label || item.name}
                         </span>
                       </div>
-                      {item.value && (
+                      {item.value !== undefined && item.value !== null && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                          {valueFormatter && typeof item.value === 'number'
+                            ? valueFormatter(item.value)
+                            : item.value.toLocaleString()}
                         </span>
                       )}
                     </div>

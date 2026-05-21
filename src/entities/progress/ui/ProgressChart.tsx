@@ -8,6 +8,7 @@ import { ProgressData } from '../model/types'
 import { ProgressChartSkeleton } from './ProgressChartSkeleton'
 import { ProgressEmptyState } from './ProgressEmptyState'
 import { cn } from '@/shared/lib/cn'
+import { formatMinutesToHm } from '@/shared/lib/formatMinutesToHm'
 import { getProgressPath } from '@/shared/lib/routePaths'
 import {
   Card,
@@ -34,7 +35,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-const CHART_MARGIN = { top: 4, left: -24, right: 12 } as const
+const CHART_MARGIN = { top: 4, left: 0, right: 12 } as const
 
 const formatAxisDate = (value: string): string =>
   new Date(value).toLocaleDateString('en-US', {
@@ -128,7 +129,7 @@ export const ProgressChart = ({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => `${value}`}
+              tickFormatter={(value: number) => formatMinutesToHm(value)}
             />
             <XAxis
               dataKey="created_at"
@@ -140,7 +141,10 @@ export const ProgressChart = ({
             <ChartTooltip
               cursor={false}
               content={
-                <ChartTooltipContent labelFormatter={formatTooltipDate} />
+                <ChartTooltipContent
+                  labelFormatter={formatTooltipDate}
+                  valueFormatter={formatMinutesToHm}
+                />
               }
             />
             <defs>
