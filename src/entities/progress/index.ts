@@ -12,7 +12,10 @@ export { ProgressChart } from './ui/ProgressChart'
 export { ProgressEmptyState } from './ui/ProgressEmptyState'
 export type { ProgressData, ProgressEvent } from './model/types'
 export { insertProgress } from './api/insertProgress'
-export { PROGRESS_START_TIMESTAMP } from './lib/constants'
+export {
+  PROGRESS_START_TIMESTAMP,
+  PROGRESS_DESCRIPTION,
+} from './lib/constants'
 export {
   ProgressContextProvider,
   progressContext,
