@@ -1,4 +1,6 @@
+import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   ProgressChart,
   aggregateEventsToDays,
@@ -9,6 +11,8 @@ import {
 import { AddProgressDialog } from '@/features/progress/AddProgress'
 import { SelectLimit } from '@/features/progress/SelectLimit'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
+import { getProgressPath } from '@/shared/lib/routePaths'
+import { buttonVariants } from '@/shared/ui/Button'
 import {
   Card,
   CardContent,
@@ -56,7 +60,17 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
   const rightSlot = (
     <div className="flex gap-4">
       {selectLimit ? <SelectLimit setLimit={setLimit} /> : null}
-      <AddProgressDialog />
+      {selectLimit ? (
+        <AddProgressDialog />
+      ) : (
+        <Link
+          to={getProgressPath()}
+          className={buttonVariants({ variant: 'default' })}
+          aria-label="Open Progress page"
+        >
+          <ArrowRight />
+        </Link>
+      )}
     </div>
   )
 

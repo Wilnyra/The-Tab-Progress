@@ -21,7 +21,7 @@ export const LayoutHeader = (): JSX.Element => {
   }
 
   return (
-    <header className="bg-background h-12 rounded-b-xl px-3 flex items-center border border-t-0 shadow text-foreground justify-between">
+    <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/60 h-12 rounded-b-xl px-3 flex items-center border border-t-0 shadow text-foreground justify-between">
       <div className="flex items-center gap-2">
         <div
           className="overflow-hidden transition-all duration-300 ease-in-out"

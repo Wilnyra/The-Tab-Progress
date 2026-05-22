@@ -219,7 +219,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
               <button
                 type="button"
                 onClick={handleStartEditing}
-                className="group flex w-full items-center justify-between gap-2 h-10 rounded-md bg-muted/40 px-3 text-left transition-colors hover:bg-muted/60"
+                className="group flex w-full items-center justify-between gap-2 h-10 rounded-md border border-border bg-muted/40 px-3 text-left transition-colors hover:bg-muted/60"
                 aria-label="Edit session description"
               >
                 <span className="flex min-w-0 items-center gap-2">
@@ -271,7 +271,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-4 pt-2 sm:grid sm:grid-cols-3 sm:items-center sm:gap-4">
+            <div className="flex flex-col gap-4 pt-2 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4">
               <div className="min-w-0 order-1 sm:order-none">
                 {showSuggestions ? (
                   <div className="space-y-1.5">
@@ -313,23 +313,18 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
                   )}
                 >
                   {isCounting ? (
-                    <CircleStop className="h-10 w-10" />
+                    <CircleStop className="h-20 w-20" />
                   ) : (
-                    <CirclePlay className="h-10 w-10" />
+                    <CirclePlay className="h-20 w-20" />
                   )}
                 </button>
-                <div className="flex flex-col items-center gap-0.5">
-                  <div
-                    className={cn(
-                      'font-mono font-semibold tabular-nums text-3xl',
-                      isCounting ? 'text-foreground' : 'text-muted-foreground',
-                    )}
-                  >
-                    {formatSecondsToTime(count)}
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                    {isCounting ? 'Current session' : 'Current'}
-                  </div>
+                <div
+                  className={cn(
+                    'font-mono font-semibold tabular-nums text-3xl',
+                    isCounting ? 'text-foreground' : 'text-muted-foreground',
+                  )}
+                >
+                  {formatSecondsToTime(count)}
                 </div>
               </div>
 
