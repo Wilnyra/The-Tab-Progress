@@ -64,7 +64,13 @@ export const AddTodoDialog = ({ onComplete }: AddTodoDialog) => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="todo" label="Task description" />
+              <FormInput
+                name="todo"
+                label="Task description"
+                autoFocus
+                enterKeyHint="done"
+                autoComplete="off"
+              />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}

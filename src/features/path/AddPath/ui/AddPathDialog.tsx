@@ -67,6 +67,7 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
                 name="step"
                 label="Achievement"
                 placeholder="e.g., Passed technical interview, Completed major project"
+                autoFocus
               />
 
               <FormMessage className="text-destructive text-sm">

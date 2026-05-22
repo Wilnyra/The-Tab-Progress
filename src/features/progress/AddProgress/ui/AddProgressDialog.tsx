@@ -67,7 +67,14 @@ export const AddProgressDialog = () => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="value" type="number" />
+              <FormInput
+                name="value"
+                type="number"
+                inputMode="numeric"
+                autoFocus
+                enterKeyHint="done"
+                autoComplete="off"
+              />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
