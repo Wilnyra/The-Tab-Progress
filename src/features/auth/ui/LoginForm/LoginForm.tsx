@@ -64,7 +64,17 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="email" label="Email" />
+              <FormInput
+                name="email"
+                label="Email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="next"
+              />
               <FormInput
                 name="password"
                 label={
@@ -79,13 +89,19 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
                   </div>
                 }
                 type="password"
+                autoComplete="current-password"
+                enterKeyHint="done"
               />
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
               </FormMessage>
 
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={formContext.formState.isSubmitting}
+              >
                 Login
               </Button>
             </div>

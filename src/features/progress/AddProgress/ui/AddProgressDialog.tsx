@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
-import { useContext, useState } from 'react'
+import { useContext, useState, type FocusEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   type AddProgressFormSchema,
@@ -29,13 +29,24 @@ export const AddProgressDialog = () => {
   const formContext = useForm<AddProgressFormSchema>({
     resolver: zodResolver(addProgressFormSchema),
     defaultValues: {
-      value: '',
+      hours: 0,
+      minutes: 0,
     },
   })
 
-  const onSubmit = async (data: AddProgressFormSchema) => {
-    const minutes = parseInt(data.value)
-    const durationSeconds = minutes * 60
+  const selectOnFocus = (e: FocusEvent<HTMLInputElement>) => {
+    e.target.select()
+  }
+
+  const clampToRange = (max: number) => (raw: string) => {
+    const digits = raw.replace(/\D/g, '')
+    if (digits === '') return ''
+    const parsed = parseInt(digits, 10)
+    return Math.min(parsed, max)
+  }
+
+  const onSubmit = async ({ hours, minutes }: AddProgressFormSchema) => {
+    const durationSeconds = (hours * 60 + minutes) * 60
     const { error } = await insertProgress(
       durationSeconds,
       session?.user.id || '',
@@ -55,6 +66,7 @@ export const AddProgressDialog = () => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
+        aria-label="Add progress entry"
       >
         <Plus />
       </DialogTrigger>
@@ -67,21 +79,46 @@ export const AddProgressDialog = () => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput
-                name="value"
-                type="number"
-                inputMode="numeric"
-                autoFocus
-                enterKeyHint="done"
-                autoComplete="off"
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <FormInput
+                  name="hours"
+                  label="Hours (0–12)"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={2}
+                  autoFocus
+                  enterKeyHint="next"
+                  autoComplete="off"
+                  onFocus={selectOnFocus}
+                  transform={clampToRange(12)}
+                />
+                <FormInput
+                  name="minutes"
+                  label="Minutes (0–59)"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={2}
+                  enterKeyHint="done"
+                  autoComplete="off"
+                  onFocus={selectOnFocus}
+                  transform={clampToRange(59)}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Up to 12h</p>
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
               </FormMessage>
 
               <DialogFooter>
-                <Button type="submit">Confirm</Button>
+                <Button
+                  type="submit"
+                  disabled={formContext.formState.isSubmitting}
+                >
+                  Confirm
+                </Button>
               </DialogFooter>
             </div>
           </form>

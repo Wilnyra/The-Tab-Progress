@@ -233,7 +233,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
                     {description || 'Add a note'}
                   </span>
                 </span>
-                <Pencil className="h-3.5 w-3.5 text-muted-foreground opacity-60 transition-opacity group-hover:opacity-100" />
+                <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
             )
           ) : (

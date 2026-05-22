@@ -26,19 +26,19 @@ export const LayoutHeader = (): JSX.Element => {
         <div
           className="overflow-hidden transition-all duration-300 ease-in-out"
           style={{
-            width: showBackButton ? '32px' : '0px',
+            width: showBackButton ? '44px' : '0px',
             opacity: showBackButton ? 1 : 0,
             pointerEvents: showBackButton ? 'auto' : 'none',
           }}
         >
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={handleBack}
             aria-label="Go back to dashboard"
-            className="h-8 w-8 p-0 shrink-0"
+            className="shrink-0"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Button>
         </div>
         <h1 className="text-base font-semibold transition-all duration-300 ease-in-out whitespace-nowrap">
@@ -48,7 +48,7 @@ export const LayoutHeader = (): JSX.Element => {
       <div className="flex items-center gap-2">
         <Link
           to={getSettingsPath()}
-          className={buttonVariants({ variant: 'outline', size: 'sm' })}
+          className={buttonVariants({ variant: 'ghost', size: 'icon' })}
           aria-label="Open settings"
         >
           <Settings />

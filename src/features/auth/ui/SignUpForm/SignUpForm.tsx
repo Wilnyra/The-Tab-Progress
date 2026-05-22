@@ -70,16 +70,32 @@ export const SignUpForm = () => {
         <Form {...formContext}>
           <form onSubmit={formContext.handleSubmit(onSubmit)}>
             <div className="grid gap-4">
-              <FormInput name="email" label="Email" />
+              <FormInput
+                name="email"
+                label="Email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="next"
+              />
               <FormInput
                 name="password"
                 label={<div className="flex">Password</div>}
                 type="password"
+                autoComplete="new-password"
+                enterKeyHint="done"
               />
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
               </FormMessage>
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={formContext.formState.isSubmitting}
+              >
                 Sign Up
               </Button>
             </div>
