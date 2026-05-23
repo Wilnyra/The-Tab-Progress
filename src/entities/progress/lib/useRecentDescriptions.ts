@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useEventsLast30Days } from '@/entities/progress'
+import { useEventsLast30Days } from './useEventsLast30Days'
 
 export const useRecentDescriptions = (limit = 3) => {
   const { events } = useEventsLast30Days()

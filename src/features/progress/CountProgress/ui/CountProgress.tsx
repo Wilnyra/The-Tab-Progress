@@ -16,8 +16,7 @@ import {
   type KeyboardEvent,
 } from 'react'
 import { useCountProgress } from '../lib/useCountProgress'
-import { useRecentDescriptions } from '../lib/useRecentDescriptions'
-import { useEventsLast30Days } from '@/entities/progress'
+import { useEventsLast30Days, useRecentDescriptions } from '@/entities/progress'
 import { cn } from '@/shared/lib/cn'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { Button } from '@/shared/ui/Button'

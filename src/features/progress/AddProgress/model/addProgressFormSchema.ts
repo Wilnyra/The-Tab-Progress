@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const MAX_PROGRESS_MINUTES = 12 * 60
+export const MAX_COMMENT_LENGTH = 200
 
 export const addProgressFormSchema = z
   .object({
@@ -14,6 +15,11 @@ export const addProgressFormSchema = z
       .int('Minutes must be a whole number')
       .min(0, 'Minutes must be 0 or more')
       .max(59, 'Minutes must be 59 or less'),
+    comment: z
+      .string()
+      .max(MAX_COMMENT_LENGTH, `Comment must be ${MAX_COMMENT_LENGTH} characters or fewer`)
+      .optional()
+      .default(''),
   })
   .refine(
     ({ hours, minutes }) => {
