@@ -8,6 +8,7 @@ import {
   Outlet,
 } from 'react-router-dom'
 import { useAuth } from '@/entities/session'
+import { PasswordRecoveryRedirect } from '@/features/auth'
 import { useTheme } from '@/features/settings/ToogleTheme'
 import {
   getLoginPath,
@@ -17,6 +18,7 @@ import {
   getSettingsPath,
 } from '@/shared/lib/routePaths'
 import { Loader } from '@/shared/ui/Loader'
+import { ToastProvider } from '@/shared/ui/Toast'
 import { Layout } from '@/widgets/Layout'
 import './index.css'
 
@@ -52,22 +54,25 @@ function App(): JSX.Element {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<Loader fullScreen size="lg" text="Loading..." />}>
-        <Routes>
-          <Route path={getLoginPath()} element={<LoginPage />} />
-          <Route path={getOnboardingPath()} element={<OnboardingPage />} />
+      <ToastProvider>
+        <PasswordRecoveryRedirect />
+        <Suspense fallback={<Loader fullScreen size="lg" text="Loading..." />}>
+          <Routes>
+            <Route path={getLoginPath()} element={<LoginPage />} />
+            <Route path={getOnboardingPath()} element={<OnboardingPage />} />
 
-          <Route element={<RequireAuth />}>
-            <Route element={<Layout />}>
-              <Route index element={<DashboardPage />} />
-              <Route path={getProgressPath()} element={<ProgressPage />} />
-              <Route path={getSettingsPath()} element={<SettingsPage />} />
+            <Route element={<RequireAuth />}>
+              <Route element={<Layout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path={getProgressPath()} element={<ProgressPage />} />
+                <Route path={getSettingsPath()} element={<SettingsPage />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="*" element={<Navigate to={getRootPath()} />} />
-        </Routes>
-      </Suspense>
+            <Route path="*" element={<Navigate to={getRootPath()} />} />
+          </Routes>
+        </Suspense>
+      </ToastProvider>
     </BrowserRouter>
   )
 }

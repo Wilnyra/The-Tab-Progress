@@ -1,8 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { usePasswordReset } from '../../lib/usePasswordReset'
+import {
+  type LoginFormSchema,
+  loginFormSchema,
+} from '../../model/loginFormSchema'
 import { getRootPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
@@ -13,21 +17,30 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { Form, FormInput, FormMessage } from '@/shared/ui/Form'
-
-type LoginFormData = {
-  email: string
-  password: string
-}
+import {
+  Form,
+  FormInput,
+  FormMessage,
+  FormPasswordInput,
+} from '@/shared/ui/Form'
 
 type LoginFormProps = {
-  onCLickSignUp: () => void;
+  onClickSignUp: () => void
+  onClickMagicLink: () => void
 }
 
-export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
+export const LoginForm = ({
+  onClickSignUp,
+  onClickMagicLink,
+}: LoginFormProps): JSX.Element => {
   const navigate = useNavigate()
   const location = useLocation()
   const submittingRef = useRef(false)
+  const {
+    status: resetStatus,
+    error: resetError,
+    requestReset,
+  } = usePasswordReset()
 
   const formContext = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
@@ -37,14 +50,20 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
     },
   })
 
-  const onSubmit = async ({ email, password }: LoginFormData) => {
+  const handleSubmit = async ({
+    email,
+    password,
+  }: LoginFormSchema): Promise<void> => {
     if (submittingRef.current) return
     submittingRef.current = true
 
     const from = location.state?.from?.pathname || getRootPath()
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
       if (error) {
         formContext.setError('root.serverError', { message: error.message })
       } else {
@@ -52,12 +71,33 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
       }
     } catch (error) {
       formContext.setError('root.serverError', {
-        message: error instanceof Error ? error.message : 'Something went wrong',
+        message:
+          error instanceof Error ? error.message : 'Something went wrong',
       })
     } finally {
       submittingRef.current = false
     }
   }
+
+  const handleForgotPassword = async (): Promise<void> => {
+    const isEmailValid = await formContext.trigger('email')
+    if (!isEmailValid) {
+      formContext.setFocus('email')
+      return
+    }
+    await requestReset(formContext.getValues('email'))
+  }
+
+  const forgotPasswordButton = (
+    <button
+      type="button"
+      onClick={handleForgotPassword}
+      disabled={resetStatus === 'sending'}
+      className="-my-3 inline-flex min-h-11 items-center text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50 sm:my-0 sm:min-h-0"
+    >
+      {resetStatus === 'sending' ? 'Sending...' : 'Forgot password?'}
+    </button>
+  )
 
   return (
     <Card className="mx-auto max-w-sm">
@@ -69,7 +109,7 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
       </CardHeader>
       <CardContent>
         <Form {...formContext}>
-          <form onSubmit={formContext.handleSubmit(onSubmit)}>
+          <form onSubmit={formContext.handleSubmit(handleSubmit)}>
             <div className="grid gap-4">
               <FormInput
                 name="email"
@@ -82,23 +122,24 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
                 spellCheck={false}
                 enterKeyHint="next"
               />
-              <FormInput
+              <FormPasswordInput
                 name="password"
-                label={
-                  <div className="flex">
-                    Password
-                    {/* <Link
-                      to="#"
-                      className="ml-auto inline-block text-sm underline"
-                    >
-                      Forgot your password?
-                    </Link> */}
-                  </div>
-                }
-                type="password"
+                label="Password"
+                labelAction={forgotPasswordButton}
                 autoComplete="current-password"
                 enterKeyHint="done"
               />
+
+              {resetStatus === 'sent' ? (
+                <p role="status" className="text-sm text-muted-foreground">
+                  Check your email for a link to reset your password.
+                </p>
+              ) : null}
+              {resetError ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {resetError}
+                </p>
+              ) : null}
 
               <FormMessage className="text-destructive text-sm">
                 {formContext.formState.errors.root?.serverError?.message}
@@ -111,12 +152,24 @@ export const LoginForm = ({onCLickSignUp}: LoginFormProps) => {
               >
                 Login
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={onClickMagicLink}
+              >
+                Email me a sign-in link
+              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{' '}
-              <Link to="#" className="underline" onClick={onCLickSignUp}>
+              <button
+                type="button"
+                className="underline underline-offset-4"
+                onClick={onClickSignUp}
+              >
                 Sign up
-              </Link>
+              </button>
             </div>
           </form>
         </Form>

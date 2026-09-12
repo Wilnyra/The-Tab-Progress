@@ -4,13 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/entities/session'
 import { getLoginPath } from '@/shared/lib/routePaths'
 import { Button } from '@/shared/ui/Button'
+import { useToast } from '@/shared/ui/Toast'
 
 export const LogoutButton = (): JSX.Element => {
   const { signOut } = useAuth()
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLogout = async (): Promise<void> => {
+    if (isLoading) return
     setIsLoading(true)
     try {
       await signOut()
@@ -19,6 +22,10 @@ export const LogoutButton = (): JSX.Element => {
       if (import.meta.env.DEV) {
         console.error('Logout failed:', error)
       }
+      showToast({
+        message: "Couldn't log out. Check your connection and try again.",
+        variant: 'error',
+      })
     } finally {
       setIsLoading(false)
     }

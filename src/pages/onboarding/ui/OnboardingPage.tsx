@@ -7,6 +7,7 @@ import { DashboardStep } from './steps/DashboardStep'
 import { FeaturesStep } from './steps/FeaturesStep'
 import { QuickStartStep } from './steps/QuickStartStep'
 import { WelcomeStep } from './steps/WelcomeStep'
+import { Button } from '@/shared/ui/Button'
 
 export const OnboardingPage: FC = () => {
   const {
@@ -22,7 +23,6 @@ export const OnboardingPage: FC = () => {
   const stepProps: StepProps = {
     onNext: handleNext,
     onBack: handleBack,
-    onSkip: handleSkip,
     canGoBack,
     isLastStep,
   }
@@ -31,7 +31,18 @@ export const OnboardingPage: FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
       <h2 className="sr-only">Onboarding</h2>
       <div className="w-full max-w-4xl">
-        <StepIndicator current={currentStep} total={totalSteps} />
+        <div className="relative flex min-h-11 items-center justify-center">
+          <StepIndicator current={currentStep} total={totalSteps} />
+          {isLastStep ? null : (
+            <Button
+              variant="ghost"
+              onClick={handleSkip}
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground"
+            >
+              Skip
+            </Button>
+          )}
+        </div>
 
         <div className="mt-8">
           {currentStep === 0 ? <WelcomeStep {...stepProps} /> : null}

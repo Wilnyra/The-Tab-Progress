@@ -1,13 +1,26 @@
-import { TodoData } from './updateTodo'
+import type { PostgrestError } from '@supabase/supabase-js'
+import type { TodoData } from '../model/types'
 import { supabase } from '@/shared/lib/supabase'
 
-export const insertTodo = async (todo: TodoData['task'], userId: string) => {
+const isTodoData = (value: unknown): value is TodoData =>
+  typeof value === 'object' &&
+  value !== null &&
+  'id' in value &&
+  'task' in value &&
+  typeof value.task === 'string'
+
+export const insertTodo = async (
+  task: TodoData['task'],
+  userId: string,
+): Promise<{ data: TodoData | null; error: PostgrestError | null }> => {
   const { data, error } = await supabase
     .from('todo')
-    .insert({ task: todo, user_id: userId })
+    .insert({ task, user_id: userId })
+    .select()
+    .single()
 
   return {
-    data,
+    data: isTodoData(data) ? data : null,
     error,
   }
 }

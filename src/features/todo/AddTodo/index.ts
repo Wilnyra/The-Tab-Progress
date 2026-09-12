@@ -1,1 +1,1 @@
-export { AddTodoDialog } from './ui/AddTodoDialog'
+export { AddTodoInline } from './ui/AddTodoInline'

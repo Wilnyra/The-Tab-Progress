@@ -6,7 +6,6 @@ import { Card, CardHeader, CardContent } from '@/shared/ui/Card'
 export const WelcomeStep: FC<StepProps> = ({
   onNext,
   onBack,
-  onSkip,
   canGoBack,
   isLastStep,
 }) => {
@@ -35,7 +34,6 @@ export const WelcomeStep: FC<StepProps> = ({
           <NavigationButtons
             onNext={onNext}
             onBack={onBack}
-            onSkip={onSkip}
             canGoBack={canGoBack}
             isLastStep={isLastStep}
           />

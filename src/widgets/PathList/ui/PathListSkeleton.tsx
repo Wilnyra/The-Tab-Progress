@@ -18,7 +18,7 @@ type PathListSkeletonProps = {
 export const PathListSkeleton = ({ cardProps }: PathListSkeletonProps) => {
   return (
     <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
-      <CardHeader className="flex justify-between flex-row items-start">
+      <CardHeader className="flex-row items-center justify-between space-y-0">
         <div className="space-y-1.5">
           <CardTitle>Path</CardTitle>
           <CardDescription>Track your journey milestones</CardDescription>

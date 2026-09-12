@@ -38,28 +38,33 @@ export const EditPathDialog = ({
     },
   })
 
-  const onSubmit = ({ step }: EditPathFormSchema) => {
-    updatePath(pathId, { step }).then(() => {
-      onComplete?.()
-    })
+  const handleSubmit = async ({ step }: EditPathFormSchema): Promise<void> => {
+    const { error } = await updatePath(pathId, { step })
+    if (error) {
+      formContext.setError('root.serverError', {
+        message: `Couldn't save the milestone. ${error.message}`,
+      })
+      return
+    }
+    onComplete?.()
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Achievement</DialogTitle>
+          <DialogTitle>Edit milestone</DialogTitle>
           <DialogDescription>
-            Update your achievement or milestone.
+            Update your milestone or achievement.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...formContext}>
-          <form onSubmit={formContext.handleSubmit(onSubmit)}>
+          <form onSubmit={formContext.handleSubmit(handleSubmit)}>
             <div className="grid gap-4">
               <FormTextarea
                 name="step"
-                label="Achievement"
+                label="Milestone"
                 placeholder="e.g., Passed technical interview, Completed major project"
               />
 
@@ -68,7 +73,12 @@ export const EditPathDialog = ({
               </FormMessage>
 
               <DialogFooter>
-                <Button type="submit">Save Changes</Button>
+                <Button
+                  type="submit"
+                  disabled={formContext.formState.isSubmitting}
+                >
+                  Save
+                </Button>
               </DialogFooter>
             </div>
           </form>

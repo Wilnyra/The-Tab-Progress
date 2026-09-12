@@ -77,7 +77,7 @@ The system runs on **size-and-weight contrast, not typeface contrast.** A single
 - **Form rows:** stacked at 8–16px with `Label` directly above its field.
 
 ### Grid & Container
-- **App shell:** single centered content column constrained to a comfortable reading/tool width, with edge gutters that hold on large viewports rather than stretching the column.
+- **App shell:** single centered content column constrained to a comfortable reading/tool width, with edge gutters that hold on large viewports rather than stretching the column. On mobile (`< sm`) the gutter is dropped: header and page blocks run edge-to-edge, stacked 8px apart (`space-y-2`, `gap-2`); from `sm:` the column regains `px-2` and 16px gaps. Non-card sections (photos rail, settings) carry their own mobile inset so text never touches the screen edge.
 - **Dashboard:** path tiles flow in a responsive grid — multi-up on desktop, collapsing toward a single column on mobile, with the primary progress card given prominence.
 - **Settings:** a single stacked column of full-width rows (`label` + control), each separated by a `{colors.border}` hairline.
 - **Carousel rails** (`ScrollCarousel`, `PhotosCarousel`): horizontal scroll with peek-next affordance on narrow screens.
@@ -142,8 +142,8 @@ Sizes: `default` (h-11 mobile → h-9 desktop) · `sm` (h-10 mobile → h-8 desk
 
 ### Cards & Containers (`{component.card}`)
 
-- **`card`** — `rounded-xl border bg-card text-card-foreground shadow`. Flat, hairline-bordered, faintly raised.
-- **`card-header`** — `flex flex-col space-y-1.5 p-6`, holding `CardTitle` (`{typography.heading-card}`, `tracking-tight`) and `CardDescription` (`{typography.caption-md}`, `{colors.muted-foreground}`).
+- **`card`** — `rounded-xl border bg-card text-card-foreground shadow`. Flat, hairline-bordered, faintly raised. `variant="section"` marks a page block: on mobile it goes edge-to-edge (`max-sm:rounded-none max-sm:border-x-0`); nested cards (photo thumbnails, auth, onboarding) keep the default.
+- **`card-header`** — `flex flex-col space-y-1.5 p-6`, holding `CardTitle` (`{typography.heading-card}`, `tracking-tight`) and `CardDescription` (`{typography.caption-md}`, `{colors.muted-foreground}`). Row headers (title + action) use `flex-row items-center justify-between space-y-0` so the action is vertically centred on the title block. The progress card header (`ProgressHeader`) wraps: the range control sits inline before `+` from `md:`, and drops to a full-width second row on mobile.
 - **`card-content`** — `p-6 pt-0`. **`card-footer`** — `flex items-center p-6 pt-0`.
 - Specializations: the **count/timer surface** (large `tabular-nums` readout + start/stop + live `pulse-ring`), the **analytics card** (`{component.chart}` with `{colors.chart-2}`/`{colors.chart-1}` series), the **path tile** (name + recent-progress glance), and the **photo carousel card**.
 
@@ -159,10 +159,11 @@ The system's signature responsive component — one component, two presentations
 
 - Recharts wrapped in a themed container. Series colors are bound to CSS variables: the tracked metric uses `{colors.color-value}` (= `{colors.chart-2}`), the trend uses `{colors.color-trendValue}` (= `{colors.chart-1}`); additional series draw from `{colors.chart-3..5}`.
 - Axes/labels use `{typography.caption-sm}` in `{colors.muted-foreground}`. The chart is the one place categorical color is allowed to bloom — it is, after all, the hero.
+- **Range → visual:** `7D`/`30D`/`90D` render daily bars (empty days = 0); `180D`/`1Y` render a GitHub-style **heatmap** (`ProgressHeatmap`: week columns × weekday rows, month labels, `Less … More` legend) under the range total; `All` shows the total only. Heatmap intensity is 5 steps of `{colors.chart-2}` opacity (`bg-muted`, `/25`, `/50`, `/75`, full) relative to the busiest day — brighter on dark, deeper on light. A tooltip (day + time) follows hover, tap and arrow-key focus; on narrow screens the grid scrolls horizontally and opens at the latest week.
 
 ### Navigation & Layout
 
-- **Header/Layout** — app title + back/contextual control on the left; controls sit at `{rounded.md}`, the back button at the full 44px touch target. No persistent heavy top bar — the dashboard is the home.
+- **Header/Layout** — app title + back/contextual control on the left; controls sit at `{rounded.md}`, the back button at the full 44px touch target. No persistent heavy top bar — the dashboard is the home. The sticky header uses the same solid `bg-card` as the cards below it (no translucent/blur tint); edge-to-edge with a bottom hairline on mobile, `sm:rounded-b-xl sm:border-x` from `sm:`.
 - **Settings rows** — full-width `label` + control, separated by `{colors.border}` hairlines; groups include Theme toggle, Color Scheme picker (the accent swatch dots), Date/Time format, Default view, Account, Change password.
 - **Color-scheme swatches** — circular `{rounded.full}` dots (`color-preview-default/blue/green/purple/orange`) showing each accent before it is applied globally via `data-color-scheme`.
 

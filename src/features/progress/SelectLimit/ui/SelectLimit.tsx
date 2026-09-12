@@ -1,39 +1,54 @@
 import type { Dispatch, SetStateAction } from 'react'
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/shared/ui/Select'
+import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
+
+type RangeOption = {
+  value: string
+  label: string
+  limit: number | null
+}
+
+const RANGE_OPTIONS: readonly RangeOption[] = [
+  { value: '7', label: '7D', limit: 7 },
+  { value: '30', label: '30D', limit: 30 },
+  { value: '90', label: '90D', limit: 90 },
+  { value: '180', label: '180D', limit: 180 },
+  { value: '360', label: '1Y', limit: 360 },
+  { value: 'total', label: 'All', limit: null },
+]
+
+const toTabValue = (limit: number | null): string =>
+  limit === null ? 'total' : String(limit)
 
 type SelectLimitProps = {
+  value: number | null
   setLimit: Dispatch<SetStateAction<number | null>>
 }
 
-export const SelectLimit = ({ setLimit }: SelectLimitProps) => {
-  return (
-    <Select
-      onValueChange={(limit) => {
-        if (limit === 'total') {
-          setLimit(null)
-          return
-        }
+export const SelectLimit = ({
+  value,
+  setLimit,
+}: SelectLimitProps): JSX.Element => {
+  const handleValueChange = (next: string): void => {
+    const option = RANGE_OPTIONS.find((item) => item.value === next)
+    if (option) setLimit(option.limit)
+  }
 
-        setLimit(Number(limit))
-      }}
-    >
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Limit" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="7">7 days</SelectItem>
-        <SelectItem value="30">30 days</SelectItem>
-        <SelectItem value="90">90 days</SelectItem>
-        <SelectItem value="180">180 days</SelectItem>
-        <SelectItem value="360">360 days</SelectItem>
-        <SelectItem value="total">Total</SelectItem>
-      </SelectContent>
-    </Select>
+  return (
+    <Tabs value={toTabValue(value)} onValueChange={handleValueChange}>
+      <TabsList
+        aria-label="Chart range"
+        className="grid h-auto w-full grid-cols-6 p-0.5 md:inline-grid md:w-auto"
+      >
+        {RANGE_OPTIONS.map((option) => (
+          <TabsTrigger
+            key={option.value}
+            value={option.value}
+            className="min-h-11 px-2 md:min-h-8 md:px-3"
+          >
+            {option.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   )
 }
