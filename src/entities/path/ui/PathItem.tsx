@@ -78,7 +78,7 @@ const PathItemComponent = ({
                     'transition-opacity touch-visible',
                     isVisible && 'opacity-100',
                   )}
-                  aria-label="Achievement options"
+                  aria-label="Milestone options"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>

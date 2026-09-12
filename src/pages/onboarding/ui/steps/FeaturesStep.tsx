@@ -44,7 +44,6 @@ const features: FeatureHighlight[] = [
 export const FeaturesStep: FC<StepProps> = ({
   onNext,
   onBack,
-  onSkip,
   canGoBack,
   isLastStep,
 }) => {
@@ -68,7 +67,6 @@ export const FeaturesStep: FC<StepProps> = ({
           <NavigationButtons
             onNext={onNext}
             onBack={onBack}
-            onSkip={onSkip}
             canGoBack={canGoBack}
             isLastStep={isLastStep}
           />

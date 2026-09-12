@@ -35,7 +35,8 @@ export const ProgressInRow = ({ cardProps }: ProgressInRowProps) => {
       </CardHeader>
       <CardContent className="pt-8">
         <h2 className="text-center scroll-m-20 text-3xl font-semibold transition-colors">
-          {getProgressEmoji(datesInRowLength)} {datesInRowLength} days
+          {getProgressEmoji(datesInRowLength)} {datesInRowLength}{' '}
+          {datesInRowLength === 1 ? 'day' : 'days'}
         </h2>
       </CardContent>
     </Card>

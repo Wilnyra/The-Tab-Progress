@@ -37,12 +37,17 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
     },
   })
 
-  const onSubmit = ({ url }: AddPhotoFormSchema) => {
-    insertPhoto(url, session?.user.id || '').then(() => {
-      setOpen(false)
-      onComplete?.()
-      formContext.reset()
-    })
+  const handleSubmit = async ({ url }: AddPhotoFormSchema): Promise<void> => {
+    const { error } = await insertPhoto(url, session?.user.id || '')
+    if (error) {
+      formContext.setError('root.serverError', {
+        message: `Couldn't add the photo. ${error.message}`,
+      })
+      return
+    }
+    setOpen(false)
+    onComplete?.()
+    formContext.reset()
   }
 
   return (
@@ -50,13 +55,13 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
-        aria-label="Add new photo"
+        aria-label="Add photo"
       >
         <Plus />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new Photo</DialogTitle>
+          <DialogTitle>Add photo</DialogTitle>
           <DialogDescription>
             Inspire to achieve your goals. Only HTTPS images from trusted
             sources are allowed.
@@ -64,7 +69,7 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
         </DialogHeader>
 
         <Form {...formContext}>
-          <form onSubmit={formContext.handleSubmit(onSubmit)}>
+          <form onSubmit={formContext.handleSubmit(handleSubmit)}>
             <div className="grid gap-4">
               <FormInput
                 name="url"
@@ -93,7 +98,12 @@ export const AddPhotoDialog = ({ onComplete }: AddPhotoDialogProps) => {
               </FormMessage>
 
               <DialogFooter>
-                <Button type="submit">Confirm</Button>
+                <Button
+                  type="submit"
+                  disabled={formContext.formState.isSubmitting}
+                >
+                  Add photo
+                </Button>
               </DialogFooter>
             </div>
           </form>

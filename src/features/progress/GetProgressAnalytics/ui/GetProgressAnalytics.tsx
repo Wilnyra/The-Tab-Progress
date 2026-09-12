@@ -19,7 +19,7 @@ import {
 } from '@/shared/ui/Dialog'
 import { Textarea } from '@/shared/ui/Textarea'
 
-const DIALOG_TITLE = 'Your Progress Overview'
+const DIALOG_TITLE = 'Your progress overview'
 const DIALOG_DESCRIPTION =
   'Copy your progress below and use it with an AI assistant to get a personalized analysis or coaching advice.'
 

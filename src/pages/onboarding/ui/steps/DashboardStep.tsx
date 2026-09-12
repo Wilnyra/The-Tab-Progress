@@ -13,7 +13,6 @@ import {
 export const DashboardStep: FC<StepProps> = ({
   onNext,
   onBack,
-  onSkip,
   canGoBack,
   isLastStep,
 }) => {
@@ -92,7 +91,6 @@ export const DashboardStep: FC<StepProps> = ({
           <NavigationButtons
             onNext={onNext}
             onBack={onBack}
-            onSkip={onSkip}
             canGoBack={canGoBack}
             isLastStep={isLastStep}
           />

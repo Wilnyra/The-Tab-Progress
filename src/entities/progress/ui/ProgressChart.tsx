@@ -1,22 +1,16 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import { Bar, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from 'recharts'
 import { calculateTrendLine } from '../lib/calculateTrend'
 import { getLastQueueArray } from '../lib/getLastQueueArray'
-import { ProgressData } from '../model/types'
+import type { ProgressData } from '../model/types'
 import { ProgressChartSkeleton } from './ProgressChartSkeleton'
 import { ProgressEmptyState } from './ProgressEmptyState'
-import { cn } from '@/shared/lib/cn'
+import { ProgressHeader } from './ProgressHeader'
 import { formatMinutesToHm } from '@/shared/lib/formatMinutesToHm'
 import { getProgressPath } from '@/shared/lib/routePaths'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/Card'
+import { Card, CardContent } from '@/shared/ui/Card'
 import {
   ChartContainer,
   ChartTooltip,
@@ -36,6 +30,8 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const CHART_MARGIN = { top: 4, left: 0, right: 12 } as const
+const BAR_RADIUS: [number, number, number, number] = [4, 4, 0, 0]
+const MAX_BAR_SIZE = 32
 
 const formatAxisDate = (value: string): string =>
   new Date(value).toLocaleDateString('en-US', {
@@ -53,6 +49,7 @@ const formatTooltipDate = (value: unknown): string =>
 type ProgressChartProps = {
   data: ProgressData[]
   rightSlot?: ReactNode
+  toolbar?: ReactNode
   description?: ReactNode
   chartContainerClassName?: ComponentProps<typeof ChartContainer>['className']
   isLoading?: boolean
@@ -61,6 +58,7 @@ type ProgressChartProps = {
 export const ProgressChart = ({
   data,
   rightSlot,
+  toolbar,
   chartContainerClassName,
   description,
   isLoading = false,
@@ -70,8 +68,8 @@ export const ProgressChart = ({
   const isLocationProgress = pathname === getProgressPath()
 
   const chartData = useMemo(() => {
-    const currentStreak = getLastQueueArray(data)
-    const trendLine = calculateTrendLine(currentStreak)
+    const activeDays = data.filter((item) => item.duration_seconds > 0)
+    const trendLine = calculateTrendLine(getLastQueueArray(activeDays))
     const trendMap = new Map(trendLine.map((t) => [t.created_at, t.trendValue]))
     return data.map((item) => ({
       ...item,
@@ -79,47 +77,47 @@ export const ProgressChart = ({
     }))
   }, [data])
 
+  const hasProgress = data.some((item) => item.duration_seconds > 0)
+
+  const handleHeaderClick = (): void => {
+    navigate(getProgressPath())
+  }
+
   if (isLoading) {
     return (
       <ProgressChartSkeleton
         rightSlot={rightSlot}
+        toolbar={toolbar}
         description={description}
         chartContainerClassName={chartContainerClassName}
       />
     )
   }
 
-  if (data.length === 0) {
+  if (!hasProgress) {
     return (
-      <ProgressEmptyState rightSlot={rightSlot} description={description} />
+      <ProgressEmptyState
+        rightSlot={rightSlot}
+        toolbar={toolbar}
+        description={description}
+      />
     )
   }
 
   return (
-    <Card className="min-h-[320px]">
-      <CardHeader
-        className={cn('flex justify-between flex-row items-start', {
-          'cursor-pointer': !isLocationProgress,
-        })}
-        onClick={() => {
-          if (!isLocationProgress) navigate(getProgressPath())
-        }}
-      >
-        <div className="space-y-1.5">
-          <CardTitle>Progress</CardTitle>
-          {description ? (
-            <CardDescription>{description}</CardDescription>
-          ) : null}
-        </div>
-
-        <div onClick={(e) => e.stopPropagation()}>{rightSlot}</div>
-      </CardHeader>
+    <Card variant="section" className="min-h-[320px]">
+      <ProgressHeader
+        description={description}
+        rightSlot={rightSlot}
+        toolbar={toolbar}
+        onClick={isLocationProgress ? undefined : handleHeaderClick}
+      />
       <CardContent>
         <ChartContainer
           config={chartConfig}
           className={chartContainerClassName}
         >
-          <AreaChart
+          <ComposedChart
             accessibilityLayer
             data={chartData}
             margin={CHART_MARGIN}
@@ -139,7 +137,6 @@ export const ProgressChart = ({
               tickFormatter={formatAxisDate}
             />
             <ChartTooltip
-              cursor={false}
               content={
                 <ChartTooltipContent
                   labelFormatter={formatTooltipDate}
@@ -147,51 +144,23 @@ export const ProgressChart = ({
                 />
               }
             />
-            <defs>
-              <linearGradient id="fillProgress" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-value)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-value)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillTrend" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-trendValue)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-trendValue)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <Area
-              dataKey="trendValue"
-              type="natural"
-              fill="url(#fillTrend)"
-              fillOpacity={0}
-              stroke="var(--color-trendValue)"
-              strokeWidth={1}
-              animationDuration={600}
-            />
-            <Area
+            <Bar
               dataKey="value"
-              type="natural"
-              fill="url(#fillProgress)"
-              fillOpacity={0.4}
-              stroke="var(--color-value)"
-              strokeWidth={2}
+              fill="var(--color-value)"
+              radius={BAR_RADIUS}
+              maxBarSize={MAX_BAR_SIZE}
               animationDuration={600}
             />
-          </AreaChart>
+            <Line
+              dataKey="trendValue"
+              type="monotone"
+              stroke="var(--color-trendValue)"
+              strokeWidth={1.5}
+              dot={false}
+              activeDot={false}
+              animationDuration={600}
+            />
+          </ComposedChart>
         </ChartContainer>
       </CardContent>
     </Card>

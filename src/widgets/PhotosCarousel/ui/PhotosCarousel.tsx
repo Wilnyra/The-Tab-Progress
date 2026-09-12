@@ -48,8 +48,8 @@ export const PhotosCarousel = () => {
   }
 
   return (
-    <Carousel>
-      <div className="flex justify-between items-center px-2">
+    <Carousel className="max-sm:px-2">
+      <div className="flex items-center justify-between px-4 sm:px-2">
         <div className="space-y-1.5">
           <h3 className="font-semibold leading-none tracking-tight">Photos</h3>
           <p className="text-sm text-muted-foreground">

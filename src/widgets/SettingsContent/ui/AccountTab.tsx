@@ -1,11 +1,30 @@
+import { useCallback, useEffect, useState } from 'react'
+import { consumePasswordRecoveryPending } from '@/features/auth'
 import {
   AccountInfo,
   LogoutButton,
   ExportDataButton,
 } from '@/features/settings/Account'
-import { ChangePasswordModal } from '@/features/settings/ChangePassword'
+import {
+  ChangePasswordModal,
+  type PasswordFormMode,
+} from '@/features/settings/ChangePassword'
 
 export const AccountTab = (): JSX.Element => {
+  const [isPasswordOpen, setIsPasswordOpen] = useState(false)
+  const [passwordMode, setPasswordMode] = useState<PasswordFormMode>('change')
+
+  useEffect(() => {
+    if (!consumePasswordRecoveryPending()) return
+    setPasswordMode('recovery')
+    setIsPasswordOpen(true)
+  }, [])
+
+  const handlePasswordOpenChange = useCallback((open: boolean): void => {
+    setIsPasswordOpen(open)
+    if (open) setPasswordMode('change')
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>
@@ -18,7 +37,11 @@ export const AccountTab = (): JSX.Element => {
         <p className="text-xs text-muted-foreground mb-3">
           Update your password to keep your account secure
         </p>
-        <ChangePasswordModal />
+        <ChangePasswordModal
+          open={isPasswordOpen}
+          onOpenChange={handlePasswordOpenChange}
+          mode={passwordMode}
+        />
       </div>
 
       <div className="pt-4 border-t">

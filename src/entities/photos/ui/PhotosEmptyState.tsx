@@ -8,8 +8,8 @@ type PhotosEmptyStateProps = {
 
 export const PhotosEmptyState = ({ rightSlot }: PhotosEmptyStateProps) => {
   return (
-    <div className="space-y-4 min-h-[280px]">
-      <div className="flex justify-between items-center px-2">
+    <div className="min-h-[280px] space-y-2 sm:space-y-4">
+      <div className="flex items-center justify-between px-6 sm:px-2">
         <div className="space-y-1.5">
           <h2 className="font-semibold leading-none tracking-tight">Photos</h2>
           <p className="text-sm text-muted-foreground">
@@ -19,7 +19,7 @@ export const PhotosEmptyState = ({ rightSlot }: PhotosEmptyStateProps) => {
         <div className="space-x-2">{rightSlot}</div>
       </div>
 
-      <Card>
+      <Card variant="section">
         <CardContent className="pt-6">
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
             <div className="rounded-full bg-muted p-6 mb-4">

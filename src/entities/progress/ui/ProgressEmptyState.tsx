@@ -1,48 +1,37 @@
 import { TrendingUp } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { cn } from '@/shared/lib/cn'
+import { ProgressHeader } from './ProgressHeader'
 import { getProgressPath } from '@/shared/lib/routePaths'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/Card'
+import { Card, CardContent } from '@/shared/ui/Card'
 
 type ProgressEmptyStateProps = {
   rightSlot?: ReactNode
+  toolbar?: ReactNode
   description?: ReactNode
 }
 
 export const ProgressEmptyState = ({
   rightSlot,
+  toolbar,
   description,
 }: ProgressEmptyStateProps) => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const isLocationProgress = pathname === getProgressPath()
 
-  return (
-    <Card className="min-h-[320px]">
-      <CardHeader
-        className={cn('flex justify-between flex-row items-start', {
-          'cursor-pointer': !isLocationProgress,
-        })}
-        onClick={() => {
-          if (!isLocationProgress) navigate(getProgressPath())
-        }}
-      >
-        <div className="space-y-1.5">
-          <CardTitle>Progress</CardTitle>
-          {description ? (
-            <CardDescription>{description}</CardDescription>
-          ) : null}
-        </div>
+  const handleHeaderClick = (): void => {
+    navigate(getProgressPath())
+  }
 
-        {rightSlot}
-      </CardHeader>
+  return (
+    <Card variant="section" className="min-h-[320px]">
+      <ProgressHeader
+        description={description}
+        rightSlot={rightSlot}
+        toolbar={toolbar}
+        onClick={isLocationProgress ? undefined : handleHeaderClick}
+      />
       <CardContent>
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
           <div className="rounded-full bg-muted p-6 mb-4">

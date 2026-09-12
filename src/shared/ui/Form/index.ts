@@ -11,3 +11,4 @@ export {
   FormField,
 } from './ui/Form'
 export { FormInput } from './ui/FormInput'
+export { FormPasswordInput } from './ui/FormPasswordInput'

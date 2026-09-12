@@ -7,8 +7,8 @@ const SKELETON_ITEMS_COUNT = 4
 export const PhotosCarouselSkeleton = () => {
   return (
     <div className="min-h-[280px]">
-      <Carousel>
-        <div className="flex justify-between items-center px-2">
+      <Carousel className="max-sm:px-2">
+        <div className="flex items-center justify-between px-4 sm:px-2">
           <div className="space-y-1.5">
             <Skeleton className="h-5 w-20" />
             <Skeleton className="h-4 w-40" />

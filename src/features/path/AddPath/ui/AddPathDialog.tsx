@@ -35,8 +35,14 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
     },
   })
 
-  const onSubmit = async ({ step }: AddPathFormSchema) => {
-    await insertPath(step, session?.user.id || '')
+  const handleSubmit = async ({ step }: AddPathFormSchema): Promise<void> => {
+    const { error } = await insertPath(step, session?.user.id || '')
+    if (error) {
+      formContext.setError('root.serverError', {
+        message: `Couldn't add the milestone. ${error.message}`,
+      })
+      return
+    }
     setOpen(false)
     onComplete?.()
     formContext.reset()
@@ -47,24 +53,24 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
-        aria-label="Add new achievement"
+        aria-label="Add milestone"
       >
         <Plus />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Achievement</DialogTitle>
+          <DialogTitle>Add milestone</DialogTitle>
           <DialogDescription>
             Record a milestone or achievement in your journey.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...formContext}>
-          <form onSubmit={formContext.handleSubmit(onSubmit)}>
+          <form onSubmit={formContext.handleSubmit(handleSubmit)}>
             <div className="grid gap-4">
               <FormTextarea
                 name="step"
-                label="Achievement"
+                label="Milestone"
                 placeholder="e.g., Passed technical interview, Completed major project"
                 autoFocus
               />
@@ -78,7 +84,7 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
                   type="submit"
                   disabled={formContext.formState.isSubmitting}
                 >
-                  Confirm
+                  Add milestone
                 </Button>
               </DialogFooter>
             </div>

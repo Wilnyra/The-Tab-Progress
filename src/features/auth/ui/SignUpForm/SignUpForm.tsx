@@ -2,7 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { LoginFormSchema, loginFormSchema } from '../../model/loginFormSchema'
+import {
+  type LoginFormSchema,
+  loginFormSchema,
+} from '../../model/loginFormSchema'
 import { hasCompletedOnboarding } from '@/pages/onboarding/lib/onboardingStorage'
 import { getRootPath, getOnboardingPath } from '@/shared/lib/routePaths'
 import { supabase } from '@/shared/lib/supabase'
@@ -14,14 +17,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/shared/ui/Card'
-import { Form, FormInput, FormMessage } from '@/shared/ui/Form'
+import {
+  Form,
+  FormInput,
+  FormMessage,
+  FormPasswordInput,
+} from '@/shared/ui/Form'
 
-type LoginFormData = {
-  email: string
-  password: string
+type SignUpFormProps = {
+  onClickLogin: () => void
 }
 
-export const SignUpForm = () => {
+export const SignUpForm = ({ onClickLogin }: SignUpFormProps): JSX.Element => {
   const navigate = useNavigate()
   const submittingRef = useRef(false)
 
@@ -33,7 +40,10 @@ export const SignUpForm = () => {
     },
   })
 
-  const onSubmit = async ({ email, password }: LoginFormData) => {
+  const handleSubmit = async ({
+    email,
+    password,
+  }: LoginFormSchema): Promise<void> => {
     if (submittingRef.current) return
     submittingRef.current = true
 
@@ -56,7 +66,8 @@ export const SignUpForm = () => {
       }
     } catch (error) {
       formContext.setError('root.serverError', {
-        message: error instanceof Error ? error.message : 'Something went wrong',
+        message:
+          error instanceof Error ? error.message : 'Something went wrong',
       })
     } finally {
       submittingRef.current = false
@@ -73,7 +84,7 @@ export const SignUpForm = () => {
       </CardHeader>
       <CardContent>
         <Form {...formContext}>
-          <form onSubmit={formContext.handleSubmit(onSubmit)}>
+          <form onSubmit={formContext.handleSubmit(handleSubmit)}>
             <div className="grid gap-4">
               <FormInput
                 name="email"
@@ -86,10 +97,9 @@ export const SignUpForm = () => {
                 spellCheck={false}
                 enterKeyHint="next"
               />
-              <FormInput
+              <FormPasswordInput
                 name="password"
-                label={<div className="flex">Password</div>}
-                type="password"
+                label="Password"
                 autoComplete="new-password"
                 enterKeyHint="done"
               />
@@ -103,6 +113,16 @@ export const SignUpForm = () => {
               >
                 Sign Up
               </Button>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{' '}
+              <button
+                type="button"
+                className="underline underline-offset-4"
+                onClick={onClickLogin}
+              >
+                Log in
+              </button>
             </div>
           </form>
         </Form>
