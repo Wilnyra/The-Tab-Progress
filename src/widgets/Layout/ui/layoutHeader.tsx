@@ -8,6 +8,12 @@ import {
 } from '@/shared/lib/routePaths'
 import { Button, buttonVariants } from '@/shared/ui/Button'
 
+const readHistoryIndex = (state: unknown): number => {
+  if (typeof state !== 'object' || state === null) return 0
+  if (!('idx' in state)) return 0
+  return typeof state.idx === 'number' ? state.idx : 0
+}
+
 export const LayoutHeader = (): JSX.Element => {
   const location = useLocation()
   const navigate = useNavigate()
@@ -17,11 +23,15 @@ export const LayoutHeader = (): JSX.Element => {
     location.pathname === getSettingsPath()
 
   const handleBack = (): void => {
-    navigate(getRootPath())
+    if (readHistoryIndex(window.history.state) > 0) {
+      navigate(-1)
+      return
+    }
+    navigate(getRootPath(), { replace: true })
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/60 h-12 rounded-b-xl px-3 flex items-center border border-t-0 shadow text-foreground justify-between">
+    <header className="sticky top-0 z-40 flex h-12 items-center justify-between border-b bg-card px-3 text-foreground shadow sm:rounded-b-xl sm:border-x">
       <div className="flex items-center gap-2">
         <div
           className="overflow-hidden transition-all duration-300 ease-in-out"
@@ -35,7 +45,7 @@ export const LayoutHeader = (): JSX.Element => {
             variant="ghost"
             size="icon"
             onClick={handleBack}
-            aria-label="Go back to dashboard"
+            aria-label="Go back"
             className="shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />

@@ -1,13 +1,30 @@
-import { useState } from 'react';
-import { LoginForm, SignUpForm } from '@/features/auth'
+import { useCallback, useState } from 'react'
+import { LoginForm, OtpAuthForm, SignUpForm } from '@/features/auth'
 
-export const LoginPage = () => {
-  const [page, setPage] = useState<'login' | 'signUp'>("login");
-  
+type AuthView = 'login' | 'signUp' | 'magicLink'
+
+export const LoginPage = (): JSX.Element => {
+  const [view, setView] = useState<AuthView>('login')
+
+  const handleShowLogin = useCallback((): void => setView('login'), [])
+  const handleShowSignUp = useCallback((): void => setView('signUp'), [])
+  const handleShowMagicLink = useCallback(
+    (): void => setView('magicLink'),
+    [],
+  )
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      {page === 'login' ? <LoginForm onCLickSignUp={() => setPage('signUp')} /> : null}
-      {page === 'signUp' ? <SignUpForm /> : null}
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+      {view === 'login' ? (
+        <LoginForm
+          onClickSignUp={handleShowSignUp}
+          onClickMagicLink={handleShowMagicLink}
+        />
+      ) : null}
+      {view === 'signUp' ? <SignUpForm onClickLogin={handleShowLogin} /> : null}
+      {view === 'magicLink' ? (
+        <OtpAuthForm onClickPasswordLogin={handleShowLogin} />
+      ) : null}
     </div>
   )
 }

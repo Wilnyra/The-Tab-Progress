@@ -14,6 +14,7 @@ import {
   useState,
   type ComponentProps,
   type KeyboardEvent,
+  type MouseEvent,
 } from 'react'
 import { useCountProgress } from '../lib/useCountProgress'
 import { useEventsLast30Days, useRecentDescriptions } from '@/entities/progress'
@@ -41,6 +42,7 @@ type CountProgressProps = {
 }
 
 const CANCEL_CONFIRM_THRESHOLD_SECONDS = 60
+const RECENTS_PER_COLUMN = 3
 
 const formatStartedAt = (date: Date | null): string => {
   if (!date) return ''
@@ -49,6 +51,65 @@ const formatStartedAt = (date: Date | null): string => {
 
 const truncate = (text: string, max = 32): string =>
   text.length <= max ? text : `${text.slice(0, max - 1)}…`
+
+const keepInputFocus = (e: MouseEvent<HTMLButtonElement>): void => {
+  e.preventDefault()
+}
+
+type RecentChipProps = {
+  value: string
+  onPick: (value: string) => void
+}
+
+const RecentChip = ({ value, onPick }: RecentChipProps): JSX.Element => {
+  const handleClick = (): void => onPick(value)
+
+  return (
+    <button
+      type="button"
+      onMouseDown={keepInputFocus}
+      onClick={handleClick}
+      className="inline-flex items-center gap-1.5 h-10 sm:h-7 max-w-full px-2.5 rounded-md text-xs border border-border bg-background text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
+    >
+      <Clock className="h-3 w-3 shrink-0" />
+      <span className="truncate">{truncate(value)}</span>
+    </button>
+  )
+}
+
+type RecentChipsProps = {
+  values: string[]
+  onPick: (value: string) => void
+  align: 'start' | 'end'
+}
+
+const RecentChips = ({
+  values,
+  onPick,
+  align,
+}: RecentChipsProps): JSX.Element => (
+  <div className="space-y-1.5">
+    <div
+      className={cn(
+        'text-[11px] uppercase tracking-wider text-muted-foreground',
+        align === 'end' ? 'invisible' : '',
+      )}
+      aria-hidden={align === 'end' ? true : undefined}
+    >
+      Recent
+    </div>
+    <div
+      className={cn(
+        'flex flex-wrap gap-2 sm:flex-col sm:gap-1.5',
+        align === 'end' ? 'sm:items-end' : 'sm:items-start',
+      )}
+    >
+      {values.map((value) => (
+        <RecentChip key={value} value={value} onPick={onPick} />
+      ))}
+    </div>
+  </div>
+)
 
 export const CountProgress = ({ cardProps }: CountProgressProps) => {
   const {
@@ -62,7 +123,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
     cancelCount,
   } = useCountProgress()
   const { events } = useEventsLast30Days()
-  const recents = useRecentDescriptions(3)
+  const recents = useRecentDescriptions(RECENTS_PER_COLUMN * 2)
 
   const [draft, setDraft] = useState(description)
   const [isInputFocused, setIsInputFocused] = useState(false)
@@ -151,6 +212,8 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
 
   const showSuggestions =
     !isCounting && draft.trim() === '' && isInputFocused && recents.length > 0
+  const leftRecents = recents.slice(0, RECENTS_PER_COLUMN)
+  const rightRecents = recents.slice(RECENTS_PER_COLUMN)
 
   const cardDescription = isCounting
     ? `Working since ${formatStartedAt(startedAt)}`
@@ -273,25 +336,11 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
             <div className="flex flex-col gap-4 pt-2 sm:grid sm:grid-cols-3 sm:items-start sm:gap-4">
               <div className="min-w-0 order-1 sm:order-none">
                 {showSuggestions ? (
-                  <div className="space-y-1.5">
-                    <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                      Recent
-                    </div>
-                    <div className="flex flex-wrap gap-2 sm:flex-col sm:items-start sm:gap-1.5">
-                      {recents.map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => handleSuggestionPick(value)}
-                          className="inline-flex items-center gap-1.5 h-10 sm:h-7 max-w-full px-2.5 rounded-md text-xs border border-border bg-background text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
-                        >
-                          <Clock className="h-3 w-3 shrink-0" />
-                          <span className="truncate">{truncate(value)}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <RecentChips
+                    values={leftRecents}
+                    onPick={handleSuggestionPick}
+                    align="start"
+                  />
                 ) : null}
               </div>
 
@@ -327,7 +376,15 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
                 </div>
               </div>
 
-              <div className="hidden sm:block" aria-hidden="true" />
+              <div className="hidden min-w-0 sm:block">
+                {showSuggestions && rightRecents.length > 0 ? (
+                  <RecentChips
+                    values={rightRecents}
+                    onPick={handleSuggestionPick}
+                    align="end"
+                  />
+                ) : null}
+              </div>
             </div>
           )}
         </CardContent>

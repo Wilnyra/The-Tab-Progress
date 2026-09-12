@@ -1,10 +1,19 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
-import * as React from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type HTMLAttributes,
+} from 'react'
 import { cn } from '../lib/cn'
 
 const useKeyboardInset = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     const vv = window.visualViewport
     if (!vv) return
 
@@ -28,7 +37,105 @@ const useKeyboardInset = () => {
   }, [])
 }
 
-const Dialog = DialogPrimitive.Root
+const HISTORY_STATE_KEY = '__dialogDepth'
+
+type OpenDialogEntry = {
+  depth: number
+  close: () => void
+}
+
+const openDialogs = new Set<OpenDialogEntry>()
+
+const readDialogDepth = (state: unknown): number => {
+  if (typeof state !== 'object' || state === null) return 0
+  if (!(HISTORY_STATE_KEY in state)) return 0
+  const depth = state[HISTORY_STATE_KEY]
+  return typeof depth === 'number' ? depth : 0
+}
+
+const handleHistoryPop = (event: PopStateEvent): void => {
+  const depth = readDialogDepth(event.state)
+  openDialogs.forEach((entry) => {
+    if (entry.depth > depth) entry.close()
+  })
+}
+
+const useCloseOnHistoryBack = (open: boolean, onClose: () => void): void => {
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
+
+  useEffect(() => {
+    if (!open) return
+
+    const depths = Array.from(openDialogs, (entry) => entry.depth)
+    const entry: OpenDialogEntry = {
+      depth: Math.max(0, ...depths) + 1,
+      close: () => onCloseRef.current(),
+    }
+    if (openDialogs.size === 0) {
+      window.addEventListener('popstate', handleHistoryPop)
+    }
+    openDialogs.add(entry)
+
+    const base: unknown = window.history.state
+    const marker = { [HISTORY_STATE_KEY]: entry.depth }
+    window.history.pushState(
+      typeof base === 'object' && base !== null
+        ? { ...base, ...marker }
+        : marker,
+      '',
+    )
+
+    return () => {
+      openDialogs.delete(entry)
+      if (openDialogs.size === 0) {
+        window.removeEventListener('popstate', handleHistoryPop)
+      }
+      if (readDialogDepth(window.history.state) === entry.depth) {
+        window.history.back()
+      }
+    }
+  }, [open])
+}
+
+type DialogProps = ComponentPropsWithoutRef<typeof DialogPrimitive.Root>
+
+const Dialog = ({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  ...props
+}: DialogProps): JSX.Element => {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen)
+  const isControlled = openProp !== undefined
+  const open = isControlled ? openProp : uncontrolledOpen
+
+  const handleOpenChange = useCallback(
+    (next: boolean): void => {
+      if (!isControlled) setUncontrolledOpen(next)
+      onOpenChange?.(next)
+    },
+    [isControlled, onOpenChange],
+  )
+
+  const handleHistoryBack = useCallback(
+    (): void => handleOpenChange(false),
+    [handleOpenChange],
+  )
+
+  useCloseOnHistoryBack(open, handleHistoryBack)
+
+  return (
+    <DialogPrimitive.Root
+      {...props}
+      open={open}
+      onOpenChange={handleOpenChange}
+    />
+  )
+}
 
 const DialogTrigger = DialogPrimitive.Trigger
 
@@ -36,9 +143,9 @@ const DialogPortal = DialogPrimitive.Portal
 
 const DialogClose = DialogPrimitive.Close
 
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+const DialogOverlay = forwardRef<
+  ElementRef<typeof DialogPrimitive.Overlay>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
@@ -51,9 +158,9 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+const DialogContent = forwardRef<
+  ElementRef<typeof DialogPrimitive.Content>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   useKeyboardInset()
   return (
@@ -91,7 +198,7 @@ DialogContent.displayName = DialogPrimitive.Content.displayName
 const DialogHeader = ({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
       'flex flex-col space-y-1.5 text-center sm:text-left',
@@ -105,7 +212,7 @@ DialogHeader.displayName = 'DialogHeader'
 const DialogFooter = ({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
       'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end',
@@ -116,9 +223,9 @@ const DialogFooter = ({
 )
 DialogFooter.displayName = 'DialogFooter'
 
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+const DialogTitle = forwardRef<
+  ElementRef<typeof DialogPrimitive.Title>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
@@ -131,9 +238,9 @@ const DialogTitle = React.forwardRef<
 ))
 DialogTitle.displayName = DialogPrimitive.Title.displayName
 
-const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+const DialogDescription = forwardRef<
+  ElementRef<typeof DialogPrimitive.Description>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}

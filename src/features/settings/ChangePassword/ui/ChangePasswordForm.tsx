@@ -1,22 +1,32 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Key } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import type { ChangePasswordSchema } from '../model/changePasswordSchema'
-import { changePasswordSchema } from '../model/changePasswordSchema'
+import {
+  createChangePasswordSchema,
+  type ChangePasswordSchema,
+  type PasswordFormMode,
+} from '../model/changePasswordSchema'
 import { supabase } from '@/shared/lib/supabase'
 import { Button } from '@/shared/ui/Button'
-import { Form, FormInput, FormMessage } from '@/shared/ui/Form'
+import { Form, FormMessage, FormPasswordInput } from '@/shared/ui/Form'
 
-interface ChangePasswordFormProps {
+type ChangePasswordFormProps = {
+  mode?: PasswordFormMode
   onSuccess?: () => void
 }
 
 export const ChangePasswordForm = ({
+  mode = 'change',
   onSuccess,
 }: ChangePasswordFormProps): JSX.Element => {
+  const isRecovery = mode === 'recovery'
+  const schema = useMemo(
+    () => createChangePasswordSchema(!isRecovery),
+    [isRecovery],
+  )
   const formContext = useForm<ChangePasswordSchema>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -27,41 +37,44 @@ export const ChangePasswordForm = ({
   const [userEmail, setUserEmail] = useState('')
 
   useEffect(() => {
-    const getUserEmail = async (): Promise<void> => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user?.email) {
-        setUserEmail(user.email)
-      }
+    let cancelled = false
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!cancelled && user?.email) setUserEmail(user.email)
+    })
+    return () => {
+      cancelled = true
     }
-    getUserEmail()
   }, [])
 
   const handlePasswordChange = async (
     data: ChangePasswordSchema,
   ): Promise<void> => {
+    if (isLoading) return
     setIsLoading(true)
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+      if (!isRecovery) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
 
-      if (!user?.email) {
-        throw new Error('User email not found')
-      }
+        if (!user?.email) {
+          throw new Error('User email not found')
+        }
 
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: data.currentPassword,
-      })
+        const { error: signInError } = await supabase.auth.signInWithPassword(
+          {
+            email: user.email,
+            password: data.currentPassword,
+          },
+        )
 
-      if (signInError) {
-        formContext.setError('currentPassword', {
-          message: 'Current password is incorrect',
-        })
-        return
+        if (signInError) {
+          formContext.setError('currentPassword', {
+            message: 'Current password is incorrect',
+          })
+          return
+        }
       }
 
       const { error: updateError } = await supabase.auth.updateUser({
@@ -73,15 +86,7 @@ export const ChangePasswordForm = ({
       }
 
       formContext.reset()
-      formContext.setError('root.success', {
-        message: 'Password changed successfully!',
-      })
-
-      if (onSuccess) {
-        setTimeout(() => {
-          onSuccess()
-        }, 1500)
-      }
+      onSuccess?.()
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to change password'
@@ -108,24 +113,23 @@ export const ChangePasswordForm = ({
           tabIndex={-1}
         />
         <div className="grid gap-4">
-          <FormInput
-            name="currentPassword"
-            label="Current Password"
-            type="password"
-            autoComplete="current-password"
-            disabled={isLoading}
-          />
-          <FormInput
+          {isRecovery ? null : (
+            <FormPasswordInput
+              name="currentPassword"
+              label="Current password"
+              autoComplete="current-password"
+              disabled={isLoading}
+            />
+          )}
+          <FormPasswordInput
             name="newPassword"
-            label="New Password"
-            type="password"
+            label="New password"
             autoComplete="new-password"
             disabled={isLoading}
           />
-          <FormInput
+          <FormPasswordInput
             name="confirmPassword"
-            label="Confirm New Password"
-            type="password"
+            label="Confirm new password"
             autoComplete="new-password"
             disabled={isLoading}
           />
@@ -136,19 +140,13 @@ export const ChangePasswordForm = ({
             </FormMessage>
           ) : null}
 
-          {formContext.formState.errors.root?.success?.message ? (
-            <FormMessage className="text-green-600 text-sm">
-              {formContext.formState.errors.root.success.message}
-            </FormMessage>
-          ) : null}
-
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full sm:w-auto"
           >
             <Key className="mr-2 h-4 w-4" />
-            {isLoading ? 'Changing Password...' : 'Change Password'}
+            {isLoading ? 'Updating password...' : 'Update password'}
           </Button>
         </div>
       </form>

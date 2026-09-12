@@ -18,7 +18,7 @@ type TodoListSkeletonProps = {
 export const TodoListSkeleton = ({ cardProps }: TodoListSkeletonProps) => {
   return (
     <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
-      <CardHeader className="flex justify-between flex-row items-start">
+      <CardHeader className="flex-row items-center justify-between space-y-0">
         <div className="space-y-1.5">
           <CardTitle>Todo</CardTitle>
           <CardDescription>

@@ -4,13 +4,12 @@ import { Button } from '@/shared/ui/Button'
 
 type NavigationButtonsProps = Pick<
   StepProps,
-  'onNext' | 'onBack' | 'onSkip' | 'canGoBack' | 'isLastStep'
+  'onNext' | 'onBack' | 'canGoBack' | 'isLastStep'
 >
 
 export const NavigationButtons: FC<NavigationButtonsProps> = ({
   onNext,
   onBack,
-  onSkip,
   canGoBack,
   isLastStep,
 }) => {
@@ -23,10 +22,6 @@ export const NavigationButtons: FC<NavigationButtonsProps> = ({
         className={canGoBack ? '' : 'invisible'}
       >
         Back
-      </Button>
-
-      <Button variant="outline" onClick={onSkip}>
-        Skip
       </Button>
 
       <Button onClick={onNext}>

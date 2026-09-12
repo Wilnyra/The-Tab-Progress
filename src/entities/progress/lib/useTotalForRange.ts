@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { rpcProgressSumRange } from '../api/rpcProgressSumRange'
+import { progressContext } from '../model/ProgressContext'
 import { useEventsLast30Days } from './useEventsLast30Days'
 import { useAuth } from '@/entities/session'
 
@@ -48,10 +49,26 @@ const writeFrozenCache = (key: string, value: number) => {
   }
 }
 
+export const clearFrozenTotals = (): void => {
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i)
+      if (key?.startsWith(`${FROZEN_CACHE_PREFIX}:`)) {
+        localStorage.removeItem(key)
+      }
+    }
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error('Failed to clear cached progress totals', error)
+    }
+  }
+}
+
 export const useTotalForRange = (rangeKey: TotalRangeKey) => {
   const { session } = useAuth()
   const userId = session?.user.id ?? ''
   const { events, isLoading: eventsLoading } = useEventsLast30Days()
+  const { progressReload } = useContext(progressContext)
   const [frozen, setFrozen] = useState<number | null>(null)
   const [frozenLoading, setFrozenLoading] = useState(true)
 
@@ -85,7 +102,7 @@ export const useTotalForRange = (rangeKey: TotalRangeKey) => {
     return () => {
       cancelled = true
     }
-  }, [userId, rangeKey])
+  }, [userId, rangeKey, progressReload])
 
   const todayStartMs = startOfToday().getTime()
   const recent = events.reduce(

@@ -20,21 +20,26 @@ export const SettingsSidebar = ({
   ]
 
   return (
-    <nav className="w-full md:w-64 border-r border-border pr-6">
-      <ul className="space-y-1">
+    <nav
+      aria-label="Settings sections"
+      className="w-full md:w-64 md:border-r md:border-border md:pr-6"
+    >
+      <ul className="grid grid-cols-2 gap-1 rounded-md bg-muted p-1 md:block md:space-y-1 md:rounded-none md:bg-transparent md:p-0">
         {navItems.map((item) => {
           const isActive = activeSection === item.id
           return (
             <li key={item.id}>
               <button
+                type="button"
                 onClick={() => {
                   handleSectionChange(item.id)
                 }}
+                aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'w-full min-h-11 text-left px-3 py-2 rounded-md text-sm transition-colors sm:min-h-0',
+                  'w-full min-h-11 text-center px-3 py-2 rounded-md text-sm transition-colors sm:min-h-0 md:text-left',
                   isActive
-                    ? 'bg-accent text-accent-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
+                    ? 'bg-background text-foreground font-medium shadow-sm md:bg-accent md:text-accent-foreground md:shadow-none'
+                    : 'text-muted-foreground hover:text-foreground md:hover:bg-accent/50',
                 )}
               >
                 {item.label}
