@@ -1,10 +1,10 @@
+import { ProgressHistoryCard } from './ProgressHistoryCard'
 import {
   CountProgress,
   CountProgressProvider,
 } from '@/features/progress/CountProgress'
 import { ProgressCard } from '@/widgets/progress/ProgressCard'
 import { ProgressInRow } from '@/widgets/progress/ProgressInRow'
-import { ProgressTable } from '@/widgets/progress/ProgressTable'
 
 const FULL_WIDTH_CARD_PROPS = {
   variant: 'section',
@@ -27,7 +27,7 @@ export const ProgressPage = () => {
       </div>
 
       <div className="mt-2 sm:mt-4">
-        <ProgressTable />
+        <ProgressHistoryCard />
       </div>
     </CountProgressProvider>
   )
