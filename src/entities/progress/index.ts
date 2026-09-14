@@ -11,6 +11,8 @@ export type { TotalRangeKey } from './lib/useTotalForRange'
 export { aggregateEventsToDays } from './lib/aggregateEventsToDays'
 export { fillMissingDays } from './lib/fillMissingDays'
 export { aggregateEventsToDayRows } from './lib/aggregateEventsToDayRows'
+export { groupDayEntries } from './lib/groupDayEntries'
+export type { ProgressTaskGroup } from './lib/groupDayEntries'
 export type {
   ProgressDayRow,
   ProgressDayEntry,
