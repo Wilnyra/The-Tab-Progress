@@ -33,7 +33,8 @@ dist-ssr
 tsconfig.tsbuildinfo
 
 .claude/
-supabase/
+supabase/.temp/
+supabase/.branches/
 
 # Playwright MCP scratch artifacts (screenshots, snapshots, console logs)
 .playwright-mcp/
