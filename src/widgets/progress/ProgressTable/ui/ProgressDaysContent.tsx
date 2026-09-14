@@ -1,12 +1,14 @@
-import { Play } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { ChevronDown, Play } from 'lucide-react'
+import { useCallback, useId, useState } from 'react'
 import { formatDayLabel } from '../lib/formatDayLabel'
 import { ProgressTableSkeleton } from './ProgressTableSkeleton'
 import {
   aggregateEventsToDayRows,
+  groupDayEntries,
   useEventsLast30Days,
   type ProgressDayEntry,
   type ProgressDayRow,
+  type ProgressTaskGroup,
 } from '@/entities/progress'
 import { EditProgressDialog } from '@/features/progress/AddProgress'
 import { useCountProgress } from '@/features/progress/CountProgress'
@@ -30,66 +32,186 @@ type EntryHandlers = {
   onContinue: (entry: ProgressDayEntry) => void
 }
 
-type ProgressEntryItemProps = EntryHandlers & {
-  entry: ProgressDayEntry
+const ROW_BUTTON_CLASS =
+  'flex min-h-11 min-w-0 flex-1 items-center justify-between gap-3 rounded-md px-2 text-left text-sm transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:min-h-8'
+const ACTION_SLOT_CLASS = 'w-11 shrink-0 lg:w-8'
+
+// A few-second session rounds to "0m", which reads as "nothing was tracked".
+const formatDuration = (seconds: number): string => {
+  if (seconds > 0 && seconds < 60) return '<1m'
+  return formatMinutesToHm(seconds / 60)
 }
 
-const ProgressEntryItem = ({
+const formatTimeOfDay = (iso: string): string =>
+  new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+type DurationProps = {
+  seconds: number
+  isExpanded: boolean | null
+}
+
+const Duration = ({ seconds, isExpanded }: DurationProps): JSX.Element => (
+  <span className="flex shrink-0 items-center gap-1 tabular-nums text-muted-foreground">
+    {formatDuration(seconds)}
+    {isExpanded === null ? (
+      <span className="w-4" aria-hidden="true" />
+    ) : (
+      <ChevronDown
+        className={cn(
+          'h-4 w-4 transition-transform motion-reduce:transition-none',
+          isExpanded ? 'rotate-180' : '',
+        )}
+        aria-hidden="true"
+      />
+    )}
+  </span>
+)
+
+type TaskLabelProps = {
+  group: ProgressTaskGroup
+}
+
+const TaskLabel = ({ group }: TaskLabelProps): JSX.Element => (
+  <span className="flex min-w-0 items-baseline gap-1.5">
+    <span
+      className={cn(
+        'min-w-0 whitespace-pre-line break-words',
+        group.text ? 'text-foreground' : 'text-muted-foreground',
+      )}
+    >
+      {group.text ?? 'No note'}
+    </span>
+    {group.entries.length > 1 ? (
+      <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+        ×{group.entries.length}
+      </span>
+    ) : null}
+  </span>
+)
+
+type ContinueButtonProps = {
+  label: string
+  entry: ProgressDayEntry
+  isTimerRunning: boolean
+  onContinue: (entry: ProgressDayEntry) => void
+}
+
+const ContinueButton = ({
+  label,
   entry,
   isTimerRunning,
-  onEdit,
   onContinue,
-}: ProgressEntryItemProps): JSX.Element => {
-  const label = entry.text ?? 'No note'
-  const handleEdit = (): void => onEdit(entry)
-  const handleContinue = (): void => onContinue(entry)
+}: ContinueButtonProps): JSX.Element => {
+  const handleClick = (): void => onContinue(entry)
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      onClick={handleClick}
+      disabled={isTimerRunning}
+      aria-label={`Continue: ${label}`}
+      className="shrink-0 text-muted-foreground hover:text-foreground lg:h-8 lg:w-8"
+    >
+      <Play />
+    </Button>
+  )
+}
+
+type SessionItemProps = {
+  entry: ProgressDayEntry
+  onEdit: (entry: ProgressDayEntry) => void
+}
+
+const SessionItem = ({ entry, onEdit }: SessionItemProps): JSX.Element => {
+  const time = formatTimeOfDay(entry.createdAt)
+  const handleClick = (): void => onEdit(entry)
 
   return (
     <li className="flex items-center gap-1">
       <button
         type="button"
-        onClick={handleEdit}
-        className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-3 rounded-md px-2 text-left text-sm transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring lg:min-h-8"
+        onClick={handleClick}
+        aria-label={`Edit session at ${time}, ${formatDuration(entry.durationSeconds)}`}
+        className={cn(ROW_BUTTON_CLASS, 'pl-8')}
       >
-        <span className="sr-only">Edit entry: </span>
-        <span
-          className={cn(
-            'min-w-0 whitespace-pre-line break-words',
-            entry.text ? 'text-foreground' : 'text-muted-foreground',
-          )}
-        >
-          {label}
-        </span>
-        <span className="shrink-0 tabular-nums text-muted-foreground">
-          {formatMinutesToHm(entry.durationSeconds / 60)}
-        </span>
+        <span className="tabular-nums text-muted-foreground">{time}</span>
+        <Duration seconds={entry.durationSeconds} isExpanded={null} />
       </button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={handleContinue}
-        disabled={isTimerRunning}
-        aria-label={`Continue: ${label}`}
-        className="shrink-0 text-muted-foreground hover:text-foreground lg:h-8 lg:w-8"
-      >
-        <Play />
-      </Button>
+      <span className={ACTION_SLOT_CLASS} aria-hidden="true" />
     </li>
   )
 }
 
-type ProgressEntryListProps = EntryHandlers & {
+type TaskItemProps = EntryHandlers & {
+  group: ProgressTaskGroup
+}
+
+const TaskItem = ({
+  group,
+  isTimerRunning,
+  onEdit,
+  onContinue,
+}: TaskItemProps): JSX.Element => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const sessionsId = useId()
+  const label = group.text ?? 'No note'
+  const isGroup = group.entries.length > 1
+
+  const handleRowClick = (): void => {
+    if (isGroup) {
+      setIsExpanded((prev) => !prev)
+      return
+    }
+    onEdit(group.latest)
+  }
+
+  return (
+    <li>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={handleRowClick}
+          aria-expanded={isGroup ? isExpanded : undefined}
+          aria-controls={isGroup ? sessionsId : undefined}
+          className={ROW_BUTTON_CLASS}
+        >
+          <span className="sr-only">
+            {isGroup ? `${group.entries.length} sessions: ` : 'Edit entry: '}
+          </span>
+          <TaskLabel group={group} />
+          <Duration
+            seconds={group.totalSeconds}
+            isExpanded={isGroup ? isExpanded : null}
+          />
+        </button>
+        <ContinueButton
+          label={label}
+          entry={group.latest}
+          isTimerRunning={isTimerRunning}
+          onContinue={onContinue}
+        />
+      </div>
+      {isGroup && isExpanded ? (
+        <ul id={sessionsId} className="space-y-0.5">
+          {group.entries.map((entry) => (
+            <SessionItem key={entry.id} entry={entry} onEdit={onEdit} />
+          ))}
+        </ul>
+      ) : null}
+    </li>
+  )
+}
+
+type TaskListProps = EntryHandlers & {
   entries: ProgressDayEntry[]
 }
 
-const ProgressEntryList = ({
-  entries,
-  ...handlers
-}: ProgressEntryListProps): JSX.Element => (
+const TaskList = ({ entries, ...handlers }: TaskListProps): JSX.Element => (
   <ul className="space-y-0.5">
-    {entries.map((entry) => (
-      <ProgressEntryItem key={entry.id} entry={entry} {...handlers} />
+    {groupDayEntries(entries).map((group) => (
+      <TaskItem key={group.key} group={group} {...handlers} />
     ))}
   </ul>
 )
@@ -101,24 +223,19 @@ type ProgressTableRowProps = EntryHandlers & {
 const ProgressTableRow = ({
   row,
   ...handlers
-}: ProgressTableRowProps): JSX.Element => {
-  return (
-    <TableRow>
-      <TableCell className="whitespace-nowrap font-medium">
-        {formatDayLabel(row.dayStart)}
-      </TableCell>
-      <TableCell className="whitespace-nowrap font-mono tabular-nums">
-        {formatSecondsToTime(row.totalSeconds)}
-      </TableCell>
-      <TableCell className="whitespace-nowrap tabular-nums text-muted-foreground">
-        {row.entries.length}
-      </TableCell>
-      <TableCell className="text-muted-foreground">
-        <ProgressEntryList entries={row.entries} {...handlers} />
-      </TableCell>
-    </TableRow>
-  )
-}
+}: ProgressTableRowProps): JSX.Element => (
+  <TableRow>
+    <TableCell className="whitespace-nowrap align-top font-medium">
+      {formatDayLabel(row.dayStart)}
+    </TableCell>
+    <TableCell className="whitespace-nowrap align-top font-mono tabular-nums">
+      {formatSecondsToTime(row.totalSeconds)}
+    </TableCell>
+    <TableCell className="text-muted-foreground">
+      <TaskList entries={row.entries} {...handlers} />
+    </TableCell>
+  </TableRow>
+)
 
 type ProgressDayListProps = EntryHandlers & {
   rows: ProgressDayRow[]
@@ -139,7 +256,7 @@ const ProgressDayList = ({
             {formatSecondsToTime(row.totalSeconds)}
           </span>
         </div>
-        <ProgressEntryList entries={row.entries} {...handlers} />
+        <TaskList entries={row.entries} {...handlers} />
       </li>
     ))}
   </ul>
@@ -202,7 +319,6 @@ export const ProgressDaysContent = (): JSX.Element => {
               <TableRow>
                 <TableHead className="w-[160px]">Day</TableHead>
                 <TableHead className="w-[120px]">Progress</TableHead>
-                <TableHead className="w-[90px]">Records</TableHead>
                 <TableHead>Activity</TableHead>
               </TableRow>
             </TableHeader>
