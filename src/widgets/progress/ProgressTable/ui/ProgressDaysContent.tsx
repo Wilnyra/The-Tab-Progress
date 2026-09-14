@@ -15,13 +15,6 @@ import { formatMinutesToHm } from '@/shared/lib/formatMinutesToHm'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { Button } from '@/shared/ui/Button'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/Card'
-import {
   Table,
   TableBody,
   TableCell,
@@ -152,7 +145,7 @@ const ProgressDayList = ({
   </ul>
 )
 
-export const ProgressTable = (): JSX.Element => {
+export const ProgressDaysContent = (): JSX.Element => {
   const { events, isLoading, error } = useEventsLast30Days()
   const { isCounting, startCount } = useCountProgress()
   const { showToast } = useToast()
@@ -229,15 +222,7 @@ export const ProgressTable = (): JSX.Element => {
 
   return (
     <>
-      <Card variant="section">
-        <CardHeader className="space-y-1.5">
-          <CardTitle>Days</CardTitle>
-          <CardDescription>
-            Daily progress and activity for the last 30 days
-          </CardDescription>
-        </CardHeader>
-        <CardContent>{renderBody()}</CardContent>
-      </Card>
+      {renderBody()}
       <EditProgressDialog
         entry={editingEntry}
         open={isEditOpen}
