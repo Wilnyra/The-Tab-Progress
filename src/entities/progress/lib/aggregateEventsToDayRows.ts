@@ -4,6 +4,7 @@ export type ProgressDayEntry = {
   id: string
   text: string | null
   durationSeconds: number
+  createdAt: string
 }
 
 export type ProgressDayRow = {
@@ -43,6 +44,7 @@ export const aggregateEventsToDayRows = (
       id: event.id,
       text: text ? text : null,
       durationSeconds: event.duration_seconds,
+      createdAt: event.created_at,
     }
     const row = byDay.get(dayKey)
 

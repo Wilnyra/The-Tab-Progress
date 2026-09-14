@@ -9,7 +9,6 @@ export const ProgressTableSkeleton = () => {
         <div key={key} className="flex items-center gap-4">
           <Skeleton className="h-4 w-28" />
           <Skeleton className="h-4 w-16" />
-          <Skeleton className="h-4 w-12" />
           <Skeleton className="h-4 flex-1" />
         </div>
       ))}
