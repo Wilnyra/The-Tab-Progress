@@ -32,6 +32,7 @@ const rangeStart = (range: DailyTotalsRange): Date => {
 
 export const useDailyTotals = (
   range: DailyTotalsRange | null,
+  reloadKey = 0,
 ): UseDailyTotalsResult => {
   const { progressReload } = useContext(progressContext)
   const [state, setState] = useState<UseDailyTotalsResult>(INITIAL_STATE)
@@ -75,7 +76,7 @@ export const useDailyTotals = (
       })
 
     return () => controller.abort()
-  }, [range, progressReload])
+  }, [range, progressReload, reloadKey])
 
   return state
 }

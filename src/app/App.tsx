@@ -13,6 +13,7 @@ import { useTheme } from '@/features/settings/ToogleTheme'
 import {
   getLoginPath,
   getOnboardingPath,
+  getPathPath,
   getProgressPath,
   getRootPath,
   getSettingsPath,
@@ -30,6 +31,9 @@ const LoginPage = lazy(() =>
 )
 const OnboardingPage = lazy(() =>
   import('@/pages/onboarding').then((m) => ({ default: m.OnboardingPage })),
+)
+const PathPage = lazy(() =>
+  import('@/pages/path').then((m) => ({ default: m.PathPage })),
 )
 const ProgressPage = lazy(() =>
   import('@/pages/progress').then((m) => ({ default: m.ProgressPage })),
@@ -65,6 +69,7 @@ function App(): JSX.Element {
               <Route element={<Layout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path={getProgressPath()} element={<ProgressPage />} />
+                <Route path={getPathPath()} element={<PathPage />} />
                 <Route path={getSettingsPath()} element={<SettingsPage />} />
               </Route>
             </Route>

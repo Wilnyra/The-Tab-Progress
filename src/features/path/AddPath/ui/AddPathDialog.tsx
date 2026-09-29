@@ -22,9 +22,13 @@ import { Form, FormTextarea, FormMessage } from '@/shared/ui/Form'
 
 type AddPathDialogProps = {
   onComplete?: () => void
+  triggerLabel?: string
 }
 
-export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
+export const AddPathDialog = ({
+  onComplete,
+  triggerLabel,
+}: AddPathDialogProps) => {
   const { session } = useAuth()
   const [open, setOpen] = useState(false)
 
@@ -53,9 +57,10 @@ export const AddPathDialog = ({ onComplete }: AddPathDialogProps) => {
       <DialogTrigger
         onClick={(e) => e.stopPropagation()}
         className={buttonVariants({ variant: 'default' })}
-        aria-label="Add milestone"
+        aria-label={triggerLabel === undefined ? 'Add milestone' : undefined}
       >
         <Plus />
+        {triggerLabel}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

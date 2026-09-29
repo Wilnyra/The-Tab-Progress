@@ -1,4 +1,6 @@
+import { ArrowRight } from 'lucide-react'
 import { type ComponentProps, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { PathListSkeleton } from './PathListSkeleton'
 import {
   selectAllPath,
@@ -10,6 +12,8 @@ import { AddPathDialog } from '@/features/path/AddPath'
 import { DeletePathDialog } from '@/features/path/DeletePath'
 import { EditPathDialog } from '@/features/path/EditPath'
 import { cn } from '@/shared/lib/cn'
+import { getPathPath } from '@/shared/lib/routePaths'
+import { buttonVariants } from '@/shared/ui/Button'
 import {
   Card,
   CardContent,
@@ -68,7 +72,10 @@ export const PathList = ({ cardProps }: PathListProps) => {
 
   if (data.length === 0) {
     return (
-      <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
+      <Card
+        {...cardProps}
+        className={cn('min-h-[280px]', cardProps?.className)}
+      >
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <div className="space-y-1.5">
             <CardTitle>Path</CardTitle>
@@ -85,13 +92,26 @@ export const PathList = ({ cardProps }: PathListProps) => {
 
   return (
     <>
-      <Card {...cardProps} className={cn('min-h-[280px]', cardProps?.className)}>
+      <Card
+        {...cardProps}
+        className={cn('min-h-[280px]', cardProps?.className)}
+      >
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <div className="space-y-1.5">
             <CardTitle>Path</CardTitle>
             <CardDescription>Track your journey milestones</CardDescription>
           </div>
-          <AddPathDialog onComplete={handleComplete} />
+          <div className="flex items-center gap-2">
+            <Link
+              to={getPathPath()}
+              className={cn(buttonVariants({ variant: 'ghost' }), 'gap-1 px-3')}
+              aria-label="See all milestones"
+            >
+              See all
+              <ArrowRight />
+            </Link>
+            <AddPathDialog onComplete={handleComplete} />
+          </div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col">
