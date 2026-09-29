@@ -2,6 +2,7 @@ import { ArrowLeft, Settings } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { appName } from '@/shared/lib/constants'
 import {
+  getPathPath,
   getProgressPath,
   getRootPath,
   getSettingsPath,
@@ -20,6 +21,7 @@ export const LayoutHeader = (): JSX.Element => {
 
   const showBackButton =
     location.pathname === getProgressPath() ||
+    location.pathname === getPathPath() ||
     location.pathname === getSettingsPath()
 
   const handleBack = (): void => {

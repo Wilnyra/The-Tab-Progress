@@ -31,3 +31,4 @@ export type {
   MapProfile,
   MapState,
 } from './model/types'
+export { selectClaimDates } from './api/selectClaimDates'
