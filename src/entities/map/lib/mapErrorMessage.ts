@@ -1,5 +1,4 @@
 export const MAP_ERROR_COPY = {
-  notAdjacent: 'Pick a cell next to your territory',
   notEnough: 'Not enough cells yet',
   water: "That's water",
   alreadyOwned: 'Already yours',
@@ -9,7 +8,7 @@ export const MAP_ERROR_COPY = {
 
 // Keys are the exact exception texts raised by the map_* functions.
 const SERVER_COPY: Readonly<Record<string, string>> = {
-  'not adjacent': MAP_ERROR_COPY.notAdjacent,
+  'not adjacent': 'Pick a cell next to your territory',
   'not enough cells': MAP_ERROR_COPY.notEnough,
   water: MAP_ERROR_COPY.water,
   'already owned': MAP_ERROR_COPY.alreadyOwned,
