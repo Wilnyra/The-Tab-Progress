@@ -16,9 +16,6 @@ export const describeCellAction = (
 
   const cost = derived.costs[index] ?? 1
   const isRestore = derived.lost.has(index)
-  if (!isRestore && !derived.reachable.has(index)) {
-    return { kind: 'blocked', reason: MAP_ERROR_COPY.notAdjacent }
-  }
   if (derived.available < cost) {
     return { kind: 'blocked', reason: MAP_ERROR_COPY.notEnough }
   }
