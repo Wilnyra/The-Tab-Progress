@@ -2,6 +2,7 @@ import {
   CircleStop,
   CirclePlay,
   Clock,
+  CloudOff,
   Pencil,
   Play,
   Sparkles,
@@ -17,7 +18,15 @@ import {
   type MouseEvent,
 } from 'react'
 import { useCountProgress } from '../lib/useCountProgress'
-import { useEventsLast30Days, useRecentDescriptions } from '@/entities/progress'
+import {
+  removeProgressOutboxItem,
+  requestProgressOutboxFlush,
+  updateProgressOutboxItem,
+  useEventsLast30Days,
+  useProgressOutbox,
+  useRecentDescriptions,
+  type ProgressOutboxItem,
+} from '@/entities/progress'
 import { cn } from '@/shared/lib/cn'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { Button } from '@/shared/ui/Button'
@@ -36,6 +45,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/Dialog'
+import { useToast } from '@/shared/ui/Toast'
 
 type CountProgressProps = {
   cardProps?: ComponentProps<typeof Card>
@@ -43,6 +53,8 @@ type CountProgressProps = {
 
 const CANCEL_CONFIRM_THRESHOLD_SECONDS = 60
 const RECENTS_PER_COLUMN = 3
+const DISCARD_CONFIRM_TIMEOUT_MS = 5000
+const EMPTY_OUTBOX: readonly ProgressOutboxItem[] = []
 
 const formatStartedAt = (date: Date | null): string => {
   if (!date) return ''
@@ -111,6 +123,117 @@ const RecentChips = ({
   </div>
 )
 
+const pluralizeSessions = (count: number): string =>
+  count === 1 ? '1 session' : `${count} sessions`
+
+type OutboxStatusProps = {
+  pending: readonly ProgressOutboxItem[]
+  failed: readonly ProgressOutboxItem[]
+}
+
+const OutboxStatus = ({ pending, failed }: OutboxStatusProps): JSX.Element => {
+  const { showToast } = useToast()
+  const [isConfirmingDiscard, setIsConfirmingDiscard] = useState(false)
+  const discardButtonRef = useRef<HTMLButtonElement | null>(null)
+
+  const isConfirming = isConfirmingDiscard && failed.length > 0
+
+  useEffect(() => {
+    if (!isConfirming) return
+    const timer = window.setTimeout(() => {
+      setIsConfirmingDiscard(false)
+    }, DISCARD_CONFIRM_TIMEOUT_MS)
+    return () => window.clearTimeout(timer)
+  }, [isConfirming])
+
+  const handleRetry = (): void => {
+    setIsConfirmingDiscard(false)
+    const retried = failed.filter((item) =>
+      updateProgressOutboxItem({
+        ...item,
+        status: 'pending',
+        attempts: 0,
+        nextAttemptAt: 0,
+        lastError: null,
+      }),
+    )
+    requestProgressOutboxFlush(retried.map((item) => item.clientId))
+  }
+
+  const handleDiscard = (): void => {
+    if (!isConfirming) {
+      setIsConfirmingDiscard(true)
+      return
+    }
+    setIsConfirmingDiscard(false)
+    const discarded = failed.filter((item) =>
+      removeProgressOutboxItem(item.userId, item.clientId),
+    )
+    showToast({
+      message: `Discarded ${pluralizeSessions(discarded.length)}`,
+    })
+  }
+
+  const handleKeep = (): void => {
+    setIsConfirmingDiscard(false)
+    discardButtonRef.current?.focus()
+  }
+
+  return (
+    <div aria-live="polite" className="space-y-1.5">
+      {pending.length > 0 ? (
+        <div className="flex items-center gap-1.5">
+          <CloudOff className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <span>{pluralizeSessions(pending.length)} waiting to sync</span>
+        </div>
+      ) : null}
+      {failed.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="flex items-center gap-1.5 text-destructive">
+            <CloudOff className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            Couldn’t sync {pluralizeSessions(failed.length)}
+          </span>
+          {isConfirming ? null : (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleRetry}
+              className="min-h-11 sm:min-h-0"
+            >
+              Retry
+            </Button>
+          )}
+          <Button
+            ref={discardButtonRef}
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleDiscard}
+            className={cn(
+              'min-h-11 sm:min-h-0',
+              isConfirming ? 'text-destructive hover:text-destructive' : '',
+            )}
+          >
+            {isConfirming ? `Discard ${failed.length}?` : 'Discard'}
+          </Button>
+          {isConfirming ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleKeep}
+              className="min-h-11 sm:min-h-0"
+            >
+              Keep
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
 export const CountProgress = ({ cardProps }: CountProgressProps) => {
   const {
     count,
@@ -124,6 +247,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
   } = useCountProgress()
   const { events } = useEventsLast30Days()
   const recents = useRecentDescriptions(RECENTS_PER_COLUMN * 2)
+  const { waiting: outboxWaiting, failed: outboxFailed } = useProgressOutbox()
 
   const [draft, setDraft] = useState(description)
   const [isInputFocused, setIsInputFocused] = useState(false)
@@ -215,6 +339,11 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
   const leftRecents = recents.slice(0, RECENTS_PER_COLUMN)
   const rightRecents = recents.slice(RECENTS_PER_COLUMN)
 
+  const showOutboxStatus =
+    !isCounting && (outboxWaiting.length > 0 || outboxFailed.length > 0)
+  const outboxWaitingShown = showOutboxStatus ? outboxWaiting : EMPTY_OUTBOX
+  const outboxFailedShown = showOutboxStatus ? outboxFailed : EMPTY_OUTBOX
+
   const cardDescription = isCounting
     ? `Working since ${formatStartedAt(startedAt)}`
     : isEmptyState
@@ -227,7 +356,13 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
         <CardHeader className="flex flex-row items-start justify-between space-y-0">
           <div className="space-y-1.5">
             <CardTitle>Count Progress</CardTitle>
-            <CardDescription>{cardDescription}</CardDescription>
+            <CardDescription>
+              {showOutboxStatus ? null : cardDescription}
+              <OutboxStatus
+                pending={outboxWaitingShown}
+                failed={outboxFailedShown}
+              />
+            </CardDescription>
           </div>
           {isCounting ? (
             <Button
@@ -398,7 +533,8 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
               Your timer ({formatSecondsToTime(count)})
               {description.trim() ? (
                 <>
-                  {' '}and the note <em>“{truncate(description, 48)}”</em>
+                  {' '}
+                  and the note <em>“{truncate(description, 48)}”</em>
                 </>
               ) : null}{' '}
               will be lost. The session won’t be saved.

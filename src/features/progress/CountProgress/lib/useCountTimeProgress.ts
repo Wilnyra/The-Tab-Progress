@@ -1,13 +1,43 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   PROGRESS_DESCRIPTION,
+  PROGRESS_SESSION_ID,
   PROGRESS_START_TIMESTAMP,
 } from '@/entities/progress'
+import { createUuid } from '@/shared/lib/createUuid'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { getSecondsFrom } from '@/shared/lib/getSecondsFrom'
 import { useDocumentTitle } from '@/shared/lib/useDocumentTitle'
 
-export const useCountTimeProgress = () => {
+export type RunningSession = {
+  startedAtMs: number | null
+  description: string
+  sessionId: string | null
+}
+
+export type UseCountTimeProgressResult = {
+  count: number
+  description: string
+  setDescription: (next: string) => void
+  startedAt: Date | null
+  startCountTime: (initialComment?: string) => void
+  stopCountTime: () => void
+  cancelCountTime: () => void
+  isCounting: boolean
+}
+
+export const readRunningSession = (): RunningSession | null => {
+  const startTimestamp = localStorage.getItem(PROGRESS_START_TIMESTAMP)
+  if (!startTimestamp) return null
+  const parsedMs = new Date(startTimestamp).getTime()
+  return {
+    startedAtMs: Number.isNaN(parsedMs) ? null : parsedMs,
+    description: localStorage.getItem(PROGRESS_DESCRIPTION) ?? '',
+    sessionId: localStorage.getItem(PROGRESS_SESSION_ID),
+  }
+}
+
+export const useCountTimeProgress = (): UseCountTimeProgressResult => {
   const updateTitle = useDocumentTitle()
   const intervalRef = useRef<number | null>(null)
   const initialTimestamp = localStorage.getItem(PROGRESS_START_TIMESTAMP)
@@ -49,6 +79,7 @@ export const useCountTimeProgress = () => {
   const startCountTime = (initialComment?: string) => {
     const now = new Date()
     setCount(0)
+    localStorage.setItem(PROGRESS_SESSION_ID, createUuid())
     localStorage.setItem(PROGRESS_START_TIMESTAMP, String(now))
     setStartedAt(now)
     if (initialComment && initialComment.trim()) {
@@ -67,6 +98,7 @@ export const useCountTimeProgress = () => {
   const stopCountTime = () => {
     localStorage.removeItem(PROGRESS_START_TIMESTAMP)
     localStorage.removeItem(PROGRESS_DESCRIPTION)
+    localStorage.removeItem(PROGRESS_SESSION_ID)
     setIsCounting(false)
     setDescriptionState('')
     setStartedAt(null)
