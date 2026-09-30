@@ -14,6 +14,7 @@ import {
   getLoginPath,
   getOnboardingPath,
   getPathPath,
+  getProfilePath,
   getProgressPath,
   getRootPath,
   getSettingsPath,
@@ -34,6 +35,9 @@ const OnboardingPage = lazy(() =>
 )
 const PathPage = lazy(() =>
   import('@/pages/path').then((m) => ({ default: m.PathPage })),
+)
+const ProfilePage = lazy(() =>
+  import('@/pages/profile').then((m) => ({ default: m.ProfilePage })),
 )
 const ProgressPage = lazy(() =>
   import('@/pages/progress').then((m) => ({ default: m.ProgressPage })),
@@ -70,6 +74,7 @@ function App(): JSX.Element {
                 <Route index element={<DashboardPage />} />
                 <Route path={getProgressPath()} element={<ProgressPage />} />
                 <Route path={getPathPath()} element={<PathPage />} />
+                <Route path={getProfilePath()} element={<ProfilePage />} />
                 <Route path={getSettingsPath()} element={<SettingsPage />} />
               </Route>
             </Route>

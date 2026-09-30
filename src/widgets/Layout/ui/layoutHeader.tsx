@@ -1,13 +1,22 @@
-import { ArrowLeft, Settings } from 'lucide-react'
+import { ArrowLeft, Menu, Settings, User } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { appName } from '@/shared/lib/constants'
 import {
   getPathPath,
+  getProfilePath,
   getProgressPath,
   getRootPath,
   getSettingsPath,
 } from '@/shared/lib/routePaths'
-import { Button, buttonVariants } from '@/shared/ui/Button'
+import { Button } from '@/shared/ui/Button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/shared/ui/DropdownMenu'
+
+const MENU_ITEM_CLASS = 'min-h-11 cursor-pointer gap-2 sm:min-h-8'
 
 const readHistoryIndex = (state: unknown): number => {
   if (typeof state !== 'object' || state === null) return 0
@@ -22,6 +31,7 @@ export const LayoutHeader = (): JSX.Element => {
   const showBackButton =
     location.pathname === getProgressPath() ||
     location.pathname === getPathPath() ||
+    location.pathname === getProfilePath() ||
     location.pathname === getSettingsPath()
 
   const handleBack = (): void => {
@@ -57,15 +67,32 @@ export const LayoutHeader = (): JSX.Element => {
           <Link to={getRootPath()}>{appName}</Link>
         </h1>
       </div>
-      <div className="flex items-center gap-2">
-        <Link
-          to={getSettingsPath()}
-          className={buttonVariants({ variant: 'ghost', size: 'icon' })}
-          aria-label="Open settings"
-        >
-          <Settings />
-        </Link>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Open menu"
+            className="h-11 w-11"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-44">
+          <DropdownMenuItem asChild className={MENU_ITEM_CLASS}>
+            <Link to={getProfilePath()}>
+              <User className="h-4 w-4" aria-hidden="true" />
+              Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className={MENU_ITEM_CLASS}>
+            <Link to={getSettingsPath()}>
+              <Settings className="h-4 w-4" aria-hidden="true" />
+              Settings
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   )
 }

@@ -1,5 +1,10 @@
+import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { formatFullDate, formatHours, plural } from './formatJourney'
 import type { JourneySummary } from '@/entities/path'
+import { cn } from '@/shared/lib/cn'
+import { getProfilePath } from '@/shared/lib/routePaths'
+import { buttonVariants } from '@/shared/ui/Button'
 
 type JourneyHeroProps = {
   summary: JourneySummary
@@ -53,11 +58,23 @@ export const JourneyHero = ({ summary }: JourneyHeroProps): JSX.Element => {
           />
           <Stat label="Your milestones" value={String(summary.milestones)} />
         </dl>
-        {extras.length > 0 ? (
-          <p className="text-sm tabular-nums text-muted-foreground">
-            {extras.join(' · ')}
-          </p>
-        ) : null}
+        <div className="flex flex-wrap items-center justify-between gap-x-3">
+          {extras.length > 0 ? (
+            <p className="text-sm tabular-nums text-muted-foreground">
+              {extras.join(' · ')}
+            </p>
+          ) : null}
+          <Link
+            to={getProfilePath()}
+            className={cn(
+              buttonVariants({ variant: 'ghost' }),
+              '-mr-3 ml-auto gap-1 px-3',
+            )}
+          >
+            All achievements
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </section>
   )

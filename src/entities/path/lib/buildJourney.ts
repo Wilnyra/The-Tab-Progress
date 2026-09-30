@@ -1,4 +1,11 @@
 import type { PathData } from '../model/types'
+import {
+  activeDaysAsc,
+  computeAchievements,
+  type ActiveDay,
+  type AchievementFamily,
+  type AchievementState,
+} from '@/entities/achievements'
 
 export type JourneyMilestone =
   | { kind: 'manual'; id: string; step: string; at: string; dayKey: string }
@@ -43,10 +50,13 @@ export type JourneyInput = {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000
-const HOUR_THRESHOLDS = [10, 50, 100, 250, 500, 1000, 2000]
-const ACTIVE_DAY_THRESHOLDS = [7, 30, 100, 365, 1000]
-const STREAK_THRESHOLDS = [7, 30, 100]
-const CELL_THRESHOLDS = [1, 10, 50, 100, 500]
+
+const FAMILY_RANK: Record<AchievementFamily, number> = {
+  hours: 0,
+  activeDays: 1,
+  streak: 2,
+  cells: 3,
+}
 
 const dayKeyOf = (date: Date): string => {
   const y = date.getFullYear()
@@ -60,18 +70,6 @@ const fromDayKey = (key: string): Date => {
   return new Date(year, month - 1, day)
 }
 
-const endOfDay = (key: string): string => {
-  const date = fromDayKey(key)
-  date.setHours(23, 59, 59, 999)
-  return date.toISOString()
-}
-
-const nextDayKey = (key: string): string => {
-  const date = fromDayKey(key)
-  date.setDate(date.getDate() + 1)
-  return dayKeyOf(date)
-}
-
 const byTimeAsc = (a: string, b: string): number =>
   new Date(a).getTime() - new Date(b).getTime()
 
@@ -80,108 +78,38 @@ const earliestDayKey = (sortedIso: string[]): string | undefined => {
   return first === undefined ? undefined : dayKeyOf(new Date(first))
 }
 
-const pluralize = (count: number, one: string, many: string): string =>
-  `${count} ${count === 1 ? one : many}`
-
-type ActiveDay = { key: string; seconds: number }
-
-const activeDaysAsc = (totals: ReadonlyMap<string, number>): ActiveDay[] =>
-  Array.from(totals)
-    .filter(([, seconds]) => seconds > 0)
-    .map(([key, seconds]) => ({ key, seconds }))
-    .sort((a, b) => a.key.localeCompare(b.key))
-
-const autoMilestone = (
-  id: string,
-  step: string,
-  dayKey: string,
-  at: string = endOfDay(dayKey),
-): JourneyMilestone => ({
-  kind: 'auto',
-  id: `auto:${id}`,
-  step,
-  at,
-  dayKey,
-})
-
-const buildAutoMilestones = (
-  days: ActiveDay[],
-  claimDates: string[],
-): JourneyMilestone[] => {
-  const result: JourneyMilestone[] = []
-
-  let cumulative = 0
-  let hourIndex = 0
-  let streak = 0
-  let streakIndex = 0
-  let previousKey: string | null = null
-
-  days.forEach((day, index) => {
-    cumulative += day.seconds
-    while (
-      hourIndex < HOUR_THRESHOLDS.length &&
-      cumulative >= HOUR_THRESHOLDS[hourIndex] * 3600
-    ) {
-      const hours = HOUR_THRESHOLDS[hourIndex]
-      result.push(
-        autoMilestone(`hours-${hours}`, `${hours} hours of progress`, day.key),
-      )
-      hourIndex += 1
-    }
-
-    const count = index + 1
-    if (ACTIVE_DAY_THRESHOLDS.includes(count)) {
-      result.push(
-        autoMilestone(`days-${count}`, `${count} active days`, day.key),
-      )
-    }
-
-    streak =
-      previousKey !== null && nextDayKey(previousKey) === day.key
-        ? streak + 1
-        : 1
-    if (streakIndex < STREAK_THRESHOLDS.length) {
-      const target = STREAK_THRESHOLDS[streakIndex]
-      if (streak >= target) {
-        result.push(
-          autoMilestone(`streak-${target}`, `${target}-day streak`, day.key),
-        )
-        streakIndex += 1
-      }
-    }
-    previousKey = day.key
-  })
-
-  const claimsAsc = [...claimDates].sort(byTimeAsc)
-  CELL_THRESHOLDS.forEach((threshold) => {
-    const at = claimsAsc[threshold - 1]
-    if (at === undefined) return
-    const step =
-      threshold === 1
-        ? 'First cell claimed on the map'
-        : `${pluralize(threshold, 'cell', 'cells')} claimed on the map`
-    result.push(
-      autoMilestone(`cells-${threshold}`, step, dayKeyOf(new Date(at)), at),
-    )
-  })
-
-  return result
+type EarnedAchievement = {
+  item: AchievementState
+  at: string
+  dayKey: string
 }
 
-const longestStreakOf = (days: ActiveDay[]): number => {
-  let longest = 0
-  let current = 0
-  let previousKey: string | null = null
-  for (const day of days) {
-    current =
-      previousKey !== null && nextDayKey(previousKey) === day.key
-        ? current + 1
-        : 1
-    longest = Math.max(longest, current)
-    previousKey = day.key
+const walkOrder = (a: EarnedAchievement, b: EarnedAchievement): number => {
+  const byRank = FAMILY_RANK[a.item.family] - FAMILY_RANK[b.item.family]
+  const byThreshold = a.item.threshold - b.item.threshold
+  if (a.item.family === 'cells' || b.item.family === 'cells') {
+    return byRank || byThreshold
   }
-  return longest
+  return a.dayKey.localeCompare(b.dayKey) || byRank || byThreshold
 }
+
+const toAutoMilestones = (items: AchievementState[]): JourneyMilestone[] =>
+  items
+    .flatMap((item): EarnedAchievement[] =>
+      item.earnedAt === null || item.earnedDayKey === null
+        ? []
+        : [{ item, at: item.earnedAt, dayKey: item.earnedDayKey }],
+    )
+    .sort(walkOrder)
+    .map(
+      ({ item, at, dayKey }): JourneyMilestone => ({
+        kind: 'auto',
+        id: `auto:${item.id}`,
+        step: item.title,
+        at,
+        dayKey,
+      }),
+    )
 
 const countBetween = (
   sortedIso: string[],
@@ -247,14 +175,14 @@ export const buildJourney = ({
     .sort()[0]
   if (firstDayKey === undefined) return null
 
-  const nowMs = now.getTime()
-  const clampToNow = (milestone: JourneyMilestone): JourneyMilestone =>
-    milestone.kind === 'auto' && new Date(milestone.at).getTime() > nowMs
-      ? { ...milestone, at: now.toISOString() }
-      : milestone
-
-  const all = [...manual, ...buildAutoMilestones(days, claimsAsc)]
-    .map((milestone, index) => ({ milestone: clampToNow(milestone), index }))
+  const achievements = computeAchievements({
+    dailyTotals,
+    claimDates: claimsAsc,
+    now,
+  })
+  const auto = toAutoMilestones(achievements.items)
+  const all = [...manual, ...auto]
+    .map((milestone, index) => ({ milestone, index }))
     .sort(
       (a, b) =>
         new Date(b.milestone.at).getTime() -
@@ -296,7 +224,7 @@ export const buildJourney = ({
         Math.round((todayStart.getTime() - startDay.getTime()) / DAY_MS) + 1,
       totalSeconds: days.reduce((sum, day) => sum + day.seconds, 0),
       activeDays: days.length,
-      longestStreak: longestStreakOf(days),
+      longestStreak: achievements.summary.longestStreak,
       milestones: manual.length,
       cells: claimDates.length,
       photos: photoDates.length,
