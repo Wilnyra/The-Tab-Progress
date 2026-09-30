@@ -1,4 +1,5 @@
--- Self-test for 20260913120000_territory_map.sql. Run AFTER the migration (as postgres).
+-- Self-test for 20260913120000_territory_map.sql. Run AFTER both migrations
+-- (20260913120000_territory_map.sql, 20260930120000_map_claim_any_land.sql) as postgres.
 -- Leaves nothing behind: the DO block always ends with RAISE EXCEPTION, which rolls back
 -- the fake auth user, progress rows, map rows and the temp helpers. Read the report in the
 -- error message ("SELF-TEST PASSED" / "SELF-TEST FAILED" + one line per check).
@@ -100,15 +101,33 @@ BEGIN
     AND (v_state #>> '{credits,available}')::int = 4
     AND (v_state #>> '{credits,todaySeconds}')::bigint = 14400);
 
-  -- claim: first cell anywhere, then adjacency / terrain / bounds rules
+  -- claim: any land/hard cell (no adjacency), then terrain / bounds rules
   v_state := public.map_claim(v_tz, 5, 5);
   v_cell := pg_temp.map_cell(v_state, 5, 5);
   v_log := v_log || pg_temp.map_check('claim (5,5): kind claim, cost 1, available 3',
     v_cell ->> 'kind' = 'claim' AND (v_cell ->> 'cost')::int = 1
     AND (v_state #>> '{credits,available}')::int = 3
     AND jsonb_array_length(v_state -> 'cells') = 1);
-  v_log := v_log || pg_temp.map_expect_err(
-    format('SELECT public.map_claim(%L, 0, 0)', v_tz), 'not adjacent');
+  v_state := public.map_claim(v_tz, 0, 0);
+  v_cell := pg_temp.map_cell(v_state, 0, 0);
+  v_event := (v_cell ->> 'eventId')::bigint;
+  v_log := v_log || pg_temp.map_check('claim (0,0) non-adjacent: kind claim, available 2',
+    v_cell ->> 'kind' = 'claim'
+    AND (v_state #>> '{credits,available}')::int = 2);
+  v_state := public.map_undo(v_tz, v_event);
+  v_log := v_log || pg_temp.map_check('undo claim (0,0): available 3',
+    pg_temp.map_cell(v_state, 0, 0) IS NULL
+    AND (v_state #>> '{credits,available}')::int = 3);
+  v_state := public.map_claim(v_tz, 20, 35);
+  v_cell := pg_temp.map_cell(v_state, 20, 35);
+  v_event := (v_cell ->> 'eventId')::bigint;
+  v_log := v_log || pg_temp.map_check('claim (20,35) hard non-adjacent: cost 3, available 0',
+    v_cell ->> 'kind' = 'claim' AND (v_cell ->> 'cost')::int = 3
+    AND (v_state #>> '{credits,available}')::int = 0);
+  v_state := public.map_undo(v_tz, v_event);
+  v_log := v_log || pg_temp.map_check('undo claim (20,35): available 3',
+    pg_temp.map_cell(v_state, 20, 35) IS NULL
+    AND (v_state #>> '{credits,available}')::int = 3);
   v_log := v_log || pg_temp.map_expect_err(
     format('SELECT public.map_claim(%L, 0, 39)', v_tz), 'water');
   v_log := v_log || pg_temp.map_expect_err(

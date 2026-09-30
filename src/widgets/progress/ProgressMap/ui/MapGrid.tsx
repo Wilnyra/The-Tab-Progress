@@ -54,16 +54,10 @@ const readCellIndex = (target: EventTarget): number | null => {
 const clamp = (value: number, max: number): number =>
   Math.min(max, Math.max(0, value))
 
-const cellClass = (
-  char: string,
-  isOwned: boolean,
-  isLost: boolean,
-  isClaimable: boolean,
-): string => {
+const cellClass = (char: string, isOwned: boolean, isLost: boolean): string => {
   if (isOwned) return 'fill-chart-2'
   if (isLost) return 'fill-chart-2/20 stroke-chart-2'
   if (char === 'w') return 'fill-muted/40'
-  if (isClaimable) return 'fill-chart-2/30'
   return 'fill-muted'
 }
 
@@ -74,10 +68,7 @@ export const MapGrid = ({
   onMove,
   onConfirm,
 }: MapGridProps): JSX.Element => {
-  const { width, height, terrain, owned, lost, claimable } = derived
-  // On an empty map every land cell is claimable, so the tint would carry no
-  // information — the empty-state copy explains the first claim instead.
-  const showClaimable = owned.size > 0
+  const { width, height, terrain, owned, lost } = derived
   const svgRef = useRef<SVGSVGElement | null>(null)
   // A touch tap already picked the cell in `pointerdown`; the click that
   // follows must not toggle it straight back off.
@@ -110,12 +101,7 @@ export const MapGrid = ({
           rx={CELL_RADIUS}
           strokeWidth={isLost ? 1 : 0}
           strokeDasharray={isLost ? '3 2' : undefined}
-          className={cellClass(
-            char,
-            owned.has(index),
-            isLost,
-            showClaimable && claimable.has(index),
-          )}
+          className={cellClass(char, owned.has(index), isLost)}
         />,
       )
       if (char !== 'h') continue
@@ -132,7 +118,7 @@ export const MapGrid = ({
       )
     }
     return nodes
-  }, [terrain, width, owned, lost, claimable, showClaimable])
+  }, [terrain, width, owned, lost])
 
   const updateTooltip = useCallback((): void => {
     if (activeIndex === null) {
