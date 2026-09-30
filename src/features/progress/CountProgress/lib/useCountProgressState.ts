@@ -1,18 +1,21 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { CountProgressValue } from '../model/countProgressContext'
-import { useCountTimeProgress } from './useCountTimeProgress'
-import { insertProgress, progressContext } from '@/entities/progress'
+import {
+  readRunningSession,
+  useCountTimeProgress,
+} from './useCountTimeProgress'
+import {
+  createProgressOutboxItem,
+  enqueueProgressOutboxItem,
+  formatSessionDuration,
+  requestProgressOutboxFlush,
+} from '@/entities/progress'
 import { useAuth } from '@/entities/session'
-import { formatMinutesToHm } from '@/shared/lib/formatMinutesToHm'
+import { createUuid } from '@/shared/lib/createUuid'
 import { useToast } from '@/shared/ui/Toast'
 
-const SECONDS_PER_MINUTE = 60
+const MS_PER_SECOND = 1000
 const SAVE_ERROR_TOAST_MS = 10000
-
-const formatSavedDuration = (seconds: number): string =>
-  seconds < SECONDS_PER_MINUTE
-    ? `${seconds}s`
-    : formatMinutesToHm(seconds / SECONDS_PER_MINUTE)
 
 export const useCountProgressState = (): CountProgressValue => {
   const { session } = useAuth()
@@ -27,43 +30,12 @@ export const useCountProgressState = (): CountProgressValue => {
     cancelCountTime,
     isCounting,
   } = useCountTimeProgress()
-  const { setProgressReload } = useContext(progressContext)
   const { showToast } = useToast()
+  const lastFiniteCountRef = useRef(0)
 
-  const saveSession = useCallback(
-    (durationSeconds: number, comment: string): void => {
-      const duration = formatSavedDuration(durationSeconds)
-      const attempt = async (): Promise<void> => {
-        try {
-          const { error } = await insertProgress(
-            durationSeconds,
-            userId,
-            comment,
-          )
-          if (error) throw new Error(error.message)
-          setProgressReload((prev) => prev + 1)
-          showToast({ message: `Saved ${duration}` })
-        } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error('insertProgress failed', error)
-          }
-          showToast({
-            message: `Couldn't save your ${duration} session.`,
-            variant: 'error',
-            duration: SAVE_ERROR_TOAST_MS,
-            action: {
-              label: 'Retry',
-              onClick: () => {
-                void attempt()
-              },
-            },
-          })
-        }
-      }
-      void attempt()
-    },
-    [userId, setProgressReload, showToast],
-  )
+  useEffect(() => {
+    if (Number.isFinite(count)) lastFiniteCountRef.current = count
+  }, [count])
 
   const startCount = useCallback(
     (initialComment?: string): void => {
@@ -73,12 +45,55 @@ export const useCountProgressState = (): CountProgressValue => {
   )
 
   const stopCount = useCallback((): void => {
-    if (!isCounting) return
-    const finalDuration = count
-    const finalComment = description
+    const running = readRunningSession()
+    if (!running) {
+      stopCountTime()
+      return
+    }
+    const stopMs = Date.now()
+    const durationSeconds =
+      running.startedAtMs === null
+        ? Math.max(0, Math.floor(lastFiniteCountRef.current))
+        : Math.max(
+            0,
+            Math.floor((stopMs - running.startedAtMs) / MS_PER_SECOND),
+          )
+    if (running.startedAtMs === null && durationSeconds === 0) {
+      showToast({
+        message: "Couldn't read the session",
+        variant: 'error',
+        duration: SAVE_ERROR_TOAST_MS,
+      })
+      return
+    }
+    const duration = formatSessionDuration(durationSeconds)
+    const showSaveError = (): void => {
+      showToast({
+        message: `Couldn't save your ${duration} session. Try again.`,
+        variant: 'error',
+        duration: SAVE_ERROR_TOAST_MS,
+      })
+    }
+    if (!userId) {
+      showSaveError()
+      return
+    }
+    const comment = running.description.trim()
+    const item = createProgressOutboxItem({
+      clientId: running.sessionId ?? createUuid(),
+      userId,
+      source: 'timer',
+      createdAt: new Date(stopMs).toISOString(),
+      durationSeconds,
+      comment: comment ? comment : null,
+    })
+    if (!enqueueProgressOutboxItem(item)) {
+      showSaveError()
+      return
+    }
     stopCountTime()
-    saveSession(finalDuration, finalComment)
-  }, [isCounting, count, description, stopCountTime, saveSession])
+    requestProgressOutboxFlush([item.clientId])
+  }, [userId, stopCountTime, showToast])
 
   const cancelCount = useCallback((): void => {
     cancelCountTime()

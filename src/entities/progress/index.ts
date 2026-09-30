@@ -30,10 +30,49 @@ export { summarizeDailyTotals } from './lib/summarizeDailyTotals'
 export type { DailyTotalsSummary } from './lib/summarizeDailyTotals'
 export type { ProgressData, ProgressEvent } from './model/types'
 export { insertProgress } from './api/insertProgress'
+export type {
+  InsertProgressRow,
+  InsertProgressResult,
+} from './api/insertProgress'
 export {
   PROGRESS_START_TIMESTAMP,
   PROGRESS_DESCRIPTION,
+  PROGRESS_SESSION_ID,
 } from './lib/constants'
+export { classifyInsertError } from './lib/classifyInsertError'
+export type { InsertErrorInfo, InsertOutcome } from './lib/classifyInsertError'
+export {
+  computeOutboxBackoffMs,
+  OUTBOX_BACKOFF_BASE_MS,
+} from './lib/outboxBackoff'
+export {
+  createProgressOutboxItem,
+  enqueueProgressOutboxItem,
+  listProgressOutbox,
+  removeProgressOutboxItem,
+  requestProgressOutboxFlush,
+  subscribeProgressOutbox,
+  subscribeProgressOutboxFlushRequest,
+  updateProgressOutboxItem,
+} from './lib/progressOutbox'
+export type {
+  NewProgressOutboxItem,
+  ProgressOutboxChangeOrigin,
+  ProgressOutboxItem,
+} from './lib/progressOutbox'
+export {
+  claimProgressOutboxFlushResult,
+  flushProgressOutbox,
+  getProgressOutboxNextDueDelay,
+  markProgressOutboxOffline,
+} from './lib/flushProgressOutbox'
+export type {
+  FlushProgressOutboxOptions,
+  FlushProgressOutboxResult,
+} from './lib/flushProgressOutbox'
+export { useProgressOutbox } from './lib/useProgressOutbox'
+export type { UseProgressOutboxResult } from './lib/useProgressOutbox'
+export { formatSessionDuration } from './lib/formatSessionDuration'
 export {
   ProgressContextProvider,
   progressContext,
