@@ -28,7 +28,7 @@ import {
   type ProgressOutboxItem,
 } from '@/entities/progress'
 import { cn } from '@/shared/lib/cn'
-import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
+import { formatSecondsToClock } from '@/shared/lib/formatSecondsToClock'
 import { Button } from '@/shared/ui/Button'
 import {
   Card,
@@ -507,7 +507,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
                     isCounting ? 'text-foreground' : 'text-muted-foreground',
                   )}
                 >
-                  {formatSecondsToTime(count)}
+                  {formatSecondsToClock(count)}
                 </div>
               </div>
 
@@ -530,7 +530,7 @@ export const CountProgress = ({ cardProps }: CountProgressProps) => {
           <DialogHeader>
             <DialogTitle>Discard this session?</DialogTitle>
             <DialogDescription>
-              Your timer ({formatSecondsToTime(count)})
+              Your timer ({formatSecondsToClock(count)})
               {description.trim() ? (
                 <>
                   {' '}

@@ -5,7 +5,7 @@ import {
   PROGRESS_START_TIMESTAMP,
 } from '@/entities/progress'
 import { createUuid } from '@/shared/lib/createUuid'
-import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
+import { formatSecondsToClock } from '@/shared/lib/formatSecondsToClock'
 import { getSecondsFrom } from '@/shared/lib/getSecondsFrom'
 import { useDocumentTitle } from '@/shared/lib/useDocumentTitle'
 
@@ -66,7 +66,7 @@ export const useCountTimeProgress = (): UseCountTimeProgressResult => {
       )
 
       setCount(seconds)
-      updateTitle(formatSecondsToTime(seconds))
+      updateTitle(formatSecondsToClock(seconds))
     }, 1000)
   }
 
