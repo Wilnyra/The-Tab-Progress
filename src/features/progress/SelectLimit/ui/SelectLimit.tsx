@@ -11,7 +11,6 @@ const RANGE_OPTIONS: readonly RangeOption[] = [
   { value: '7', label: '7D', limit: 7 },
   { value: '30', label: '30D', limit: 30 },
   { value: '90', label: '90D', limit: 90 },
-  { value: '180', label: '180D', limit: 180 },
   { value: '360', label: '1Y', limit: 360 },
   { value: 'total', label: 'All', limit: null },
 ]
@@ -37,7 +36,7 @@ export const SelectLimit = ({
     <Tabs value={toTabValue(value)} onValueChange={handleValueChange}>
       <TabsList
         aria-label="Chart range"
-        className="grid h-auto w-full grid-cols-6 p-0.5 md:inline-grid md:w-auto"
+        className="grid h-auto w-full grid-cols-5 p-0.5 md:inline-grid md:w-auto"
       >
         {RANGE_OPTIONS.map((option) => (
           <TabsTrigger
