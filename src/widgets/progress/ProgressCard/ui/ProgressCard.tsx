@@ -19,6 +19,7 @@ import {
 import { AddProgressDialog } from '@/features/progress/AddProgress'
 import { SelectLimit } from '@/features/progress/SelectLimit'
 import { cn } from '@/shared/lib/cn'
+import { formatMinutesToHm } from '@/shared/lib/formatMinutesToHm'
 import { formatSecondsToTime } from '@/shared/lib/formatSecondsToTime'
 import { getProgressPath } from '@/shared/lib/routePaths'
 import { buttonVariants } from '@/shared/ui/Button'
@@ -32,11 +33,11 @@ type ProgressCardProps = {
 const isDetailedRange = (limit: number | null): limit is 7 | 30 | 90 =>
   limit === 7 || limit === 30 || limit === 90
 
-const isHeatmapRange = (limit: number | null): limit is 180 | 360 =>
-  limit === 180 || limit === 360
+const isHeatmapRange = (limit: number | null): limit is 360 =>
+  limit === 360
 
 const toTotalRangeKey = (limit: number | null): TotalRangeKey => {
-  if (limit === 90 || limit === 180 || limit === 360) return limit
+  if (limit === 90 || limit === 360) return limit
   return 'total'
 }
 
@@ -48,6 +49,20 @@ const toDailyTotalsRange = (limit: number | null): DailyTotalsRange | null => {
 const summaryDescription = (rangeKey: TotalRangeKey): string => {
   if (rangeKey === 'total') return 'All-time total'
   return `Total for the last ${rangeKey} days`
+}
+
+const sumEventSeconds = (
+  events: ReadonlyArray<{ duration_seconds: number }>,
+): number => events.reduce((sum, ev) => sum + ev.duration_seconds, 0)
+
+const detailedDescription = (
+  days: number,
+  totalSeconds: number,
+  isLoading: boolean,
+): string => {
+  const base = `Showing ${days} days progress`
+  if (isLoading) return base
+  return `${base} (${formatMinutesToHm(totalSeconds / 60)})`
 }
 
 const countActiveDays = (totals: ReadonlyMap<string, number>): number =>
@@ -124,15 +139,21 @@ export const ProgressCard = ({ selectLimit }: ProgressCardProps) => {
   if (detailed) {
     const filtered = filterEventsToLastDays(events, limit)
     const dailyData = fillMissingDays(aggregateEventsToDays(filtered), limit)
+    const chartLoading = eventsLoading && events.length === 0
+    const description = detailedDescription(
+      limit,
+      sumEventSeconds(filtered),
+      chartLoading,
+    )
 
     return (
       <ProgressChart
-        description={`Showing ${limit} days progress`}
+        description={description}
         rightSlot={rightSlot}
         toolbar={toolbar}
         data={dailyData}
         chartContainerClassName="max-h-[200px] w-full"
-        isLoading={eventsLoading && events.length === 0}
+        isLoading={chartLoading}
       />
     )
   }

@@ -4,7 +4,7 @@ import { progressContext } from '../model/ProgressContext'
 import { useEventsLast30Days } from './useEventsLast30Days'
 import { useAuth } from '@/entities/session'
 
-export type TotalRangeKey = 90 | 180 | 360 | 'total'
+export type TotalRangeKey = 90 | 360 | 'total'
 
 const FROZEN_CACHE_PREFIX = 'progress_frozen_v1'
 
