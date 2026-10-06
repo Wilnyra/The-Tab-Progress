@@ -95,6 +95,101 @@
   }
 }
 
+/* Streak character (entities/character): figure and room palette.
+   Light values equal the renderer's fallbacks; dark overrides from the
+   approved prototype. */
+@layer base {
+  :root {
+    --figure-skin: 24 28% 64%;
+    --figure-skin-shade: 22 26% 55%;
+    --figure-hair: 24 14% 26%;
+    --figure-top-0: 215 7% 68%;
+    --figure-top-0-shade: 215 7% 60%;
+    --figure-top-1: 205 24% 56%;
+    --figure-top-1-shade: 205 24% 48%;
+    --figure-top-2: 198 32% 42%;
+    --figure-top-2-shade: 198 32% 35%;
+    --figure-collar: 0 0% 94%;
+    --figure-pants-0: 220 5% 54%;
+    --figure-pants-0-shade: 220 5% 47%;
+    --figure-pants-1: 222 14% 30%;
+    --figure-pants-1-shade: 222 14% 25%;
+    --figure-crease: 222 10% 40%;
+    --figure-shoe-old: 220 4% 58%;
+    --figure-shoe-white: 0 0% 97%;
+    --figure-shoe-sole: 220 6% 72%;
+    --figure-shoe-leather: 24 32% 30%;
+    --figure-lace: 220 5% 40%;
+    --figure-sock: 38 55% 60%;
+    --figure-belt: 220 8% 22%;
+    --figure-belt-leather: 24 40% 32%;
+    --figure-jacket-0: 35 18% 58%;
+    --figure-jacket-0-shade: 35 18% 50%;
+    --figure-jacket-1: 28 22% 34%;
+    --figure-jacket-1-shade: 28 22% 28%;
+    --figure-bag: 28 14% 30%;
+    --figure-pack: 200 8% 38%;
+    --figure-bottle: 190 18% 62%;
+    --figure-bottle-cap: 190 12% 36%;
+    --figure-notebook: 38 30% 78%;
+    --figure-notebook-edge: 38 20% 60%;
+    --figure-dark: 220 10% 18%;
+    --figure-white: 0 0% 98%;
+    --figure-metal: 210 8% 70%;
+    --figure-chain: 42 35% 66%;
+    --room-wood: 30 18% 80%;
+    --room-wood-shade: 30 16% 71%;
+    --room-plant: 140 14% 62%;
+    --room-plant-dark: 145 14% 52%;
+    --room-pot: 20 18% 74%;
+    --room-frame: 220 6% 72%;
+    --room-art-1: 200 18% 87%;
+    --room-art-2: 28 30% 86%;
+    --room-book-1: 210 14% 72%;
+    --room-book-2: 15 24% 74%;
+    --room-book-3: 45 26% 76%;
+    --room-window-frame: 220 6% 82%;
+    --room-glass: 200 45% 93%;
+    --room-curtain: 35 20% 88%;
+    --room-rug: 30 14% 91%;
+    --room-lamp-pole: 220 6% 62%;
+    --room-shade: 40 30% 86%;
+    --room-glow: 42 85% 82%;
+    --room-wall: 35 22% 96%;
+  }
+
+  .dark {
+    --figure-hair: 24 10% 16%;
+    --figure-dark: 220 8% 12%;
+    --figure-pants-1: 222 12% 36%;
+    --figure-pants-1-shade: 222 12% 30%;
+    --figure-jacket-1: 28 20% 40%;
+    --figure-jacket-1-shade: 28 20% 33%;
+    --figure-shoe-leather: 24 30% 36%;
+    --figure-pack: 200 8% 44%;
+    --figure-bag: 28 14% 38%;
+    --room-wood: 30 10% 20%;
+    --room-wood-shade: 30 10% 15%;
+    --room-plant: 140 12% 30%;
+    --room-plant-dark: 145 12% 24%;
+    --room-pot: 20 12% 24%;
+    --room-frame: 220 6% 26%;
+    --room-art-1: 200 12% 17%;
+    --room-art-2: 28 14% 18%;
+    --room-book-1: 210 10% 30%;
+    --room-book-2: 15 16% 30%;
+    --room-book-3: 45 16% 30%;
+    --room-window-frame: 220 6% 22%;
+    --room-glass: 210 25% 15%;
+    --room-curtain: 35 10% 18%;
+    --room-rug: 30 6% 12%;
+    --room-lamp-pole: 220 6% 34%;
+    --room-shade: 40 14% 30%;
+    --room-glow: 42 60% 40%;
+    --room-wall: 30 8% 9%;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
